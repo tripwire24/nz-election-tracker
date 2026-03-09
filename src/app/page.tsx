@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient } from "@supabase/supabase-js";
 import { ForecastWidget } from "@/components/dashboard/forecast-widget";
 import { PollSnapshotWidget } from "@/components/dashboard/poll-snapshot-widget";
 import { SeatProjectionWidget } from "@/components/dashboard/seat-projection-widget";
@@ -8,8 +8,15 @@ import { ElectionCountdownWidget } from "@/components/dashboard/election-countdo
 
 export const revalidate = 300; // ISR: refresh every 5 min
 
+function getSupabase() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+  );
+}
+
 export default async function Home() {
-  const supabase = await createClient();
+  const supabase = getSupabase();
 
   // Fetch latest 8 content items
   const { data: contentItems } = await supabase
