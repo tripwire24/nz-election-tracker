@@ -1,65 +1,86 @@
-import Image from "next/image";
+import { createClient } from "@/lib/supabase/server";
+import { ForecastWidget } from "@/components/dashboard/forecast-widget";
+import { PollSnapshotWidget } from "@/components/dashboard/poll-snapshot-widget";
+import { SeatProjectionWidget } from "@/components/dashboard/seat-projection-widget";
+import { SentimentPulseWidget } from "@/components/dashboard/sentiment-pulse-widget";
+import { ContentFeedWidget } from "@/components/dashboard/content-feed-widget";
+import { ElectionCountdownWidget } from "@/components/dashboard/election-countdown-widget";
 
-export default function Home() {
+export const revalidate = 300; // ISR: refresh every 5 min
+
+export default async function Home() {
+  const supabase = await createClient();
+
+  // Fetch latest 8 content items
+  const { data: contentItems } = await supabase
+    .from("content_items")
+    .select("id, title, source_name, source_type, source_url, published_at, topics")
+    .order("published_at", { ascending: false })
+    .limit(8);
+
+  // Fetch latest poll with results + party info
+  const { data: latestPoll } = await supabase
+    .from("polls")
+    .select("id, pollster, published_date, sample_size, margin_of_error, poll_type")
+    .eq("poll_type", "party_vote")
+    .order("published_date", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  let pollResults: { short_name: string; name: string; colour: string; value: number }[] = [];
+  if (latestPoll) {
+    const { data } = await supabase
+      .from("poll_results")
+      .select("value, party_id, parties(short_name, name, colour)")
+      .eq("poll_id", latestPoll.id)
+      .order("value", { ascending: false });
+    if (data) {
+      pollResults = data
+        .filter((r: Record<string, unknown>) => r.parties)
+        .map((r: Record<string, unknown>) => {
+          const party = r.parties as { short_name: string; name: string; colour: string };
+          return {
+            short_name: party.short_name,
+            name: party.name,
+            colour: party.colour,
+            value: r.value as number,
+          };
+        });
+    }
+  }
+
+  // Content stats
+  const { count: totalArticles } = await supabase
+    .from("content_items")
+    .select("id", { count: "exact", head: true });
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <div className="space-y-6">
+      {/* Top row: Forecast + Countdown */}
+      <div className="grid gap-6 lg:grid-cols-4">
+        <div className="lg:col-span-3">
+          <ForecastWidget />
+        </div>
+        <div>
+          <ElectionCountdownWidget />
+        </div>
+      </div>
+
+      {/* Middle row: Seat projection (full width) */}
+      <SeatProjectionWidget />
+
+      {/* Bottom row: Poll snapshot + Sentiment + Content feed */}
+      <div className="grid gap-6 lg:grid-cols-3">
+        <PollSnapshotWidget
+          poll={latestPoll}
+          results={pollResults}
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+        <SentimentPulseWidget />
+        <ContentFeedWidget
+          items={contentItems ?? []}
+          totalArticles={totalArticles ?? 0}
+        />
+      </div>
     </div>
   );
 }
