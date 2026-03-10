@@ -6,7 +6,7 @@ import { SentimentPulseWidget } from "@/components/dashboard/sentiment-pulse-wid
 import { ContentFeedWidget } from "@/components/dashboard/content-feed-widget";
 import { ElectionCountdownWidget } from "@/components/dashboard/election-countdown-widget";
 
-export const revalidate = 300; // ISR: refresh every 5 min
+export const dynamic = "force-dynamic";
 
 function getSupabase() {
   return createClient(
