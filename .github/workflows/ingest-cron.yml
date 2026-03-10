@@ -19,7 +19,7 @@ jobs:
 
           RESPONSE=$(curl -s -w "\n%{http_code}" \
             --max-time 120 \
-            "${{ secrets.VERCEL_DEPLOY_URL }}/api/ingest/all")
+            "${{ secrets.VERCEL_DEPLOY_URL }}/api/cron/ingest")
 
           HTTP_CODE=$(echo "$RESPONSE" | tail -1)
           BODY=$(echo "$RESPONSE" | sed '$d')
