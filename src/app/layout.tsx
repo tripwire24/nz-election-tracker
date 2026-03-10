@@ -30,14 +30,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#131316] text-zinc-100`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-stone-50 text-stone-900`}
       >
         <NavBar />
         <main className="mx-auto max-w-7xl px-4 py-6">{children}</main>
-        <footer className="mt-12 border-t border-zinc-700/30">
-          <div className="mx-auto flex max-w-7xl flex-col items-center gap-2 px-4 py-6 text-xs text-zinc-500 sm:flex-row sm:justify-between">
+        <footer className="mt-12 border-t border-stone-200">
+          <div className="mx-auto flex max-w-7xl flex-col items-center gap-2 px-4 py-6 text-xs text-stone-400 sm:flex-row sm:justify-between">
             <span>NZ Election Tracker &middot; Open methodology &middot; Not affiliated with any political party</span>
             <span>Data: Wikipedia polls, Bluesky, NZ media RSS &middot; Updated every 6 hours</span>
           </div>

@@ -9,10 +9,10 @@ function getSupabase() {
 }
 
 const sourceColour: Record<string, string> = {
-  official: "bg-blue-900 text-blue-300",
-  media: "bg-zinc-700 text-zinc-200",
-  blog: "bg-purple-900 text-purple-300",
-  social: "bg-green-900 text-green-300",
+  official: "bg-blue-50 text-blue-700",
+  media: "bg-stone-100 text-stone-600",
+  blog: "bg-purple-50 text-purple-700",
+  social: "bg-emerald-50 text-emerald-700",
 };
 
 function relativeTime(dateStr: string): string {
@@ -62,8 +62,8 @@ export default async function FeedPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-white">Content Feed</h1>
-        <p className="mt-1 text-sm text-zinc-400">
+        <h1 className="text-2xl font-bold text-stone-900">Content Feed</h1>
+        <p className="mt-1 text-sm text-stone-400">
           {totalCount} articles from NZ political sources — aggregated from RSS feeds across media, government, and blogs.
         </p>
       </div>
@@ -75,17 +75,17 @@ export default async function FeedPage() {
           .map(([name, count]) => (
             <span
               key={name}
-              className="rounded-full border border-zinc-600/30 bg-zinc-700/30 px-3 py-1 text-xs text-zinc-300"
+              className="rounded-full border border-stone-200 bg-stone-100 px-3 py-1 text-xs text-stone-600"
             >
-              {name} <span className="text-zinc-500">({count})</span>
+              {name} <span className="text-stone-500">({count})</span>
             </span>
           ))}
       </div>
 
       {/* Feed list */}
       {feedItems.length === 0 ? (
-        <div className="rounded-xl border border-zinc-700/40 bg-zinc-700/30 p-8 text-center">
-          <p className="text-sm text-zinc-500">No articles ingested yet. Run the RSS ingestion endpoint to populate.</p>
+        <div className="rounded-xl border border-stone-200 bg-stone-100 p-8 text-center">
+          <p className="text-sm text-stone-500">No articles ingested yet. Run the RSS ingestion endpoint to populate.</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -95,22 +95,22 @@ export default async function FeedPage() {
               href={item.source_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="block rounded-xl border border-zinc-700/40 bg-zinc-700/30 p-4 transition-colors hover:border-zinc-600/30 hover:bg-zinc-700/30"
+              className="block rounded-xl border border-stone-200 bg-white p-4 transition-colors hover:border-stone-200 hover:bg-stone-100"
             >
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1 min-w-0">
-                  <h3 className="text-sm font-medium text-zinc-200 leading-snug line-clamp-2">
+                  <h3 className="text-sm font-medium text-stone-700 leading-snug line-clamp-2">
                     {item.title}
                   </h3>
                   {item.excerpt && (
-                    <p className="mt-1.5 text-xs text-zinc-500 line-clamp-2">
+                    <p className="mt-1.5 text-xs text-stone-500 line-clamp-2">
                       {item.excerpt}
                     </p>
                   )}
-                  <div className="mt-2 flex items-center gap-2 text-xs text-zinc-500">
+                  <div className="mt-2 flex items-center gap-2 text-xs text-stone-500">
                     <span
                       className={`rounded px-1.5 py-0.5 text-[10px] font-medium ${
-                        sourceColour[item.source_type] ?? "bg-zinc-800 text-zinc-400"
+                        sourceColour[item.source_type] ?? "bg-stone-100 text-stone-500"
                       }`}
                     >
                       {item.source_name}
@@ -125,7 +125,7 @@ export default async function FeedPage() {
                   {item.topics.map((topic) => (
                     <span
                       key={topic}
-                      className="rounded bg-zinc-800 px-2 py-0.5 text-[10px] text-zinc-400"
+                      className="rounded bg-stone-100 px-2 py-0.5 text-[10px] text-stone-500"
                     >
                       {topic.replace(/_/g, " ")}
                     </span>
@@ -138,7 +138,7 @@ export default async function FeedPage() {
       )}
 
       {totalCount > 50 && (
-        <p className="text-center text-xs text-zinc-600">
+        <p className="text-center text-xs text-stone-400">
           Showing 50 of {totalCount} articles
         </p>
       )}

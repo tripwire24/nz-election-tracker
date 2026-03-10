@@ -55,28 +55,28 @@ export default async function SentimentPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-white">Sentiment Analysis</h1>
-        <p className="mt-1 text-sm text-zinc-400">
+        <h1 className="text-2xl font-bold text-stone-900">Sentiment Analysis</h1>
+        <p className="mt-1 text-sm text-stone-400">
           AI-powered media sentiment tracking per party and topic, scored using Claude API.
         </p>
       </div>
 
       {/* Status overview */}
       <div className="grid gap-4 md:grid-cols-3">
-        <div className="rounded-xl border border-zinc-700/40 bg-zinc-700/30 p-5">
-          <div className="text-xs font-semibold uppercase tracking-wider text-zinc-500">Articles ingested</div>
-          <div className="mt-2 text-3xl font-bold text-white">{articles}</div>
-          <div className="mt-1 text-xs text-zinc-500">from RSS + Bluesky</div>
+        <div className="rounded-xl border border-stone-200 bg-white p-5">
+          <div className="text-xs font-semibold uppercase tracking-wider text-stone-500">Articles ingested</div>
+          <div className="mt-2 text-3xl font-bold text-stone-900">{articles}</div>
+          <div className="mt-1 text-xs text-stone-500">from RSS + Bluesky</div>
         </div>
-        <div className="rounded-xl border border-zinc-700/40 bg-zinc-700/30 p-5">
-          <div className="text-xs font-semibold uppercase tracking-wider text-zinc-500">Items scored</div>
-          <div className="mt-2 text-3xl font-bold text-white">{scored}</div>
-          <div className="mt-1 text-xs text-zinc-500">{articles ? `${Math.round((scored / articles) * 100)}% coverage` : "awaiting scoring"}</div>
+        <div className="rounded-xl border border-stone-200 bg-white p-5">
+          <div className="text-xs font-semibold uppercase tracking-wider text-stone-500">Items scored</div>
+          <div className="mt-2 text-3xl font-bold text-stone-900">{scored}</div>
+          <div className="mt-1 text-xs text-stone-500">{articles ? `${Math.round((scored / articles) * 100)}% coverage` : "awaiting scoring"}</div>
         </div>
-        <div className="rounded-xl border border-zinc-700/40 bg-zinc-700/30 p-5">
-          <div className="text-xs font-semibold uppercase tracking-wider text-zinc-500">Model</div>
-          <div className="mt-2 text-lg font-bold text-white">AFINN-165 + Claude</div>
-          <div className="mt-1 text-xs text-zinc-500">
+        <div className="rounded-xl border border-stone-200 bg-white p-5">
+          <div className="text-xs font-semibold uppercase tracking-wider text-stone-500">Model</div>
+          <div className="mt-2 text-lg font-bold text-stone-900">AFINN-165 + Claude</div>
+          <div className="mt-1 text-xs text-stone-500">
             {claudeScored > 0
               ? `AFINN: ${afinnScored} · Claude Haiku: ${claudeScored}`
               : "AFINN only — Claude not yet triggered"}
@@ -85,30 +85,30 @@ export default async function SentimentPage() {
       </div>
 
       {/* How to read sentiment scores */}
-      <div className="rounded-xl border border-zinc-700/40 bg-zinc-800/40 p-5">
-        <h2 className="text-sm font-semibold text-zinc-200 mb-3">How to read sentiment scores</h2>
-        <p className="text-xs text-zinc-400 leading-relaxed mb-4">
-          Each article or social post mentioning a party is scored on a scale from <strong className="text-red-400">−1</strong> (very negative) to <strong className="text-emerald-400">+1</strong> (very positive). Zero means neutral. We average all scores per party over a rolling 7-day window.
+      <div className="rounded-xl border border-stone-200 bg-stone-50 p-5">
+        <h2 className="text-sm font-semibold text-stone-700 mb-3">How to read sentiment scores</h2>
+        <p className="text-xs text-stone-400 leading-relaxed mb-4">
+          Each article or social post mentioning a party is scored on a scale from <strong className="text-red-500">−1</strong> (very negative) to <strong className="text-emerald-600">+1</strong> (very positive). Zero means neutral. We average all scores per party over a rolling 7-day window.
         </p>
         <div className="flex flex-wrap gap-3">
-          <div className="flex items-center gap-2 rounded-lg bg-red-500/10 px-3 py-1.5 ring-1 ring-red-500/20">
-            <span className="text-red-400 font-bold text-sm">−1.0 → −0.05</span>
-            <span className="text-xs text-zinc-400">Negative coverage</span>
+          <div className="flex items-center gap-2 rounded-lg bg-red-50 px-3 py-1.5 ring-1 ring-red-200">
+            <span className="text-red-500 font-bold text-sm">−1.0 → −0.05</span>
+            <span className="text-xs text-stone-500">Negative coverage</span>
           </div>
-          <div className="flex items-center gap-2 rounded-lg bg-zinc-800/60 px-3 py-1.5 ring-1 ring-zinc-700/30">
-            <span className="text-zinc-400 font-bold text-sm">−0.05 → +0.05</span>
-            <span className="text-xs text-zinc-400">Neutral</span>
+          <div className="flex items-center gap-2 rounded-lg bg-stone-100 px-3 py-1.5 ring-1 ring-stone-200">
+            <span className="text-stone-400 font-bold text-sm">−0.05 → +0.05</span>
+            <span className="text-xs text-stone-400">Neutral</span>
           </div>
-          <div className="flex items-center gap-2 rounded-lg bg-emerald-500/10 px-3 py-1.5 ring-1 ring-emerald-500/20">
-            <span className="text-emerald-400 font-bold text-sm">+0.05 → +1.0</span>
-            <span className="text-xs text-zinc-400">Positive coverage</span>
+          <div className="flex items-center gap-2 rounded-lg bg-emerald-50 px-3 py-1.5 ring-1 ring-emerald-200">
+            <span className="text-emerald-600 font-bold text-sm">+0.05 → +1.0</span>
+            <span className="text-xs text-stone-500">Positive coverage</span>
           </div>
         </div>
       </div>
 
       {/* Party sentiment grid */}
-      <div className="rounded-xl border border-zinc-700/40 bg-zinc-700/30 p-6">
-        <h2 className="text-xs font-semibold uppercase tracking-wider text-zinc-500 mb-4">
+      <div className="rounded-xl border border-stone-200 bg-white p-6">
+        <h2 className="text-xs font-semibold uppercase tracking-wider text-stone-500 mb-4">
           Sentiment by party (7-day rolling average)
         </h2>
         <div className="grid gap-3 md:grid-cols-3">
@@ -118,21 +118,21 @@ export default async function SentimentPage() {
             return (
               <div
                 key={party.short_name}
-                className="flex items-center gap-3 rounded-lg border border-zinc-700/40 p-3"
+                className="flex items-center gap-3 rounded-lg border border-stone-200 p-3"
               >
                 <div
-                  className="h-8 w-8 rounded-lg flex items-center justify-center text-[10px] font-bold text-white"
+                  className="h-8 w-8 rounded-lg flex items-center justify-center text-[10px] font-bold text-stone-900"
                   style={{ backgroundColor: party.colour }}
                 >
                   {party.short_name}
                 </div>
                 <div className="flex-1">
-                  <div className="text-sm font-medium text-zinc-200">{party.name}</div>
-                  <div className="text-xs text-zinc-500">
+                  <div className="text-sm font-medium text-stone-700">{party.name}</div>
+                  <div className="text-xs text-stone-500">
                     {ps ? `${ps.count} scores` : "No data yet"}
                   </div>
                 </div>
-                <div className={`text-sm font-bold ${avg === null ? "text-zinc-600" : avg > 0.05 ? "text-green-400" : avg < -0.05 ? "text-red-400" : "text-zinc-400"}`}>
+                <div className={`text-sm font-bold ${avg === null ? "text-stone-400" : avg > 0.05 ? "text-emerald-600" : avg < -0.05 ? "text-red-500" : "text-stone-400"}`}>
                   {avg === null ? "—" : `${avg > 0 ? "+" : ""}${avg.toFixed(2)}`}
                 </div>
               </div>
@@ -142,28 +142,28 @@ export default async function SentimentPage() {
       </div>
 
       {/* Scoring pipeline */}
-      <div className="rounded-xl border border-dashed border-zinc-600/30 bg-zinc-800/30 p-6">
-        <h2 className="text-sm font-semibold text-zinc-300 mb-3">Sentiment scoring pipeline</h2>
+      <div className="rounded-xl border border-dashed border-stone-200 bg-stone-50 p-6">
+        <h2 className="text-sm font-semibold text-stone-600 mb-3">Sentiment scoring pipeline</h2>
         <div className="grid gap-4 md:grid-cols-4">
           <div className="text-center">
-            <div className="mx-auto h-10 w-10 rounded-full bg-green-600/20 flex items-center justify-center text-green-400 text-lg">✓</div>
-            <div className="mt-2 text-xs font-medium text-zinc-300">Content Ingestion</div>
-            <div className="mt-0.5 text-[10px] text-zinc-500">{articles} items</div>
+            <div className="mx-auto h-10 w-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600 text-lg">✓</div>
+            <div className="mt-2 text-xs font-medium text-stone-600">Content Ingestion</div>
+            <div className="mt-0.5 text-[10px] text-stone-500">{articles} items</div>
           </div>
           <div className="text-center">
-            <div className={`mx-auto h-10 w-10 rounded-full flex items-center justify-center text-lg ${scored > 0 ? "bg-green-600/20 text-green-400" : "bg-zinc-700/50 text-zinc-400"}`}>{scored > 0 ? "✓" : "○"}</div>
-            <div className="mt-2 text-xs font-medium text-zinc-300">AFINN / VADER scoring</div>
-            <div className="mt-0.5 text-[10px] text-zinc-500">{scored} scored</div>
+            <div className={`mx-auto h-10 w-10 rounded-full flex items-center justify-center text-lg ${scored > 0 ? "bg-emerald-50 text-emerald-600" : "bg-stone-100 text-stone-400"}`}>{scored > 0 ? "✓" : "○"}</div>
+            <div className="mt-2 text-xs font-medium text-stone-600">AFINN / VADER scoring</div>
+            <div className="mt-0.5 text-[10px] text-stone-500">{scored} scored</div>
           </div>
           <div className="text-center">
-            <div className={`mx-auto h-10 w-10 rounded-full flex items-center justify-center text-lg ${Object.keys(partyScores).length > 0 ? "bg-green-600/20 text-green-400" : "bg-zinc-700/50 text-zinc-400"}`}>{Object.keys(partyScores).length > 0 ? "✓" : "○"}</div>
-            <div className="mt-2 text-xs font-medium text-zinc-300">Party attribution</div>
-            <div className="mt-0.5 text-[10px] text-zinc-500">{Object.keys(partyScores).length} parties</div>
+            <div className={`mx-auto h-10 w-10 rounded-full flex items-center justify-center text-lg ${Object.keys(partyScores).length > 0 ? "bg-emerald-50 text-emerald-600" : "bg-stone-100 text-stone-400"}`}>{Object.keys(partyScores).length > 0 ? "✓" : "○"}</div>
+            <div className="mt-2 text-xs font-medium text-stone-600">Party attribution</div>
+            <div className="mt-0.5 text-[10px] text-stone-500">{Object.keys(partyScores).length} parties</div>
           </div>
           <div className="text-center">
-            <div className="mx-auto h-10 w-10 rounded-full bg-zinc-700/50 flex items-center justify-center text-zinc-400 text-lg">○</div>
-            <div className="mt-2 text-xs font-medium text-zinc-300">Rolling averages</div>
-            <div className="mt-0.5 text-[10px] text-zinc-500">7-day window</div>
+            <div className="mx-auto h-10 w-10 rounded-full bg-stone-100 flex items-center justify-center text-stone-400 text-lg">○</div>
+            <div className="mt-2 text-xs font-medium text-stone-600">Rolling averages</div>
+            <div className="mt-0.5 text-[10px] text-stone-500">7-day window</div>
           </div>
         </div>
       </div>

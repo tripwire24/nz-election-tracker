@@ -1,22 +1,42 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { DashboardCard } from "./card";
 
-/** Countdown to election day */
+/** Live countdown to election day — ticks every 100ms */
 export function ElectionCountdownWidget() {
   const electionDate = new Date("2026-11-07T00:00:00+13:00");
-  const now = new Date();
-  const diffMs = electionDate.getTime() - now.getTime();
-  const daysUntil = Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
-  const weeksUntil = Math.floor(daysUntil / 7);
-  const months = Math.floor(daysUntil / 30);
+
+  const calcRemaining = () => {
+    const diffMs = Math.max(0, electionDate.getTime() - Date.now());
+    const totalSecs = diffMs / 1000;
+    const days = Math.floor(totalSecs / 86400);
+    const hours = Math.floor((totalSecs % 86400) / 3600);
+    const mins = Math.floor((totalSecs % 3600) / 60);
+    const secs = totalSecs % 60;
+    const weeks = Math.floor(days / 7);
+    const months = Math.floor(days / 30);
+    return { days, hours, mins, secs, weeks, months };
+  };
+
+  const [remaining, setRemaining] = useState(calcRemaining);
+
+  useEffect(() => {
+    const id = setInterval(() => setRemaining(calcRemaining()), 100);
+    return () => clearInterval(id);
+  }, []);
 
   return (
     <DashboardCard title="Election Day" badge="7 Nov 2026" accent="linear-gradient(90deg, #f59e0b, #ef4444)">
       <div className="flex flex-col items-center text-center py-2">
-        <span className="text-6xl font-black tabular-nums text-white leading-none">{daysUntil}</span>
-        <span className="mt-1 text-sm font-medium text-zinc-400">days to go</span>
-        <div className="mt-3 flex gap-3 text-xs text-zinc-500">
-          <span className="rounded-full bg-zinc-700/40 px-2.5 py-1 ring-1 ring-zinc-600/30">{weeksUntil} weeks</span>
-          <span className="rounded-full bg-zinc-700/40 px-2.5 py-1 ring-1 ring-zinc-600/30">{months} months</span>
+        <span className="text-6xl font-black tabular-nums text-stone-800 leading-none">{remaining.days}</span>
+        <span className="mt-1 text-sm font-medium text-stone-500">days to go</span>
+        <div className="mt-2 font-mono text-lg tabular-nums text-stone-600 tracking-wide">
+          {String(remaining.hours).padStart(2, "0")}:{String(remaining.mins).padStart(2, "0")}:{remaining.secs.toFixed(1).padStart(4, "0")}
+        </div>
+        <div className="mt-3 flex gap-3 text-xs text-stone-500">
+          <span className="rounded-full bg-stone-100 px-2.5 py-1 ring-1 ring-stone-200">{remaining.weeks} weeks</span>
+          <span className="rounded-full bg-stone-100 px-2.5 py-1 ring-1 ring-stone-200">{remaining.months} months</span>
         </div>
       </div>
     </DashboardCard>

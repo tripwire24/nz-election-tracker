@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fafaf9;
+  --foreground: #1c1917;
 }
 
 @theme inline {
@@ -16,13 +16,6 @@
   --animate-count-up: count-up 0.6s ease-out both;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #131316;
-    --foreground: #e4e4e7;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
@@ -32,8 +25,8 @@ body {
 /* Refined scrollbar for scrollable widgets */
 .scrollbar-thin::-webkit-scrollbar { width: 4px; }
 .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
-.scrollbar-thin::-webkit-scrollbar-thumb { background: rgba(161, 161, 170, 0.2); border-radius: 9999px; }
-.scrollbar-thin::-webkit-scrollbar-thumb:hover { background: rgba(161, 161, 170, 0.4); }
+.scrollbar-thin::-webkit-scrollbar-thumb { background: rgba(120, 113, 108, 0.2); border-radius: 9999px; }
+.scrollbar-thin::-webkit-scrollbar-thumb:hover { background: rgba(120, 113, 108, 0.4); }
 
 @keyframes fade-in {
   from { opacity: 0; transform: translateY(8px); }
@@ -59,7 +52,7 @@ body {
 .animate-slide-up { animation: slide-up 0.4s ease-out both; }
 .animate-bar-fill { animation: bar-fill 0.8s ease-out both; transform-origin: left; }
 .animate-shimmer {
-  background: linear-gradient(90deg, transparent 25%, rgba(255,255,255,0.04) 50%, transparent 75%);
+  background: linear-gradient(90deg, transparent 25%, rgba(0,0,0,0.03) 50%, transparent 75%);
   background-size: 200% 100%;
   animation: shimmer 1.8s infinite;
 }

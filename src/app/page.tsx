@@ -142,19 +142,19 @@ export default async function Home() {
   return (
     <div className="space-y-6">
       {/* Hero banner */}
-      <div className="relative overflow-hidden rounded-2xl border border-zinc-700/30 bg-gradient-to-br from-zinc-800/60 via-zinc-800/40 to-zinc-700/20 backdrop-blur-sm p-6 md:p-8">
-        <div className="absolute -top-24 -right-24 h-64 w-64 rounded-full bg-blue-500/10 blur-3xl" />
-        <div className="absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-indigo-500/10 blur-3xl" />
+      <div className="relative overflow-hidden rounded-2xl border border-stone-200 bg-gradient-to-br from-blue-50 via-white to-indigo-50 p-6 md:p-8">
+        <div className="absolute -top-24 -right-24 h-64 w-64 rounded-full bg-blue-200/40 blur-3xl" />
+        <div className="absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-indigo-200/40 blur-3xl" />
         <div className="relative">
-          <p className="text-xs font-semibold uppercase tracking-widest text-blue-400">NZ Election Tracker</p>
-          <h1 className="mt-2 text-2xl font-bold text-white md:text-3xl">
+          <p className="text-xs font-semibold uppercase tracking-widest text-blue-600">NZ Election Tracker</p>
+          <h1 className="mt-2 text-2xl font-bold text-stone-900 md:text-3xl">
             {rightSeats >= 61
               ? `Centre-right leads with ${rightSeats} seats`
               : leftSeats >= 61
                 ? `Centre-left leads with ${leftSeats} seats`
                 : "No clear majority — too close to call"}
           </h1>
-          <p className="mt-2 max-w-xl text-sm text-zinc-400">
+          <p className="mt-2 max-w-xl text-sm text-stone-400">
             Live forecast based on Sainte-Laguë MMP seat allocation from the latest polling data, sentiment analysis, and electorate modelling.
           </p>
         </div>

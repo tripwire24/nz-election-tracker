@@ -21,10 +21,10 @@ function relativeTime(dateStr: string): string {
 }
 
 const sourceColour: Record<string, string> = {
-  official: "bg-blue-500/10 text-blue-400 ring-1 ring-blue-500/20",
-  media: "bg-zinc-700/40 text-zinc-300 ring-1 ring-zinc-600/30",
-  blog: "bg-purple-500/10 text-purple-400 ring-1 ring-purple-500/20",
-  social: "bg-emerald-500/10 text-emerald-400 ring-1 ring-emerald-500/20",
+  official: "bg-blue-50 text-blue-600 ring-1 ring-blue-200",
+  media: "bg-stone-100 text-stone-600 ring-1 ring-stone-200",
+  blog: "bg-purple-50 text-purple-600 ring-1 ring-purple-200",
+  social: "bg-emerald-50 text-emerald-600 ring-1 ring-emerald-200",
 };
 
 /** Top breaking content items — wired to Supabase */
@@ -40,11 +40,11 @@ export function ContentFeedWidget({
       <DashboardCard title="Breaking Content" badge="Feed" accent="#f97316">
         <div className="space-y-3">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="rounded-lg border border-zinc-700/30 px-3 py-2.5">
-              <div className="h-4 w-3/4 rounded bg-zinc-700/30 animate-shimmer" />
+            <div key={i} className="rounded-lg border border-stone-200 px-3 py-2.5">
+              <div className="h-4 w-3/4 rounded bg-stone-100 animate-shimmer" />
               <div className="mt-2 flex gap-2">
-                <div className="h-3 w-16 rounded bg-zinc-700/30 animate-shimmer" />
-                <div className="h-3 w-10 rounded bg-zinc-700/30 animate-shimmer" />
+                <div className="h-3 w-16 rounded bg-stone-100 animate-shimmer" />
+                <div className="h-3 w-10 rounded bg-stone-100 animate-shimmer" />
               </div>
             </div>
           ))}
@@ -62,14 +62,14 @@ export function ContentFeedWidget({
             href={item.source_url}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-start gap-3 rounded-lg border border-zinc-700/30 px-3 py-2.5 transition-colors hover:border-zinc-700 hover:bg-zinc-800/30"
+            className="flex items-start gap-3 rounded-lg border border-stone-200 px-3 py-2.5 transition-colors hover:border-stone-300 hover:bg-stone-50"
           >
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-zinc-200 leading-snug line-clamp-2">
+              <p className="text-sm font-medium text-stone-700 leading-snug line-clamp-2">
                 {item.title}
               </p>
-              <div className="mt-1 flex items-center gap-2 text-xs text-zinc-500">
-                <span className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${sourceColour[item.source_type] ?? "bg-zinc-700/40 text-zinc-400 ring-1 ring-zinc-600/30"}`}>
+              <div className="mt-1 flex items-center gap-2 text-xs text-stone-500">
+                <span className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${sourceColour[item.source_type] ?? "bg-stone-100 text-stone-400 ring-1 ring-stone-200"}`}>
                   {item.source_name}
                 </span>
                 <span>{relativeTime(item.published_at)}</span>
