@@ -1,7 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
-import dynamic from "next/dynamic";
-
-const NZMap = dynamic(() => import("@/components/nz-map"), { ssr: false });
+import NZMapLoader from "@/components/nz-map-loader";
 
 export const revalidate = 300;
 
@@ -41,7 +39,7 @@ export default async function MapPage() {
       {/* Map + legend */}
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2 rounded-xl border border-slate-800 bg-slate-900 overflow-hidden">
-          <NZMap electorates={electorateList} />
+          <NZMapLoader electorates={electorateList} />
         </div>
         <div className="space-y-4">
           {/* Legend */}
