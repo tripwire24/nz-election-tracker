@@ -144,26 +144,35 @@ function postUriToUrl(uri: string, handle: string): string {
 
 /**
  * Check if a post is relevant to NZ politics (not just generic international politics).
- * Returns true if the post contains NZ-specific signals.
+ * Requires NZ context BEYOND the search query itself — otherwise name queries
+ * like "David Seymour" pass for any international mention.
+ *
+ * @param text    Post text to check
+ * @param query   The search query that found this post (excluded from matching)
  */
-function isNZRelevant(text: string): boolean {
+function isNZRelevant(text: string, query: string): boolean {
   const lower = text.toLowerCase();
+  const queryLower = query.toLowerCase();
 
-  // Strong NZ signals — any one of these is enough
-  const strongSignals = [
+  // NZ-specific signals
+  const signals = [
     "nzpol", "nzpolitics", "new zealand", "aotearoa",
     "luxon", "hipkins", "swarbrick", "seymour", "winston peters",
     "te pāti", "te pati", "māori party", "maori party",
     "nz labour", "nz national", "nz greens", "act party nz", "nz first",
     "beehive", "parliament nz", "wellington", "auckland",
-    "christchurch", "dunedin", "hamilton", "tauranga",
+    "christchurch", "dunedin", "hamilton", "tauranga", "rotorua",
+    "palmerston north", "napier", "hastings", "queenstown",
     "electorate", "mmp", "sainte-laguë",
     "rnz", "stuff.co.nz", "newshub", "1news",
-    "ardern", "key", "clark", "bolger", "muldoon",
-    "kiwi", "kiwis",
+    "ardern", "clark", "bolger", "muldoon",
+    "kiwi", "kiwis", "#nzpol",
   ];
 
-  return strongSignals.some((signal) => lower.includes(signal));
+  // Must find at least one NZ signal that ISN'T already in the search query
+  return signals.some(
+    (signal) => lower.includes(signal) && !queryLower.includes(signal),
+  );
 }
 
 /** Simple keyword-based topic detection (shared logic with RSS) */
@@ -255,10 +264,8 @@ export async function ingestBluesky(): Promise<{ total: number; filtered: number
       const langs = p.record.langs;
       if (langs && langs.length > 0 && !langs.some((l) => l.startsWith("en"))) return false;
 
-      // For generic queries, check NZ relevance; skip for NZ-specific query terms
-      const queryIsNZSpecific = ["nzpol", "nzpolitics"].includes(query.toLowerCase())
-        || query.toLowerCase().includes("new zealand");
-      if (!queryIsNZSpecific && !isNZRelevant(p.record.text || "")) {
+      // ALL posts must pass NZ relevance — requires NZ context beyond the search query
+      if (!isNZRelevant(p.record.text || "", query)) {
         filtered++;
         return false;
       }
