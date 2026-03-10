@@ -15,6 +15,42 @@ function getSupabase() {
   );
 }
 
+/** Sainte-Laguë MMP seat allocation from party vote percentages */
+function allocateSeats(
+  results: { short_name: string; name: string; colour: string; value: number }[],
+  totalSeats: number = 120,
+) {
+  // Filter parties above 5% threshold (or with an electorate seat — simplified here as 5%)
+  const eligible = results.filter((p) => p.value >= 5);
+  if (eligible.length === 0) return [];
+
+  // Normalise vote shares to 100% among eligible parties
+  const totalVote = eligible.reduce((s, p) => s + p.value, 0);
+
+  // Sainte-Laguë: allocate seats using odd divisors (1, 3, 5, 7, ...)
+  const quotients: { party: string; q: number }[] = [];
+  for (const p of eligible) {
+    const normalisedVote = (p.value / totalVote) * 100;
+    for (let d = 1; d <= totalSeats * 2; d += 2) {
+      quotients.push({ party: p.short_name, q: normalisedVote / d });
+    }
+  }
+  quotients.sort((a, b) => b.q - a.q);
+
+  const seatCount: Record<string, number> = {};
+  for (let i = 0; i < totalSeats; i++) {
+    const p = quotients[i].party;
+    seatCount[p] = (seatCount[p] || 0) + 1;
+  }
+
+  return eligible.map((p) => ({
+    name: p.name.replace(/^New Zealand /, "").replace(/ Party.*$/, "").replace("of Aotearoa NZ", ""),
+    short: p.short_name,
+    seats: seatCount[p.short_name] || 0,
+    colour: p.colour,
+  }));
+}
+
 export default async function Home() {
   const supabase = getSupabase();
 
@@ -61,12 +97,60 @@ export default async function Home() {
     .from("content_items")
     .select("id", { count: "exact", head: true });
 
+  // Sentiment: average score per party from sentiment_scores joined with parties
+  const { data: sentimentRows } = await supabase
+    .from("sentiment_scores")
+    .select("score, party_id, parties(short_name, colour)")
+    .not("party_id", "is", null);
+
+  const sentimentByParty: Record<string, { total: number; count: number; colour: string }> = {};
+  for (const row of (sentimentRows || []) as { score: number; parties: { short_name: string; colour: string } | null }[]) {
+    if (!row.parties) continue;
+    const key = row.parties.short_name;
+    if (!sentimentByParty[key]) {
+      sentimentByParty[key] = { total: 0, count: 0, colour: row.parties.colour };
+    }
+    sentimentByParty[key].total += row.score;
+    sentimentByParty[key].count += 1;
+  }
+
+  const sentimentData = Object.entries(sentimentByParty)
+    .map(([party, s]) => ({
+      party,
+      score: Math.round((s.total / s.count) * 100) / 100,
+      volume: s.count,
+      colour: s.colour,
+    }))
+    .sort((a, b) => b.volume - a.volume)
+    .slice(0, 6);
+
+  // Seat projection from latest poll
+  const seatProjection = allocateSeats(pollResults);
+
+  // Forecast: derive coalition probabilities from latest poll
+  const rightBloc = ["NAT", "ACT", "NZF"];
+  const leftBloc = ["LAB", "GRN", "TPM"];
+  const rightSeats = seatProjection.filter((p) => rightBloc.includes(p.short)).reduce((s, p) => s + p.seats, 0);
+  const leftSeats = seatProjection.filter((p) => leftBloc.includes(p.short)).reduce((s, p) => s + p.seats, 0);
+  const totalSeats = seatProjection.reduce((s, p) => s + p.seats, 0) || 120;
+
+  // Simple probability proxy from seat share (will be replaced by Monte Carlo)
+  const rightPct = totalSeats > 0 ? Math.round((rightSeats / totalSeats) * 100) : 50;
+  const leftPct = totalSeats > 0 ? Math.round((leftSeats / totalSeats) * 100) : 43;
+  const hungPct = Math.max(0, 100 - rightPct - leftPct);
+
   return (
     <div className="space-y-6">
       {/* Top row: Forecast + Countdown */}
       <div className="grid gap-6 lg:grid-cols-4">
         <div className="lg:col-span-3">
-          <ForecastWidget />
+          <ForecastWidget
+            rightPct={rightPct}
+            leftPct={leftPct}
+            hungPct={hungPct}
+            rightSeats={rightSeats}
+            leftSeats={leftSeats}
+          />
         </div>
         <div>
           <ElectionCountdownWidget />
@@ -74,7 +158,7 @@ export default async function Home() {
       </div>
 
       {/* Middle row: Seat projection (full width) */}
-      <SeatProjectionWidget />
+      <SeatProjectionWidget seats={seatProjection} />
 
       {/* Bottom row: Poll snapshot + Sentiment + Content feed */}
       <div className="grid gap-6 lg:grid-cols-3">
@@ -82,7 +166,7 @@ export default async function Home() {
           poll={latestPoll}
           results={pollResults}
         />
-        <SentimentPulseWidget />
+        <SentimentPulseWidget data={sentimentData} />
         <ContentFeedWidget
           items={contentItems ?? []}
           totalArticles={totalArticles ?? 0}

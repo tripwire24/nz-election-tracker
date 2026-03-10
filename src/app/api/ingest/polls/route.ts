@@ -16,3 +16,16 @@ export async function POST(request: Request) {
   const count = await ingestPollingData();
   return NextResponse.json({ ok: true, pollsInserted: count });
 }
+
+/**
+ * GET /api/ingest/polls
+ * Convenience endpoint for testing in browser (dev mode only).
+ */
+export async function GET() {
+  if (process.env.NODE_ENV !== "development") {
+    return NextResponse.json({ error: "GET only available in development" }, { status: 403 });
+  }
+
+  const count = await ingestPollingData();
+  return NextResponse.json({ ok: true, pollsInserted: count });
+}

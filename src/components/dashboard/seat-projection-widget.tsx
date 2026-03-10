@@ -3,26 +3,36 @@ import { DashboardCard } from "./card";
 const TOTAL_SEATS = 120;
 const MAJORITY = 61;
 
-const PLACEHOLDER_SEATS = [
-  { name: "National", short: "NAT", seats: 47, colour: "#00529F" },
-  { name: "ACT",      short: "ACT", seats: 11, colour: "#FDE401" },
-  { name: "NZ First", short: "NZF", seats: 8,  colour: "#1a1a1a" },
-  { name: "Labour",   short: "LAB", seats: 35, colour: "#D82A20" },
-  { name: "Green",    short: "GRN", seats: 14, colour: "#098137" },
-  { name: "TPM",      short: "TPM", seats: 5,  colour: "#B2001A" },
-];
+interface SeatData {
+  name: string;
+  short: string;
+  seats: number;
+  colour: string;
+}
 
-/** Parliament seat projection bar */
-export function SeatProjectionWidget() {
-  const coalitionRight = PLACEHOLDER_SEATS
+/** Parliament seat projection bar — wired to Supabase poll data */
+export function SeatProjectionWidget({ seats }: { seats: SeatData[] }) {
+  const coalitionRight = seats
     .filter((p) => ["NAT", "ACT", "NZF"].includes(p.short))
     .reduce((sum, p) => sum + p.seats, 0);
+  const coalitionLeft = seats
+    .filter((p) => ["LAB", "GRN", "TPM"].includes(p.short))
+    .reduce((sum, p) => sum + p.seats, 0);
+  const totalAllocated = seats.reduce((s, p) => s + p.seats, 0);
+
+  if (totalAllocated === 0) {
+    return (
+      <DashboardCard title="Seat Projection" badge="Awaiting data">
+        <p className="text-sm text-slate-500">No poll data to project seats from yet.</p>
+      </DashboardCard>
+    );
+  }
 
   return (
-    <DashboardCard title="Seat Projection" badge="Indicative">
+    <DashboardCard title="Seat Projection" badge="Sainte-Laguë">
       {/* Seat bar */}
       <div className="flex h-8 overflow-hidden rounded-lg">
-        {PLACEHOLDER_SEATS.map((p) => (
+        {seats.map((p) => (
           <div
             key={p.short}
             title={`${p.name}: ${p.seats} seats`}
@@ -53,7 +63,7 @@ export function SeatProjectionWidget() {
 
       {/* Legend */}
       <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1">
-        {PLACEHOLDER_SEATS.map((p) => (
+        {seats.map((p) => (
           <div key={p.short} className="flex items-center gap-1.5 text-xs text-slate-400">
             <div className="h-2.5 w-2.5 rounded-sm" style={{ backgroundColor: p.colour }} />
             {p.short} {p.seats}
@@ -62,7 +72,7 @@ export function SeatProjectionWidget() {
       </div>
 
       <p className="mt-2 text-[10px] text-slate-600">
-        Centre-right bloc: {coalitionRight} seats · Indicative — will be model-driven
+        Right bloc: {coalitionRight} · Left bloc: {coalitionLeft} · {totalAllocated} seats allocated
       </p>
     </DashboardCard>
   );

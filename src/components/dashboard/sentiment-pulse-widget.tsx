@@ -1,25 +1,34 @@
 import { DashboardCard } from "./card";
 
-const PLACEHOLDER_SENTIMENT = [
-  { party: "NAT", score: 0.12, trend: "up",   colour: "#00529F" },
-  { party: "LAB", score: -0.08, trend: "down", colour: "#D82A20" },
-  { party: "GRN", score: 0.22, trend: "up",   colour: "#098137" },
-  { party: "ACT", score: -0.15, trend: "down", colour: "#FDE401" },
-  { party: "NZF", score: 0.03, trend: "flat", colour: "#555555" },
-  { party: "TPM", score: 0.18, trend: "up",   colour: "#B2001A" },
-];
+interface SentimentData {
+  party: string;
+  score: number;
+  volume: number;
+  colour: string;
+}
 
-const trendArrow = (t: string) =>
-  t === "up" ? "↑" : t === "down" ? "↓" : "→";
-const trendColour = (t: string) =>
-  t === "up" ? "text-green-400" : t === "down" ? "text-red-400" : "text-slate-500";
+const trendColour = (score: number) =>
+  score > 0.05 ? "text-green-400" : score < -0.05 ? "text-red-400" : "text-slate-500";
 
-/** 7-day sentiment pulse per party */
-export function SentimentPulseWidget() {
+const trendArrow = (score: number) =>
+  score > 0.05 ? "↑" : score < -0.05 ? "↓" : "→";
+
+/** 7-day sentiment pulse per party — wired to Supabase */
+export function SentimentPulseWidget({ data }: { data: SentimentData[] }) {
+  if (data.length === 0) {
+    return (
+      <DashboardCard title="Sentiment Pulse" badge="Awaiting data">
+        <p className="text-sm text-slate-500">
+          No sentiment scores yet. Run ingestion + scoring to populate.
+        </p>
+      </DashboardCard>
+    );
+  }
+
   return (
-    <DashboardCard title="Sentiment Pulse" badge="Awaiting data">
+    <DashboardCard title="Sentiment Pulse" badge={`${data.reduce((s, d) => s + d.volume, 0)} scores`}>
       <div className="grid grid-cols-3 gap-3">
-        {PLACEHOLDER_SENTIMENT.map((p) => (
+        {data.map((p) => (
           <div
             key={p.party}
             className="flex items-center gap-2 rounded-lg border border-slate-800 px-3 py-2"
@@ -30,14 +39,14 @@ export function SentimentPulseWidget() {
               {p.score > 0 ? "+" : ""}
               {p.score.toFixed(2)}
             </span>
-            <span className={`text-sm ${trendColour(p.trend)}`}>
-              {trendArrow(p.trend)}
+            <span className={`text-sm ${trendColour(p.score)}`}>
+              {trendArrow(p.score)}
             </span>
           </div>
         ))}
       </div>
       <p className="mt-3 text-xs text-slate-600">
-        Awaiting sentiment engine — will process articles via Claude API.
+        Average sentiment score per party from VADER + Claude analysis.
       </p>
     </DashboardCard>
   );
