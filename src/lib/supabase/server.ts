@@ -1,3 +1,4 @@
+import { createClient as createBareClient } from "@supabase/supabase-js";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
@@ -28,8 +29,7 @@ export async function createClient() {
 
 /** Admin client — bypasses RLS. Server-side only (ingestion, webhooks). */
 export function createAdminClient() {
-  const { createClient } = require("@supabase/supabase-js");
-  return createClient(
+  return createBareClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
   );
