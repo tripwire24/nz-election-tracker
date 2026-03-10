@@ -1,0 +1,35 @@
+name: Scheduled Data Ingestion
+
+on:
+  schedule:
+    # Run every 6 hours: midnight, 6am, noon, 6pm (UTC)
+    # NZ is UTC+12/+13, so this gives roughly 12pm, 6pm, midnight, 6am NZST
+    - cron: "0 */6 * * *"
+  workflow_dispatch: # Allow manual trigger from GitHub Actions UI
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Trigger ingestion pipeline
+        run: |
+          echo "Triggering ingestion at $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+
+          RESPONSE=$(curl -s -w "\n%{http_code}" \
+            --max-time 120 \
+            "${{ secrets.VERCEL_DEPLOY_URL }}/api/ingest/all")
+
+          HTTP_CODE=$(echo "$RESPONSE" | tail -1)
+          BODY=$(echo "$RESPONSE" | sed '$d')
+
+          echo "HTTP Status: $HTTP_CODE"
+          echo "Response: $BODY"
+
+          if [ "$HTTP_CODE" -ge 200 ] && [ "$HTTP_CODE" -lt 300 ]; then
+            echo "Ingestion triggered successfully"
+          else
+            echo "Ingestion failed with HTTP $HTTP_CODE"
+            exit 1
+          fi
