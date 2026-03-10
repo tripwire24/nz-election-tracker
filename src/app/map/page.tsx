@@ -1,5 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
-import NZMap from "@/components/nz-map";
+import dynamic from "next/dynamic";
+
+const NZMap = dynamic(() => import("@/components/nz-map"), { ssr: false });
 
 export const revalidate = 300;
 
@@ -15,10 +17,15 @@ export default async function MapPage() {
 
   const { data: electorates } = await supabase
     .from("electorates")
-    .select("id, name, type, region")
+    .select("id, name, electorate_type, region")
     .order("name");
 
-  const electorateList = (electorates ?? []) as { id: string; name: string; type: string; region: string | null }[];
+  const electorateList = (electorates ?? []).map((e: { id: string; name: string; electorate_type: string; region: string | null }) => ({
+    id: e.id,
+    name: e.name,
+    type: e.electorate_type,
+    region: e.region,
+  }));
   const generalCount = electorateList.filter((e) => e.type === "general").length;
   const maoriCount = electorateList.filter((e) => e.type === "maori").length;
 
@@ -33,7 +40,7 @@ export default async function MapPage() {
 
       {/* Map + legend */}
       <div className="grid gap-6 lg:grid-cols-3">
-        <div className="lg:col-span-2 rounded-xl border border-slate-800 bg-slate-900 overflow-hidden p-4">
+        <div className="lg:col-span-2 rounded-xl border border-slate-800 bg-slate-900 overflow-hidden">
           <NZMap electorates={electorateList} />
         </div>
         <div className="space-y-4">
