@@ -63,17 +63,17 @@ export default async function SentimentPage() {
 
       {/* Status overview */}
       <div className="grid gap-4 md:grid-cols-3">
-        <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-5">
+        <div className="rounded-xl border border-zinc-700/40 bg-zinc-700/30 p-5">
           <div className="text-xs font-semibold uppercase tracking-wider text-zinc-500">Articles ingested</div>
           <div className="mt-2 text-3xl font-bold text-white">{articles}</div>
           <div className="mt-1 text-xs text-zinc-500">from RSS + Bluesky</div>
         </div>
-        <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-5">
+        <div className="rounded-xl border border-zinc-700/40 bg-zinc-700/30 p-5">
           <div className="text-xs font-semibold uppercase tracking-wider text-zinc-500">Items scored</div>
           <div className="mt-2 text-3xl font-bold text-white">{scored}</div>
           <div className="mt-1 text-xs text-zinc-500">{articles ? `${Math.round((scored / articles) * 100)}% coverage` : "awaiting scoring"}</div>
         </div>
-        <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-5">
+        <div className="rounded-xl border border-zinc-700/40 bg-zinc-700/30 p-5">
           <div className="text-xs font-semibold uppercase tracking-wider text-zinc-500">Model</div>
           <div className="mt-2 text-lg font-bold text-white">AFINN-165 + Claude</div>
           <div className="mt-1 text-xs text-zinc-500">
@@ -84,8 +84,30 @@ export default async function SentimentPage() {
         </div>
       </div>
 
+      {/* How to read sentiment scores */}
+      <div className="rounded-xl border border-zinc-700/40 bg-zinc-800/40 p-5">
+        <h2 className="text-sm font-semibold text-zinc-200 mb-3">How to read sentiment scores</h2>
+        <p className="text-xs text-zinc-400 leading-relaxed mb-4">
+          Each article or social post mentioning a party is scored on a scale from <strong className="text-red-400">−1</strong> (very negative) to <strong className="text-emerald-400">+1</strong> (very positive). Zero means neutral. We average all scores per party over a rolling 7-day window.
+        </p>
+        <div className="flex flex-wrap gap-3">
+          <div className="flex items-center gap-2 rounded-lg bg-red-500/10 px-3 py-1.5 ring-1 ring-red-500/20">
+            <span className="text-red-400 font-bold text-sm">−1.0 → −0.05</span>
+            <span className="text-xs text-zinc-400">Negative coverage</span>
+          </div>
+          <div className="flex items-center gap-2 rounded-lg bg-zinc-800/60 px-3 py-1.5 ring-1 ring-zinc-700/30">
+            <span className="text-zinc-400 font-bold text-sm">−0.05 → +0.05</span>
+            <span className="text-xs text-zinc-400">Neutral</span>
+          </div>
+          <div className="flex items-center gap-2 rounded-lg bg-emerald-500/10 px-3 py-1.5 ring-1 ring-emerald-500/20">
+            <span className="text-emerald-400 font-bold text-sm">+0.05 → +1.0</span>
+            <span className="text-xs text-zinc-400">Positive coverage</span>
+          </div>
+        </div>
+      </div>
+
       {/* Party sentiment grid */}
-      <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-6">
+      <div className="rounded-xl border border-zinc-700/40 bg-zinc-700/30 p-6">
         <h2 className="text-xs font-semibold uppercase tracking-wider text-zinc-500 mb-4">
           Sentiment by party (7-day rolling average)
         </h2>
@@ -96,7 +118,7 @@ export default async function SentimentPage() {
             return (
               <div
                 key={party.short_name}
-                className="flex items-center gap-3 rounded-lg border border-zinc-800 p-3"
+                className="flex items-center gap-3 rounded-lg border border-zinc-700/40 p-3"
               >
                 <div
                   className="h-8 w-8 rounded-lg flex items-center justify-center text-[10px] font-bold text-white"
@@ -120,7 +142,7 @@ export default async function SentimentPage() {
       </div>
 
       {/* Scoring pipeline */}
-      <div className="rounded-xl border border-dashed border-zinc-700 bg-zinc-900/50 p-6">
+      <div className="rounded-xl border border-dashed border-zinc-600/30 bg-zinc-800/30 p-6">
         <h2 className="text-sm font-semibold text-zinc-300 mb-3">Sentiment scoring pipeline</h2>
         <div className="grid gap-4 md:grid-cols-4">
           <div className="text-center">

@@ -14,7 +14,7 @@ const trendArrow = (score: number) =>
   score > 0.05 ? "↑" : score < -0.05 ? "↓" : "→";
 
 const bgTrend = (score: number) =>
-  score > 0.05 ? "bg-emerald-500/10 ring-emerald-500/20" : score < -0.05 ? "bg-red-500/10 ring-red-500/20" : "bg-zinc-800/50 ring-zinc-700/30";
+  score > 0.05 ? "bg-emerald-500/10 ring-emerald-500/20" : score < -0.05 ? "bg-red-500/10 ring-red-500/20" : "bg-zinc-700/30 ring-zinc-700/30";
 
 /** 7-day sentiment pulse per party — wired to Supabase */
 export function SentimentPulseWidget({ data }: { data: SentimentData[] }) {
@@ -23,7 +23,7 @@ export function SentimentPulseWidget({ data }: { data: SentimentData[] }) {
       <DashboardCard title="Sentiment Pulse" badge="Awaiting data" accent="linear-gradient(90deg, #10b981, #06b6d4)">
         <div className="grid grid-cols-3 gap-3">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="h-14 rounded-lg bg-zinc-800/50 animate-shimmer" />
+            <div key={i} className="h-14 rounded-lg bg-zinc-700/30 animate-shimmer" />
           ))}
         </div>
       </DashboardCard>
@@ -32,28 +32,34 @@ export function SentimentPulseWidget({ data }: { data: SentimentData[] }) {
 
   return (
     <DashboardCard title="Sentiment Pulse" badge={`${data.reduce((s, d) => s + d.volume, 0)} scores`} accent="linear-gradient(90deg, #10b981, #06b6d4)">
-      <div className="grid grid-cols-3 gap-2.5">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-2.5">
         {data.map((p) => (
           <div
             key={p.party}
-            className={`flex items-center gap-2 rounded-lg px-3 py-2.5 ring-1 transition-colors ${bgTrend(p.score)}`}
+            className={`flex flex-col gap-1 rounded-lg px-3 py-2.5 ring-1 transition-colors ${bgTrend(p.score)}`}
           >
-            <div className="h-3 w-3 rounded-sm shadow-sm" style={{ backgroundColor: p.colour }} />
-            <div className="flex-1 min-w-0">
-              <span className="text-xs font-semibold text-zinc-200">{p.party}</span>
+            <div className="flex items-center gap-2">
+              <div className="h-3 w-3 rounded-sm shrink-0 shadow-sm" style={{ backgroundColor: p.colour }} />
+              <span className="text-sm font-semibold text-zinc-200 truncate">{p.party}</span>
             </div>
-            <span className="text-sm font-bold tabular-nums text-zinc-100">
-              {p.score > 0 ? "+" : ""}
-              {p.score.toFixed(2)}
-            </span>
-            <span className={`text-sm font-bold ${trendColour(p.score)}`}>
-              {trendArrow(p.score)}
-            </span>
+            <div className="flex items-baseline justify-between">
+              <span className="text-lg font-bold tabular-nums text-zinc-100">
+                {p.score > 0 ? "+" : ""}{p.score.toFixed(2)}
+              </span>
+              <span className={`text-base font-bold ${trendColour(p.score)}`}>
+                {trendArrow(p.score)}
+              </span>
+            </div>
           </div>
         ))}
       </div>
-      <p className="mt-3 text-xs text-zinc-600">
-        Average sentiment from AFINN-165 + Claude Haiku analysis.
+      <div className="mt-3 flex items-center gap-4 text-[11px] text-zinc-500">
+        <span className="flex items-center gap-1"><span className="text-emerald-400">↑</span> Positive (&gt;0.05)</span>
+        <span className="flex items-center gap-1"><span className="text-zinc-500">→</span> Neutral</span>
+        <span className="flex items-center gap-1"><span className="text-red-400">↓</span> Negative (&lt;−0.05)</span>
+      </div>
+      <p className="mt-1.5 text-[11px] text-zinc-600">
+        Scale: −1 (very negative) to +1 (very positive). Scored via AFINN-165 + Claude Haiku.
       </p>
     </DashboardCard>
   );

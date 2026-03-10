@@ -26,12 +26,12 @@ export function PollSnapshotWidget({
     return (
       <DashboardCard title="Latest Poll" badge="Awaiting data" accent="#a855f7">
         <div className="space-y-3">
-          <div className="h-4 w-1/3 rounded bg-zinc-800/50 animate-shimmer" />
+          <div className="h-4 w-1/3 rounded bg-zinc-700/30 animate-shimmer" />
           {[1, 2, 3, 4].map((i) => (
             <div key={i} className="flex items-center gap-3">
-              <div className="w-12 h-3 rounded bg-zinc-800/50 animate-shimmer" />
-              <div className="flex-1 h-5 rounded bg-zinc-800/50 animate-shimmer" />
-              <div className="w-10 h-3 rounded bg-zinc-800/50 animate-shimmer" />
+              <div className="w-12 h-3 rounded bg-zinc-700/30 animate-shimmer" />
+              <div className="flex-1 h-5 rounded bg-zinc-700/30 animate-shimmer" />
+              <div className="w-10 h-3 rounded bg-zinc-700/30 animate-shimmer" />
             </div>
           ))}
         </div>
@@ -39,7 +39,7 @@ export function PollSnapshotWidget({
           <p className="text-xs text-zinc-600">Expected pollsters:</p>
           <div className="flex flex-wrap gap-2 text-xs text-zinc-500">
             {["Curia", "Reid Research", "Verian", "Talbot Mills", "Taxpayers Union"].map((p) => (
-              <span key={p} className="rounded-full bg-zinc-800/80 px-2.5 py-0.5 ring-1 ring-zinc-700/50">{p}</span>
+              <span key={p} className="rounded-full bg-zinc-700/40 px-2.5 py-0.5 ring-1 ring-zinc-600/30">{p}</span>
             ))}
           </div>
         </div>
@@ -67,7 +67,7 @@ export function PollSnapshotWidget({
               {p.short_name}
             </span>
             <div className="flex-1">
-              <div className="h-5 rounded-md bg-zinc-800/80 overflow-hidden">
+              <div className="h-5 rounded-md bg-zinc-700/40 overflow-hidden">
                 <div
                   className="h-full rounded-md animate-bar-fill"
                   style={{ width: `${p.value}%`, backgroundColor: p.colour }}

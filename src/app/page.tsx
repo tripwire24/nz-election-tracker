@@ -142,9 +142,9 @@ export default async function Home() {
   return (
     <div className="space-y-6">
       {/* Hero banner */}
-      <div className="relative overflow-hidden rounded-2xl border border-zinc-800/60 bg-gradient-to-br from-zinc-900 via-zinc-900 to-zinc-800/80 p-6 md:p-8">
-        <div className="absolute -top-24 -right-24 h-64 w-64 rounded-full bg-blue-500/5 blur-3xl" />
-        <div className="absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-indigo-500/5 blur-3xl" />
+      <div className="relative overflow-hidden rounded-2xl border border-zinc-700/30 bg-gradient-to-br from-zinc-800/60 via-zinc-800/40 to-zinc-700/20 backdrop-blur-sm p-6 md:p-8">
+        <div className="absolute -top-24 -right-24 h-64 w-64 rounded-full bg-blue-500/10 blur-3xl" />
+        <div className="absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-indigo-500/10 blur-3xl" />
         <div className="relative">
           <p className="text-xs font-semibold uppercase tracking-widest text-blue-400">NZ Election Tracker</p>
           <h1 className="mt-2 text-2xl font-bold text-white md:text-3xl">

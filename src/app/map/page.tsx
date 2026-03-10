@@ -38,12 +38,12 @@ export default async function MapPage() {
 
       {/* Map + legend */}
       <div className="grid gap-6 lg:grid-cols-3">
-        <div className="lg:col-span-2 rounded-xl border border-zinc-800 bg-zinc-900 overflow-hidden">
+        <div className="lg:col-span-2 rounded-xl border border-zinc-700/40 bg-zinc-700/30 overflow-hidden">
           <NZMapLoader electorates={electorateList} />
         </div>
         <div className="space-y-4">
           {/* Legend */}
-          <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-4">
+          <div className="rounded-xl border border-zinc-700/40 bg-zinc-700/30 p-4">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-500 mb-3">Legend</h3>
             <div className="space-y-2">
               <div className="flex items-center gap-2">
@@ -58,7 +58,7 @@ export default async function MapPage() {
           </div>
 
           {/* Stats */}
-          <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-4">
+          <div className="rounded-xl border border-zinc-700/40 bg-zinc-700/30 p-4">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-500 mb-3">Seats</h3>
             <div className="space-y-3">
               <div>
@@ -69,7 +69,7 @@ export default async function MapPage() {
                 <div className="text-2xl font-bold text-white">{maoriCount || 7}</div>
                 <div className="text-xs text-zinc-500">Māori electorates</div>
               </div>
-              <div className="border-t border-zinc-800 pt-3">
+              <div className="border-t border-zinc-700/40 pt-3">
                 <div className="text-2xl font-bold text-white">120</div>
                 <div className="text-xs text-zinc-500">Total seats (72 electorate + ~48 list)</div>
               </div>
@@ -78,7 +78,7 @@ export default async function MapPage() {
 
           {/* Electorate list */}
           {electorateList.length > 0 && (
-            <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-4 max-h-64 overflow-y-auto">
+            <div className="rounded-xl border border-zinc-700/40 bg-zinc-700/30 p-4 max-h-64 overflow-y-auto">
               <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-500 mb-3">Electorates ({electorateList.length})</h3>
               <div className="space-y-1">
                 {electorateList.map((e) => (
@@ -95,7 +95,7 @@ export default async function MapPage() {
       </div>
 
       {/* Roadmap */}
-      <div className="rounded-xl border border-dashed border-zinc-700 bg-zinc-900/50 p-6">
+      <div className="rounded-xl border border-dashed border-zinc-600/30 bg-zinc-800/30 p-6">
         <h2 className="text-sm font-semibold text-zinc-300 mb-3">Map enhancements coming:</h2>
         <ul className="space-y-2 text-sm text-zinc-400">
           <li className="flex items-start gap-2">

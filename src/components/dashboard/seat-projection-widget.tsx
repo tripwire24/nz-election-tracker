@@ -24,8 +24,8 @@ export function SeatProjectionWidget({ seats }: { seats: SeatData[] }) {
     return (
       <DashboardCard title="Seat Projection" badge="Awaiting data" accent="#6366f1">
         <div className="space-y-3">
-          <div className="h-10 rounded-lg bg-zinc-800/50 animate-shimmer" />
-          <div className="h-3 w-1/2 rounded bg-zinc-800/50 animate-shimmer" />
+          <div className="h-10 rounded-lg bg-zinc-700/30 animate-shimmer" />
+          <div className="h-3 w-1/2 rounded bg-zinc-700/30 animate-shimmer" />
         </div>
       </DashboardCard>
     );

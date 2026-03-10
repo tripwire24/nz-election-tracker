@@ -75,7 +75,7 @@ export default async function FeedPage() {
           .map(([name, count]) => (
             <span
               key={name}
-              className="rounded-full border border-zinc-700 bg-zinc-800/50 px-3 py-1 text-xs text-zinc-300"
+              className="rounded-full border border-zinc-600/30 bg-zinc-700/30 px-3 py-1 text-xs text-zinc-300"
             >
               {name} <span className="text-zinc-500">({count})</span>
             </span>
@@ -84,7 +84,7 @@ export default async function FeedPage() {
 
       {/* Feed list */}
       {feedItems.length === 0 ? (
-        <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-8 text-center">
+        <div className="rounded-xl border border-zinc-700/40 bg-zinc-700/30 p-8 text-center">
           <p className="text-sm text-zinc-500">No articles ingested yet. Run the RSS ingestion endpoint to populate.</p>
         </div>
       ) : (
@@ -95,7 +95,7 @@ export default async function FeedPage() {
               href={item.source_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="block rounded-xl border border-zinc-800 bg-zinc-900 p-4 transition-colors hover:border-zinc-700 hover:bg-zinc-800/50"
+              className="block rounded-xl border border-zinc-700/40 bg-zinc-700/30 p-4 transition-colors hover:border-zinc-600/30 hover:bg-zinc-700/30"
             >
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1 min-w-0">

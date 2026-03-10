@@ -15,8 +15,8 @@ export function ElectionCountdownWidget() {
         <span className="text-6xl font-black tabular-nums text-white leading-none">{daysUntil}</span>
         <span className="mt-1 text-sm font-medium text-zinc-400">days to go</span>
         <div className="mt-3 flex gap-3 text-xs text-zinc-500">
-          <span className="rounded-full bg-zinc-800/80 px-2.5 py-1 ring-1 ring-zinc-700/50">{weeksUntil} weeks</span>
-          <span className="rounded-full bg-zinc-800/80 px-2.5 py-1 ring-1 ring-zinc-700/50">{months} months</span>
+          <span className="rounded-full bg-zinc-700/40 px-2.5 py-1 ring-1 ring-zinc-600/30">{weeksUntil} weeks</span>
+          <span className="rounded-full bg-zinc-700/40 px-2.5 py-1 ring-1 ring-zinc-600/30">{months} months</span>
         </div>
       </div>
     </DashboardCard>

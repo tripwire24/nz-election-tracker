@@ -63,7 +63,7 @@ export default async function PollsPage() {
       </div>
 
       {pollList.length === 0 ? (
-        <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-8">
+        <div className="rounded-xl border border-zinc-700/40 bg-zinc-700/30 p-8">
           <h2 className="text-lg font-semibold text-white">Awaiting polling data</h2>
           <p className="mt-2 text-sm text-zinc-400">
             No polls have been ingested yet. The Wikipedia polling scraper will populate this page
@@ -75,7 +75,7 @@ export default async function PollsPage() {
             </h3>
             <div className="flex flex-wrap gap-2">
               {["Curia / Taxpayers Union", "Reid Research / Newshub", "Verian (Colmar Brunton)", "Talbot Mills / 1News", "Roy Morgan", "Horizon Research"].map((p) => (
-                <span key={p} className="rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-1.5 text-sm text-zinc-300">
+                <span key={p} className="rounded-lg border border-zinc-600/30 bg-zinc-800 px-3 py-1.5 text-sm text-zinc-300">
                   {p}
                 </span>
               ))}
@@ -89,7 +89,7 @@ export default async function PollsPage() {
               {partyList.filter(p => p.short_name !== "OTH").map((p) => (
                 <span
                   key={p.short_name}
-                  className="flex items-center gap-1.5 rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-1.5 text-sm text-zinc-300"
+                  className="flex items-center gap-1.5 rounded-lg border border-zinc-600/30 bg-zinc-800 px-3 py-1.5 text-sm text-zinc-300"
                 >
                   <span
                     className="h-2.5 w-2.5 rounded-sm"
@@ -111,7 +111,7 @@ export default async function PollsPage() {
             return (
               <div
                 key={poll.id}
-                className="rounded-xl border border-zinc-800 bg-zinc-900 p-5"
+                className="rounded-xl border border-zinc-700/40 bg-zinc-700/30 p-5"
               >
                 <div className="mb-4 flex items-baseline justify-between">
                   <div>
@@ -144,7 +144,7 @@ export default async function PollsPage() {
                         {r.parties!.short_name}
                       </span>
                       <div className="flex-1">
-                        <div className="h-4 rounded bg-zinc-800">
+                        <div className="h-4 rounded bg-zinc-700/40">
                           <div
                             className="h-4 rounded transition-all"
                             style={{

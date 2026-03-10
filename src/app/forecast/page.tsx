@@ -95,7 +95,7 @@ export default async function ForecastPage() {
       </div>
 
       {/* Coalition probabilities */}
-      <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-6">
+      <div className="rounded-xl border border-zinc-700/40 bg-zinc-700/30 p-6">
         <h2 className="text-xs font-semibold uppercase tracking-wider text-zinc-500 mb-4">
           Coalition seat projection
         </h2>
@@ -134,7 +134,7 @@ export default async function ForecastPage() {
 
       {/* Party seat breakdown */}
       {seatProjection.length > 0 && (
-        <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-6">
+        <div className="rounded-xl border border-zinc-700/40 bg-zinc-700/30 p-6">
           <h2 className="text-xs font-semibold uppercase tracking-wider text-zinc-500 mb-4">
             Party seat allocation (Sainte-Laguë)
           </h2>
@@ -147,7 +147,7 @@ export default async function ForecastPage() {
                     <span className="text-sm text-zinc-300">{p.name}</span>
                     <span className="text-sm font-semibold text-zinc-200">{p.seats} seats</span>
                   </div>
-                  <div className="h-3 w-full rounded bg-zinc-800">
+                  <div className="h-3 w-full rounded bg-zinc-700/40">
                     <div
                       className="h-3 rounded transition-all"
                       style={{ width: `${(p.seats / 120) * 100}%`, backgroundColor: p.colour }}
@@ -162,12 +162,12 @@ export default async function ForecastPage() {
       )}
 
       {/* Model methodology */}
-      <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-6">
+      <div className="rounded-xl border border-zinc-700/40 bg-zinc-700/30 p-6">
         <h2 className="text-xs font-semibold uppercase tracking-wider text-zinc-500 mb-4">
           Model methodology
         </h2>
         <div className="grid gap-4 md:grid-cols-3">
-          <div className="rounded-lg border border-zinc-800 p-4">
+          <div className="rounded-lg border border-zinc-700/40 p-4">
             <div className="flex items-center gap-2 mb-2">
               <div className={`h-8 w-8 rounded-lg flex items-center justify-center text-sm font-bold ${hasPollData ? "bg-green-600/20 text-green-400" : "bg-blue-600/20 text-blue-400"}`}>{hasPollData ? "✓" : "1"}</div>
               <h3 className="text-sm font-medium text-zinc-200">Polling average</h3>
@@ -178,7 +178,7 @@ export default async function ForecastPage() {
                 : "Weighted average of recent polls with recency decay and house-effect adjustment per pollster."}
             </p>
           </div>
-          <div className="rounded-lg border border-zinc-800 p-4">
+          <div className="rounded-lg border border-zinc-700/40 p-4">
             <div className="flex items-center gap-2 mb-2">
               <div className="h-8 w-8 rounded-lg bg-zinc-700/50 flex items-center justify-center text-zinc-400 text-sm font-bold">2</div>
               <h3 className="text-sm font-medium text-zinc-200">Sentiment index</h3>
@@ -187,7 +187,7 @@ export default async function ForecastPage() {
               AI-scored media + social sentiment per party, contributing a ±2pp adjustment to polling estimates. Not yet integrated into forecast.
             </p>
           </div>
-          <div className="rounded-lg border border-zinc-800 p-4">
+          <div className="rounded-lg border border-zinc-700/40 p-4">
             <div className="flex items-center gap-2 mb-2">
               <div className="h-8 w-8 rounded-lg bg-zinc-700/50 flex items-center justify-center text-zinc-400 text-sm font-bold">3</div>
               <h3 className="text-sm font-medium text-zinc-200">Monte Carlo</h3>
@@ -200,7 +200,7 @@ export default async function ForecastPage() {
       </div>
 
       {/* Roadmap */}
-      <div className="rounded-xl border border-dashed border-zinc-700 bg-zinc-900/50 p-6">
+      <div className="rounded-xl border border-dashed border-zinc-600/30 bg-zinc-800/30 p-6">
         <h2 className="text-sm font-semibold text-zinc-300 mb-3">Coming next:</h2>
         <ul className="space-y-2 text-sm text-zinc-400">
           <li className="flex items-start gap-2">
