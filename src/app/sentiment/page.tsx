@@ -41,7 +41,7 @@ export default async function SentimentPage() {
     partyScores[key].count += 1;
   }
 
-  const partyList = parties ?? [];
+  const partyList = (parties ?? []) as { short_name: string; name: string; colour: string }[];
   const scored = scoredCount ?? 0;
   const articles = articleCount ?? 0;
 

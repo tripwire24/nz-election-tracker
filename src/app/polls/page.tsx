@@ -51,7 +51,7 @@ export default async function PollsPage() {
     .select("short_name, name, colour")
     .order("sort_order");
 
-  const partyList = parties ?? [];
+  const partyList = (parties ?? []) as { short_name: string; name: string; colour: string }[];
   const pollList = (polls as unknown as PollRow[]) ?? [];
 
   return (
