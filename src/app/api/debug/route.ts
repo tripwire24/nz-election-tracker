@@ -24,30 +24,56 @@ export async function GET() {
     NODE_ENV: process.env.NODE_ENV,
   };
 
-  // 2. Test Supabase connection with service role key
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  // 2. Test Supabase connection — try raw fetch first, then JS client
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim();
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim();
 
-  if (!supabaseUrl || !serviceKey) {
-    checks.supabase = { error: "Missing SUPABASE_URL or SERVICE_ROLE_KEY" };
-  } else {
+  // Show the actual URL being used (safe — it's public anyway)
+  checks.supabase_url = supabaseUrl;
+  checks.anon_key_length = anonKey?.length;
+  checks.service_key_length = serviceKey?.length;
+
+  // 2a. Raw fetch to Supabase REST API (bypasses JS client to isolate the issue)
+  try {
+    const rawRes = await fetch(`${supabaseUrl}/rest/v1/parties?select=id,short_name&limit=3`, {
+      headers: {
+        "apikey": anonKey!,
+        "Authorization": `Bearer ${anonKey}`,
+      },
+      signal: AbortSignal.timeout(10000),
+    });
+    const rawText = await rawRes.text();
+    checks.raw_fetch = {
+      status: rawRes.status,
+      ok: rawRes.ok,
+      body: rawText.slice(0, 500),
+    };
+  } catch (err: any) {
+    checks.raw_fetch = {
+      error: String(err),
+      cause: err?.cause ? String(err.cause) : undefined,
+    };
+  }
+
+  // 2b. JS client test (with service role key)
+  if (supabaseUrl && serviceKey) {
     const supabase = createClient(supabaseUrl, serviceKey);
-
-    // Check each table exists and get row count
-    const tables = [
-      "parties", "electorates", "candidates", "polls", "poll_results",
-      "content_items", "sentiment_scores", "forecast_snapshots",
-      "election_results", "economic_indicators",
-    ];
-
-    const tableCounts: Record<string, number | string> = {};
-    for (const table of tables) {
-      const { count, error } = await supabase
-        .from(table)
-        .select("*", { count: "exact", head: true });
-      tableCounts[table] = error ? `ERROR: ${error.message}` : (count ?? 0);
+    try {
+      const { data, error } = await supabase
+        .from("parties")
+        .select("id, short_name")
+        .limit(3);
+      checks.js_client = {
+        data: data,
+        error: error ? { message: error.message, code: error.code, details: error.details } : null,
+      };
+    } catch (err: any) {
+      checks.js_client = {
+        error: String(err),
+        cause: err?.cause ? String(err.cause) : undefined,
+      };
     }
-    checks.tables = tableCounts;
   }
 
   // 3. Test RSS feed reachability (just one to check)
