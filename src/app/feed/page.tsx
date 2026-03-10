@@ -10,7 +10,7 @@ function getSupabase() {
 
 const sourceColour: Record<string, string> = {
   official: "bg-blue-900 text-blue-300",
-  media: "bg-slate-700 text-slate-200",
+  media: "bg-zinc-700 text-zinc-200",
   blog: "bg-purple-900 text-purple-300",
   social: "bg-green-900 text-green-300",
 };
@@ -63,7 +63,7 @@ export default async function FeedPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-white">Content Feed</h1>
-        <p className="mt-1 text-sm text-slate-400">
+        <p className="mt-1 text-sm text-zinc-400">
           {totalCount} articles from NZ political sources — aggregated from RSS feeds across media, government, and blogs.
         </p>
       </div>
@@ -75,17 +75,17 @@ export default async function FeedPage() {
           .map(([name, count]) => (
             <span
               key={name}
-              className="rounded-full border border-slate-700 bg-slate-800/50 px-3 py-1 text-xs text-slate-300"
+              className="rounded-full border border-zinc-700 bg-zinc-800/50 px-3 py-1 text-xs text-zinc-300"
             >
-              {name} <span className="text-slate-500">({count})</span>
+              {name} <span className="text-zinc-500">({count})</span>
             </span>
           ))}
       </div>
 
       {/* Feed list */}
       {feedItems.length === 0 ? (
-        <div className="rounded-xl border border-slate-800 bg-slate-900 p-8 text-center">
-          <p className="text-sm text-slate-500">No articles ingested yet. Run the RSS ingestion endpoint to populate.</p>
+        <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-8 text-center">
+          <p className="text-sm text-zinc-500">No articles ingested yet. Run the RSS ingestion endpoint to populate.</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -95,22 +95,22 @@ export default async function FeedPage() {
               href={item.source_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="block rounded-xl border border-slate-800 bg-slate-900 p-4 transition-colors hover:border-slate-700 hover:bg-slate-800/50"
+              className="block rounded-xl border border-zinc-800 bg-zinc-900 p-4 transition-colors hover:border-zinc-700 hover:bg-zinc-800/50"
             >
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1 min-w-0">
-                  <h3 className="text-sm font-medium text-slate-200 leading-snug line-clamp-2">
+                  <h3 className="text-sm font-medium text-zinc-200 leading-snug line-clamp-2">
                     {item.title}
                   </h3>
                   {item.excerpt && (
-                    <p className="mt-1.5 text-xs text-slate-500 line-clamp-2">
+                    <p className="mt-1.5 text-xs text-zinc-500 line-clamp-2">
                       {item.excerpt}
                     </p>
                   )}
-                  <div className="mt-2 flex items-center gap-2 text-xs text-slate-500">
+                  <div className="mt-2 flex items-center gap-2 text-xs text-zinc-500">
                     <span
                       className={`rounded px-1.5 py-0.5 text-[10px] font-medium ${
-                        sourceColour[item.source_type] ?? "bg-slate-800 text-slate-400"
+                        sourceColour[item.source_type] ?? "bg-zinc-800 text-zinc-400"
                       }`}
                     >
                       {item.source_name}
@@ -125,7 +125,7 @@ export default async function FeedPage() {
                   {item.topics.map((topic) => (
                     <span
                       key={topic}
-                      className="rounded bg-slate-800 px-2 py-0.5 text-[10px] text-slate-400"
+                      className="rounded bg-zinc-800 px-2 py-0.5 text-[10px] text-zinc-400"
                     >
                       {topic.replace(/_/g, " ")}
                     </span>
@@ -138,7 +138,7 @@ export default async function FeedPage() {
       )}
 
       {totalCount > 50 && (
-        <p className="text-center text-xs text-slate-600">
+        <p className="text-center text-xs text-zinc-600">
           Showing 50 of {totalCount} articles
         </p>
       )}

@@ -31,61 +31,61 @@ export default async function MapPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-white">Electorate Map</h1>
-        <p className="mt-1 text-sm text-slate-400">
+        <p className="mt-1 text-sm text-zinc-400">
           NZ&apos;s {electorateList.length || 72} electorates — {generalCount || 65} general + {maoriCount || 7} Māori — with party lean and demographic overlays.
         </p>
       </div>
 
       {/* Map + legend */}
       <div className="grid gap-6 lg:grid-cols-3">
-        <div className="lg:col-span-2 rounded-xl border border-slate-800 bg-slate-900 overflow-hidden">
+        <div className="lg:col-span-2 rounded-xl border border-zinc-800 bg-zinc-900 overflow-hidden">
           <NZMapLoader electorates={electorateList} />
         </div>
         <div className="space-y-4">
           {/* Legend */}
-          <div className="rounded-xl border border-slate-800 bg-slate-900 p-4">
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-3">Legend</h3>
+          <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-4">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-500 mb-3">Legend</h3>
             <div className="space-y-2">
               <div className="flex items-center gap-2">
                 <span className="h-3 w-3 rounded-full bg-blue-500" />
-                <span className="text-sm text-slate-300">General electorate</span>
+                <span className="text-sm text-zinc-300">General electorate</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="h-3 w-3 rounded-full bg-red-500" />
-                <span className="text-sm text-slate-300">Māori electorate</span>
+                <span className="text-sm text-zinc-300">Māori electorate</span>
               </div>
             </div>
           </div>
 
           {/* Stats */}
-          <div className="rounded-xl border border-slate-800 bg-slate-900 p-4">
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-3">Seats</h3>
+          <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-4">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-500 mb-3">Seats</h3>
             <div className="space-y-3">
               <div>
                 <div className="text-2xl font-bold text-white">{generalCount || 65}</div>
-                <div className="text-xs text-slate-500">General electorates</div>
+                <div className="text-xs text-zinc-500">General electorates</div>
               </div>
               <div>
                 <div className="text-2xl font-bold text-white">{maoriCount || 7}</div>
-                <div className="text-xs text-slate-500">Māori electorates</div>
+                <div className="text-xs text-zinc-500">Māori electorates</div>
               </div>
-              <div className="border-t border-slate-800 pt-3">
+              <div className="border-t border-zinc-800 pt-3">
                 <div className="text-2xl font-bold text-white">120</div>
-                <div className="text-xs text-slate-500">Total seats (72 electorate + ~48 list)</div>
+                <div className="text-xs text-zinc-500">Total seats (72 electorate + ~48 list)</div>
               </div>
             </div>
           </div>
 
           {/* Electorate list */}
           {electorateList.length > 0 && (
-            <div className="rounded-xl border border-slate-800 bg-slate-900 p-4 max-h-64 overflow-y-auto">
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-3">Electorates ({electorateList.length})</h3>
+            <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-4 max-h-64 overflow-y-auto">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-500 mb-3">Electorates ({electorateList.length})</h3>
               <div className="space-y-1">
                 {electorateList.map((e) => (
                   <div key={e.id} className="flex items-center gap-2 text-xs">
                     <span className={`h-2 w-2 rounded-full ${e.type === "maori" ? "bg-red-500" : "bg-blue-500"}`} />
-                    <span className="text-slate-300">{e.name}</span>
-                    {e.region && <span className="text-slate-600">· {e.region}</span>}
+                    <span className="text-zinc-300">{e.name}</span>
+                    {e.region && <span className="text-zinc-600">· {e.region}</span>}
                   </div>
                 ))}
               </div>
@@ -95,23 +95,23 @@ export default async function MapPage() {
       </div>
 
       {/* Roadmap */}
-      <div className="rounded-xl border border-dashed border-slate-700 bg-slate-900/50 p-6">
-        <h2 className="text-sm font-semibold text-slate-300 mb-3">Map enhancements coming:</h2>
-        <ul className="space-y-2 text-sm text-slate-400">
+      <div className="rounded-xl border border-dashed border-zinc-700 bg-zinc-900/50 p-6">
+        <h2 className="text-sm font-semibold text-zinc-300 mb-3">Map enhancements coming:</h2>
+        <ul className="space-y-2 text-sm text-zinc-400">
           <li className="flex items-start gap-2">
-            <span className="mt-0.5 text-slate-600">○</span>
+            <span className="mt-0.5 text-zinc-600">○</span>
             <span>Full LINZ electorate boundary GeoJSON (2024 redistribution)</span>
           </li>
           <li className="flex items-start gap-2">
-            <span className="mt-0.5 text-slate-600">○</span>
+            <span className="mt-0.5 text-zinc-600">○</span>
             <span>Colour-coded party lean from 2023 election results</span>
           </li>
           <li className="flex items-start gap-2">
-            <span className="mt-0.5 text-slate-600">○</span>
+            <span className="mt-0.5 text-zinc-600">○</span>
             <span>Census demographic overlays from Stats NZ</span>
           </li>
           <li className="flex items-start gap-2">
-            <span className="mt-0.5 text-slate-600">○</span>
+            <span className="mt-0.5 text-zinc-600">○</span>
             <span>Candidate data per electorate</span>
           </li>
         </ul>

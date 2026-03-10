@@ -24,15 +24,22 @@ export function PollSnapshotWidget({
 }) {
   if (!poll || results.length === 0) {
     return (
-      <DashboardCard title="Latest Poll" badge="Awaiting data">
-        <p className="text-sm text-slate-500">
-          No polls ingested yet. The Wikipedia polling scraper will populate this once 2026 polling data is published.
-        </p>
+      <DashboardCard title="Latest Poll" badge="Awaiting data" accent="#a855f7">
+        <div className="space-y-3">
+          <div className="h-4 w-1/3 rounded bg-zinc-800/50 animate-shimmer" />
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="flex items-center gap-3">
+              <div className="w-12 h-3 rounded bg-zinc-800/50 animate-shimmer" />
+              <div className="flex-1 h-5 rounded bg-zinc-800/50 animate-shimmer" />
+              <div className="w-10 h-3 rounded bg-zinc-800/50 animate-shimmer" />
+            </div>
+          ))}
+        </div>
         <div className="mt-4 space-y-2">
-          <p className="text-xs text-slate-600">Expected pollsters:</p>
-          <div className="flex flex-wrap gap-2 text-xs text-slate-500">
+          <p className="text-xs text-zinc-600">Expected pollsters:</p>
+          <div className="flex flex-wrap gap-2 text-xs text-zinc-500">
             {["Curia", "Reid Research", "Verian", "Talbot Mills", "Taxpayers Union"].map((p) => (
-              <span key={p} className="rounded bg-slate-800 px-2 py-0.5">{p}</span>
+              <span key={p} className="rounded-full bg-zinc-800/80 px-2.5 py-0.5 ring-1 ring-zinc-700/50">{p}</span>
             ))}
           </div>
         </div>
@@ -44,37 +51,37 @@ export function PollSnapshotWidget({
   const dateStr = date.toLocaleDateString("en-NZ", { month: "short", year: "numeric" });
 
   return (
-    <DashboardCard title="Latest Poll" badge={poll.pollster}>
+    <DashboardCard title="Latest Poll" badge={poll.pollster} accent="#a855f7">
       <div className="mb-3 flex items-baseline justify-between">
-        <span className="text-xs text-slate-500">{poll.pollster}</span>
-        <span className="text-xs text-slate-600">
+        <span className="text-xs font-medium text-zinc-400">{poll.pollster}</span>
+        <span className="text-xs text-zinc-600">
           {poll.sample_size ? `n=${poll.sample_size.toLocaleString()}` : ""}
           {poll.sample_size && dateStr ? " · " : ""}
           {dateStr}
         </span>
       </div>
-      <div className="space-y-2">
+      <div className="space-y-2.5">
         {results.map((p) => (
           <div key={p.short_name} className="flex items-center gap-3">
-            <span className="w-12 text-xs font-medium text-slate-400">
+            <span className="w-12 text-xs font-semibold text-zinc-300">
               {p.short_name}
             </span>
             <div className="flex-1">
-              <div className="h-4 rounded bg-slate-800">
+              <div className="h-5 rounded-md bg-zinc-800/80 overflow-hidden">
                 <div
-                  className="h-4 rounded"
+                  className="h-full rounded-md animate-bar-fill"
                   style={{ width: `${p.value}%`, backgroundColor: p.colour }}
                 />
               </div>
             </div>
-            <span className="w-12 text-right text-sm font-semibold text-slate-300">
+            <span className="w-12 text-right text-sm font-bold tabular-nums text-zinc-200">
               {p.value}%
             </span>
           </div>
         ))}
       </div>
       {poll.margin_of_error && (
-        <p className="mt-2 text-[10px] text-slate-600">
+        <p className="mt-3 text-xs text-zinc-600">
           MoE: ±{poll.margin_of_error}%
         </p>
       )}

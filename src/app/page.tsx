@@ -141,6 +141,25 @@ export default async function Home() {
 
   return (
     <div className="space-y-6">
+      {/* Hero banner */}
+      <div className="relative overflow-hidden rounded-2xl border border-zinc-800/60 bg-gradient-to-br from-zinc-900 via-zinc-900 to-zinc-800/80 p-6 md:p-8">
+        <div className="absolute -top-24 -right-24 h-64 w-64 rounded-full bg-blue-500/5 blur-3xl" />
+        <div className="absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-indigo-500/5 blur-3xl" />
+        <div className="relative">
+          <p className="text-xs font-semibold uppercase tracking-widest text-blue-400">NZ Election Tracker</p>
+          <h1 className="mt-2 text-2xl font-bold text-white md:text-3xl">
+            {rightSeats >= 61
+              ? `Centre-right leads with ${rightSeats} seats`
+              : leftSeats >= 61
+                ? `Centre-left leads with ${leftSeats} seats`
+                : "No clear majority — too close to call"}
+          </h1>
+          <p className="mt-2 max-w-xl text-sm text-zinc-400">
+            Live forecast based on Sainte-Laguë MMP seat allocation from the latest polling data, sentiment analysis, and electorate modelling.
+          </p>
+        </div>
+      </div>
+
       {/* Top row: Forecast + Countdown */}
       <div className="grid gap-6 lg:grid-cols-4">
         <div className="lg:col-span-3">

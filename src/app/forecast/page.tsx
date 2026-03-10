@@ -88,15 +88,15 @@ export default async function ForecastPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-white">Forecast</h1>
-        <p className="mt-1 text-sm text-slate-400">
+        <p className="mt-1 text-sm text-zinc-400">
           Seat projection via Sainte-Laguë MMP allocation from latest polling data.
           {!hasPollData && " Awaiting poll data — run the polling ingestion pipeline."}
         </p>
       </div>
 
       {/* Coalition probabilities */}
-      <div className="rounded-xl border border-slate-800 bg-slate-900 p-6">
-        <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-4">
+      <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-6">
+        <h2 className="text-xs font-semibold uppercase tracking-wider text-zinc-500 mb-4">
           Coalition seat projection
         </h2>
         {hasPollData ? (
@@ -104,29 +104,29 @@ export default async function ForecastPage() {
             <div className="grid gap-6 md:grid-cols-3">
               <div className="rounded-lg border border-blue-900/50 bg-blue-950/30 p-4 text-center">
                 <div className="text-3xl font-bold text-blue-400">{rightSeats}</div>
-                <div className="mt-1 text-sm text-slate-400">Centre-right seats</div>
-                <div className="mt-0.5 text-[10px] text-slate-600">NAT + ACT + NZF ({rightPct}%)</div>
-                <div className="mt-2 text-xs text-slate-500">{rightSeats >= 61 ? "✓ Majority" : `${61 - rightSeats} short of majority`}</div>
+                <div className="mt-1 text-sm text-zinc-400">Centre-right seats</div>
+                <div className="mt-0.5 text-[10px] text-zinc-600">NAT + ACT + NZF ({rightPct}%)</div>
+                <div className="mt-2 text-xs text-zinc-500">{rightSeats >= 61 ? "✓ Majority" : `${61 - rightSeats} short of majority`}</div>
               </div>
               <div className="rounded-lg border border-red-900/50 bg-red-950/30 p-4 text-center">
                 <div className="text-3xl font-bold text-red-400">{leftSeats}</div>
-                <div className="mt-1 text-sm text-slate-400">Centre-left seats</div>
-                <div className="mt-0.5 text-[10px] text-slate-600">LAB + GRN + TPM ({leftPct}%)</div>
-                <div className="mt-2 text-xs text-slate-500">{leftSeats >= 61 ? "✓ Majority" : `${61 - leftSeats} short of majority`}</div>
+                <div className="mt-1 text-sm text-zinc-400">Centre-left seats</div>
+                <div className="mt-0.5 text-[10px] text-zinc-600">LAB + GRN + TPM ({leftPct}%)</div>
+                <div className="mt-2 text-xs text-zinc-500">{leftSeats >= 61 ? "✓ Majority" : `${61 - leftSeats} short of majority`}</div>
               </div>
               <div className="rounded-lg border border-amber-900/50 bg-amber-950/30 p-4 text-center">
                 <div className="text-3xl font-bold text-amber-400">{120 - rightSeats - leftSeats}</div>
-                <div className="mt-1 text-sm text-slate-400">Other / crossbench</div>
-                <div className="mt-0.5 text-[10px] text-slate-600">{hungPct}% of seats</div>
+                <div className="mt-1 text-sm text-zinc-400">Other / crossbench</div>
+                <div className="mt-0.5 text-[10px] text-zinc-600">{hungPct}% of seats</div>
               </div>
             </div>
-            <p className="mt-4 text-xs text-slate-600">
+            <p className="mt-4 text-xs text-zinc-600">
               Based on {latestPoll?.pollster} poll ({new Date(latestPoll!.published_date).toLocaleDateString("en-NZ", { day: "numeric", month: "short", year: "numeric" })}).
               61 seats needed for a majority.
             </p>
           </>
         ) : (
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-zinc-500">
             No polling data available yet. Run the polling ingestion pipeline (/api/ingest/polls) to populate.
           </p>
         )}
@@ -134,26 +134,26 @@ export default async function ForecastPage() {
 
       {/* Party seat breakdown */}
       {seatProjection.length > 0 && (
-        <div className="rounded-xl border border-slate-800 bg-slate-900 p-6">
-          <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-4">
+        <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-6">
+          <h2 className="text-xs font-semibold uppercase tracking-wider text-zinc-500 mb-4">
             Party seat allocation (Sainte-Laguë)
           </h2>
           <div className="space-y-3">
             {seatProjection.sort((a, b) => b.seats - a.seats).map((p) => (
               <div key={p.short} className="flex items-center gap-3">
-                <span className="w-10 text-xs font-bold text-slate-400">{p.short}</span>
+                <span className="w-10 text-xs font-bold text-zinc-400">{p.short}</span>
                 <div className="flex-1">
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-sm text-slate-300">{p.name}</span>
-                    <span className="text-sm font-semibold text-slate-200">{p.seats} seats</span>
+                    <span className="text-sm text-zinc-300">{p.name}</span>
+                    <span className="text-sm font-semibold text-zinc-200">{p.seats} seats</span>
                   </div>
-                  <div className="h-3 w-full rounded bg-slate-800">
+                  <div className="h-3 w-full rounded bg-zinc-800">
                     <div
                       className="h-3 rounded transition-all"
                       style={{ width: `${(p.seats / 120) * 100}%`, backgroundColor: p.colour }}
                     />
                   </div>
-                  <div className="mt-0.5 text-[10px] text-slate-600">{p.votePct}% party vote</div>
+                  <div className="mt-0.5 text-[10px] text-zinc-600">{p.votePct}% party vote</div>
                 </div>
               </div>
             ))}
@@ -162,37 +162,37 @@ export default async function ForecastPage() {
       )}
 
       {/* Model methodology */}
-      <div className="rounded-xl border border-slate-800 bg-slate-900 p-6">
-        <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-4">
+      <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-6">
+        <h2 className="text-xs font-semibold uppercase tracking-wider text-zinc-500 mb-4">
           Model methodology
         </h2>
         <div className="grid gap-4 md:grid-cols-3">
-          <div className="rounded-lg border border-slate-800 p-4">
+          <div className="rounded-lg border border-zinc-800 p-4">
             <div className="flex items-center gap-2 mb-2">
               <div className={`h-8 w-8 rounded-lg flex items-center justify-center text-sm font-bold ${hasPollData ? "bg-green-600/20 text-green-400" : "bg-blue-600/20 text-blue-400"}`}>{hasPollData ? "✓" : "1"}</div>
-              <h3 className="text-sm font-medium text-slate-200">Polling average</h3>
+              <h3 className="text-sm font-medium text-zinc-200">Polling average</h3>
             </div>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-zinc-500">
               {hasPollData
                 ? `Latest poll: ${latestPoll?.pollster}. Sainte-Laguë seat allocation with 5% threshold.`
                 : "Weighted average of recent polls with recency decay and house-effect adjustment per pollster."}
             </p>
           </div>
-          <div className="rounded-lg border border-slate-800 p-4">
+          <div className="rounded-lg border border-zinc-800 p-4">
             <div className="flex items-center gap-2 mb-2">
-              <div className="h-8 w-8 rounded-lg bg-slate-700/50 flex items-center justify-center text-slate-400 text-sm font-bold">2</div>
-              <h3 className="text-sm font-medium text-slate-200">Sentiment index</h3>
+              <div className="h-8 w-8 rounded-lg bg-zinc-700/50 flex items-center justify-center text-zinc-400 text-sm font-bold">2</div>
+              <h3 className="text-sm font-medium text-zinc-200">Sentiment index</h3>
             </div>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-zinc-500">
               AI-scored media + social sentiment per party, contributing a ±2pp adjustment to polling estimates. Not yet integrated into forecast.
             </p>
           </div>
-          <div className="rounded-lg border border-slate-800 p-4">
+          <div className="rounded-lg border border-zinc-800 p-4">
             <div className="flex items-center gap-2 mb-2">
-              <div className="h-8 w-8 rounded-lg bg-slate-700/50 flex items-center justify-center text-slate-400 text-sm font-bold">3</div>
-              <h3 className="text-sm font-medium text-slate-200">Monte Carlo</h3>
+              <div className="h-8 w-8 rounded-lg bg-zinc-700/50 flex items-center justify-center text-zinc-400 text-sm font-bold">3</div>
+              <h3 className="text-sm font-medium text-zinc-200">Monte Carlo</h3>
             </div>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-zinc-500">
               10K+ iteration Monte Carlo simulation on logit-scale with economic fundamentals. Coming in Phase 3.
             </p>
           </div>
@@ -200,23 +200,23 @@ export default async function ForecastPage() {
       </div>
 
       {/* Roadmap */}
-      <div className="rounded-xl border border-dashed border-slate-700 bg-slate-900/50 p-6">
-        <h2 className="text-sm font-semibold text-slate-300 mb-3">Coming next:</h2>
-        <ul className="space-y-2 text-sm text-slate-400">
+      <div className="rounded-xl border border-dashed border-zinc-700 bg-zinc-900/50 p-6">
+        <h2 className="text-sm font-semibold text-zinc-300 mb-3">Coming next:</h2>
+        <ul className="space-y-2 text-sm text-zinc-400">
           <li className="flex items-start gap-2">
             <span className="mt-0.5 text-green-500">{hasPollData ? "✓" : "○"}</span>
             <span>Polling data ingested via Wikipedia scraper</span>
           </li>
           <li className="flex items-start gap-2">
-            <span className="mt-0.5 text-slate-600">○</span>
+            <span className="mt-0.5 text-zinc-600">○</span>
             <span>Historical election results seeded (2017, 2020, 2023) for model backtesting</span>
           </li>
           <li className="flex items-start gap-2">
-            <span className="mt-0.5 text-slate-600">○</span>
+            <span className="mt-0.5 text-zinc-600">○</span>
             <span>Weighted polling average (recency decay + house effects)</span>
           </li>
           <li className="flex items-start gap-2">
-            <span className="mt-0.5 text-slate-600">○</span>
+            <span className="mt-0.5 text-zinc-600">○</span>
             <span>Monte Carlo simulation with sentiment + economic fundamentals</span>
           </li>
         </ul>

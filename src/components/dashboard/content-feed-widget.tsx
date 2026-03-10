@@ -21,10 +21,10 @@ function relativeTime(dateStr: string): string {
 }
 
 const sourceColour: Record<string, string> = {
-  official: "bg-blue-900 text-blue-300",
-  media: "bg-slate-800 text-slate-300",
-  blog: "bg-purple-900 text-purple-300",
-  social: "bg-green-900 text-green-300",
+  official: "bg-blue-500/10 text-blue-400 ring-1 ring-blue-500/20",
+  media: "bg-zinc-800/80 text-zinc-300 ring-1 ring-zinc-700/50",
+  blog: "bg-purple-500/10 text-purple-400 ring-1 ring-purple-500/20",
+  social: "bg-emerald-500/10 text-emerald-400 ring-1 ring-emerald-500/20",
 };
 
 /** Top breaking content items — wired to Supabase */
@@ -37,14 +37,24 @@ export function ContentFeedWidget({
 }) {
   if (items.length === 0) {
     return (
-      <DashboardCard title="Breaking Content" badge="Feed">
-        <p className="text-sm text-slate-500">No articles ingested yet. Run the RSS ingestion endpoint to populate.</p>
+      <DashboardCard title="Breaking Content" badge="Feed" accent="#f97316">
+        <div className="space-y-3">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="rounded-lg border border-zinc-800/50 px-3 py-2.5">
+              <div className="h-4 w-3/4 rounded bg-zinc-800/50 animate-shimmer" />
+              <div className="mt-2 flex gap-2">
+                <div className="h-3 w-16 rounded bg-zinc-800/50 animate-shimmer" />
+                <div className="h-3 w-10 rounded bg-zinc-800/50 animate-shimmer" />
+              </div>
+            </div>
+          ))}
+        </div>
       </DashboardCard>
     );
   }
 
   return (
-    <DashboardCard title="Breaking Content" badge={`${totalArticles} articles`}>
+    <DashboardCard title="Breaking Content" badge={`${totalArticles} articles`} accent="#f97316">
       <div className="space-y-3">
         {items.map((item) => (
           <a
@@ -52,14 +62,14 @@ export function ContentFeedWidget({
             href={item.source_url}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-start gap-3 rounded-lg border border-slate-800/50 px-3 py-2.5 transition-colors hover:border-slate-700 hover:bg-slate-800/30"
+            className="flex items-start gap-3 rounded-lg border border-zinc-800/50 px-3 py-2.5 transition-colors hover:border-zinc-700 hover:bg-zinc-800/30"
           >
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-slate-200 leading-snug line-clamp-2">
+              <p className="text-sm font-medium text-zinc-200 leading-snug line-clamp-2">
                 {item.title}
               </p>
-              <div className="mt-1 flex items-center gap-2 text-xs text-slate-500">
-                <span className={`rounded px-1.5 py-0.5 text-[10px] font-medium ${sourceColour[item.source_type] ?? "bg-slate-800 text-slate-400"}`}>
+              <div className="mt-1 flex items-center gap-2 text-xs text-zinc-500">
+                <span className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${sourceColour[item.source_type] ?? "bg-zinc-800/80 text-zinc-400 ring-1 ring-zinc-700/50"}`}>
                   {item.source_name}
                 </span>
                 <span>{relativeTime(item.published_at)}</span>
