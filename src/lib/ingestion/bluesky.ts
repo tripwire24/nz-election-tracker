@@ -176,6 +176,13 @@ function normalisePost(post: BlueskyPost) {
   const webUrl = postUriToUrl(post.uri, post.author.handle);
   const text = post.record.text || "";
 
+  // Sanitise engagement numbers — guard against NaN / undefined / Infinity
+  const safeLikes = Number.isFinite(post.likeCount) ? post.likeCount : 0;
+  const safeReposts = Number.isFinite(post.repostCount) ? post.repostCount : 0;
+  const safeReplies = Number.isFinite(post.replyCount) ? post.replyCount : 0;
+
+  const topics = detectTopics(text);
+
   return {
     title: text.slice(0, 120) + (text.length > 120 ? "…" : ""),
     excerpt: text.slice(0, 500),
@@ -183,14 +190,14 @@ function normalisePost(post: BlueskyPost) {
     source_url: webUrl,
     source_name: "Bluesky",
     source_type: "social" as const,
-    author: post.author.displayName || post.author.handle,
+    author: (post.author.displayName || post.author.handle || "").slice(0, 500),
     published_at: post.record.createdAt || post.indexedAt,
-    topics: detectTopics(text),
-    engagement_metrics: {
-      likes: post.likeCount || 0,
-      reposts: post.repostCount || 0,
-      replies: post.replyCount || 0,
-    },
+    topics: topics.length > 0 ? topics : null,
+    engagement_metrics: JSON.parse(JSON.stringify({
+      likes: safeLikes,
+      reposts: safeReposts,
+      replies: safeReplies,
+    })),
   };
 }
 
