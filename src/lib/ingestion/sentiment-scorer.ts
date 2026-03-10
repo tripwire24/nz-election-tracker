@@ -129,13 +129,20 @@ Respond with ONLY a JSON object, no markdown:
       }),
     });
 
-    if (!response.ok) return null;
+    if (!response.ok) {
+      console.warn(`[Sentiment] Claude API returned ${response.status}: ${response.statusText}`);
+      return null;
+    }
 
     const data = await response.json();
     const resultText = data.content?.[0]?.text?.trim();
-    if (!resultText) return null;
+    if (!resultText) {
+      console.warn("[Sentiment] Claude returned empty content");
+      return null;
+    }
 
     const parsed = JSON.parse(resultText);
+    console.log(`[Sentiment] Claude scored: ${parsed.score} (${parsed.label})`);
     return {
       score: Math.round(parseFloat(parsed.score) * 1000) / 1000,
       label: parsed.label || "neutral",
@@ -143,7 +150,8 @@ Respond with ONLY a JSON object, no markdown:
       confidence: 0.9,
       model_version: "claude-haiku-1",
     };
-  } catch {
+  } catch (err) {
+    console.error(`[Sentiment] Claude error: ${err}`);
     return null;
   }
 }
@@ -226,9 +234,10 @@ export async function scoreSentiment(options?: {
       let finalResult: SentimentResult = afinnResult;
 
       // Step B: Escalate to Claude if low confidence and Claude enabled
+      // Threshold: AFINN confidence < 0.3 (raw score < 3) → ambiguous, let Claude decide
       if (
         useClaude &&
-        afinnResult.confidence < LOW_CONFIDENCE_THRESHOLD / 10
+        afinnResult.confidence < 0.3
       ) {
         const claudeResult = await scoreWithClaude(text);
         if (claudeResult) {
@@ -294,6 +303,8 @@ export async function scoreSentiment(options?: {
       }
     }
   }
+
+  console.log(`[Sentiment] Pipeline complete: ${inserted} scored (AFINN: ${afinnCount}, Claude: ${claudeCount}, errors: ${errors})`);
 
   return {
     scored: inserted,

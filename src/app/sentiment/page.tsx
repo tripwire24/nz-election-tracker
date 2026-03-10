@@ -19,6 +19,12 @@ export default async function SentimentPage() {
     .from("sentiment_scores")
     .select("id", { count: "exact", head: true });
 
+  // Count how many were scored by Claude vs AFINN
+  const { count: claudeCount } = await supabase
+    .from("sentiment_scores")
+    .select("id", { count: "exact", head: true })
+    .eq("model_version", "claude-haiku-1");
+
   const { data: parties } = await supabase
     .from("parties")
     .select("short_name, name, colour")
@@ -43,6 +49,8 @@ export default async function SentimentPage() {
   const partyList = (parties ?? []) as { short_name: string; name: string; colour: string }[];
   const scored = scoredCount ?? 0;
   const articles = articleCount ?? 0;
+  const claudeScored = claudeCount ?? 0;
+  const afinnScored = scored - claudeScored;
 
   return (
     <div className="space-y-6">
@@ -67,8 +75,12 @@ export default async function SentimentPage() {
         </div>
         <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
           <div className="text-xs font-semibold uppercase tracking-wider text-slate-500">Model</div>
-          <div className="mt-2 text-lg font-bold text-white">AFINN + VADER</div>
-          <div className="mt-1 text-xs text-slate-500">with optional Claude Haiku escalation</div>
+          <div className="mt-2 text-lg font-bold text-white">AFINN-165 + Claude</div>
+          <div className="mt-1 text-xs text-slate-500">
+            {claudeScored > 0
+              ? `AFINN: ${afinnScored} · Claude Haiku: ${claudeScored}`
+              : "AFINN only — Claude not yet triggered"}
+          </div>
         </div>
       </div>
 

@@ -142,6 +142,30 @@ function postUriToUrl(uri: string, handle: string): string {
   return `https://bsky.app/profile/${handle}/post/${rkey}`;
 }
 
+/**
+ * Check if a post is relevant to NZ politics (not just generic international politics).
+ * Returns true if the post contains NZ-specific signals.
+ */
+function isNZRelevant(text: string): boolean {
+  const lower = text.toLowerCase();
+
+  // Strong NZ signals — any one of these is enough
+  const strongSignals = [
+    "nzpol", "nzpolitics", "new zealand", "aotearoa",
+    "luxon", "hipkins", "swarbrick", "seymour", "winston peters",
+    "te pāti", "te pati", "māori party", "maori party",
+    "nz labour", "nz national", "nz greens", "act party nz", "nz first",
+    "beehive", "parliament nz", "wellington", "auckland",
+    "christchurch", "dunedin", "hamilton", "tauranga",
+    "electorate", "mmp", "sainte-laguë",
+    "rnz", "stuff.co.nz", "newshub", "1news",
+    "ardern", "key", "clark", "bolger", "muldoon",
+    "kiwi", "kiwis",
+  ];
+
+  return strongSignals.some((signal) => lower.includes(signal));
+}
+
 /** Simple keyword-based topic detection (shared logic with RSS) */
 function detectTopics(text: string): string[] {
   const lower = text.toLowerCase();
@@ -205,10 +229,14 @@ function normalisePost(post: BlueskyPost) {
  * Ingest Bluesky posts for all configured search queries.
  * Returns count of new items inserted.
  */
-export async function ingestBluesky(): Promise<{ total: number; byQuery: Record<string, number> }> {
+export async function ingestBluesky(): Promise<{ total: number; filtered: number; byQuery: Record<string, number> }> {
   const supabase = createAdminClient();
   const byQuery: Record<string, number> = {};
   let total = 0;
+  let filtered = 0;
+
+  // Get our own handle so we can exclude self-authored posts
+  const ownHandle = (process.env.BLUESKY_HANDLE || "").toLowerCase();
 
   for (const query of SEARCH_QUERIES) {
     const { posts } = await searchBluesky(query, 25);
@@ -218,14 +246,27 @@ export async function ingestBluesky(): Promise<{ total: number; byQuery: Record<
       continue;
     }
 
-    // Filter to English/unspecified language posts (skip non-English)
-    const filtered = posts.filter((p) => {
+    // Filter: English language, not our own posts, NZ-relevant content
+    const qualifying = posts.filter((p) => {
+      // Skip posts from our own tracker account
+      if (ownHandle && p.author.handle.toLowerCase() === ownHandle) return false;
+
+      // Must be English or unspecified language
       const langs = p.record.langs;
-      if (!langs || langs.length === 0) return true;
-      return langs.some((l) => l.startsWith("en"));
+      if (langs && langs.length > 0 && !langs.some((l) => l.startsWith("en"))) return false;
+
+      // For generic queries, check NZ relevance; skip for NZ-specific query terms
+      const queryIsNZSpecific = ["nzpol", "nzpolitics"].includes(query.toLowerCase())
+        || query.toLowerCase().includes("new zealand");
+      if (!queryIsNZSpecific && !isNZRelevant(p.record.text || "")) {
+        filtered++;
+        return false;
+      }
+
+      return true;
     });
 
-    const items = filtered.map(normalisePost);
+    const items = qualifying.map(normalisePost);
 
     if (items.length === 0) {
       byQuery[query] = 0;
@@ -252,6 +293,6 @@ export async function ingestBluesky(): Promise<{ total: number; byQuery: Record<
     await new Promise((resolve) => setTimeout(resolve, 200));
   }
 
-  console.log(`[Bluesky] Ingestion complete: ${total} new posts`, byQuery);
-  return { total, byQuery };
+  console.log(`[Bluesky] Ingestion complete: ${total} new posts (${filtered} filtered as non-NZ)`, byQuery);
+  return { total, filtered, byQuery };
 }
