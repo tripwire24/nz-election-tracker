@@ -5,6 +5,15 @@ import { SeatProjectionWidget } from "@/components/dashboard/seat-projection-wid
 import { SentimentPulseWidget } from "@/components/dashboard/sentiment-pulse-widget";
 import { ContentFeedWidget } from "@/components/dashboard/content-feed-widget";
 import { ElectionCountdownWidget } from "@/components/dashboard/election-countdown-widget";
+import {
+  allocateSeats,
+  weightedPollingAverage,
+  coalitionSeats,
+  RIGHT_BLOC,
+  LEFT_BLOC,
+  type PollResult,
+  type WeightedPollInput,
+} from "@/lib/election";
 
 export const dynamic = "force-dynamic";
 
@@ -13,42 +22,6 @@ function getSupabase() {
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
   );
-}
-
-/** Sainte-Laguë MMP seat allocation from party vote percentages */
-function allocateSeats(
-  results: { short_name: string; name: string; colour: string; value: number }[],
-  totalSeats: number = 120,
-) {
-  // Filter parties above 5% threshold (or with an electorate seat — simplified here as 5%)
-  const eligible = results.filter((p) => p.value >= 5);
-  if (eligible.length === 0) return [];
-
-  // Normalise vote shares to 100% among eligible parties
-  const totalVote = eligible.reduce((s, p) => s + p.value, 0);
-
-  // Sainte-Laguë: allocate seats using odd divisors (1, 3, 5, 7, ...)
-  const quotients: { party: string; q: number }[] = [];
-  for (const p of eligible) {
-    const normalisedVote = (p.value / totalVote) * 100;
-    for (let d = 1; d <= totalSeats * 2; d += 2) {
-      quotients.push({ party: p.short_name, q: normalisedVote / d });
-    }
-  }
-  quotients.sort((a, b) => b.q - a.q);
-
-  const seatCount: Record<string, number> = {};
-  for (let i = 0; i < totalSeats; i++) {
-    const p = quotients[i].party;
-    seatCount[p] = (seatCount[p] || 0) + 1;
-  }
-
-  return eligible.map((p) => ({
-    name: p.name.replace(/^New Zealand /, "").replace(/ Party.*$/, "").replace("of Aotearoa NZ", ""),
-    short: p.short_name,
-    seats: seatCount[p.short_name] || 0,
-    colour: p.colour,
-  }));
 }
 
 export default async function Home() {
@@ -61,36 +34,61 @@ export default async function Home() {
     .order("published_at", { ascending: false })
     .limit(8);
 
-  // Fetch latest poll with results + party info
-  const { data: latestPoll } = await supabase
+  // Fetch recent polls (up to 90 days) for weighted average
+  const { data: recentPolls } = await supabase
     .from("polls")
     .select("id, pollster, published_date, sample_size, margin_of_error, poll_type")
     .eq("poll_type", "party_vote")
     .order("published_date", { ascending: false })
-    .limit(1)
-    .maybeSingle();
+    .limit(50);
 
-  let pollResults: { short_name: string; name: string; colour: string; value: number }[] = [];
-  if (latestPoll) {
-    const { data } = await supabase
+  const latestPoll = recentPolls?.[0] ?? null;
+  const pollInputs: WeightedPollInput[] = [];
+  let latestPollResults: PollResult[] = [];
+
+  if (recentPolls && recentPolls.length > 0) {
+    // Fetch all poll_results for these polls in one query
+    const pollIds = recentPolls.map((p) => p.id);
+    const { data: allResults } = await supabase
       .from("poll_results")
-      .select("value, party_id, parties(short_name, name, colour)")
-      .eq("poll_id", latestPoll.id)
+      .select("poll_id, value, parties(short_name, name, colour)")
+      .in("poll_id", pollIds)
       .order("value", { ascending: false });
-    if (data) {
-      pollResults = data
-        .filter((r: Record<string, unknown>) => r.parties)
-        .map((r: Record<string, unknown>) => {
-          const party = r.parties as { short_name: string; name: string; colour: string };
-          return {
-            short_name: party.short_name,
-            name: party.name,
-            colour: party.colour,
-            value: r.value as number,
-          };
+
+    if (allResults) {
+      // Group results by poll_id
+      const byPoll: Record<string, PollResult[]> = {};
+      for (const r of allResults as { poll_id: string; value: number; parties: { short_name: string; name: string; colour: string } | null }[]) {
+        if (!r.parties) continue;
+        if (!byPoll[r.poll_id]) byPoll[r.poll_id] = [];
+        byPoll[r.poll_id].push({
+          short_name: r.parties.short_name,
+          name: r.parties.name,
+          colour: r.parties.colour,
+          value: r.value,
         });
+      }
+
+      for (const poll of recentPolls) {
+        if (byPoll[poll.id]) {
+          pollInputs.push({
+            poll_id: poll.id,
+            pollster: poll.pollster,
+            published_date: poll.published_date,
+            results: byPoll[poll.id],
+          });
+        }
+      }
+
+      // Keep latest poll results for the snapshot widget
+      latestPollResults = byPoll[recentPolls[0].id] ?? [];
     }
   }
+
+  // Compute weighted polling average (exponential decay, 14-day half-life)
+  const pollResults = pollInputs.length > 1
+    ? weightedPollingAverage(pollInputs)
+    : latestPollResults;
 
   // Content stats
   const { count: totalArticles } = await supabase
@@ -124,14 +122,12 @@ export default async function Home() {
     .sort((a, b) => b.volume - a.volume)
     .slice(0, 6);
 
-  // Seat projection from latest poll
+  // Seat projection from weighted average
   const seatProjection = allocateSeats(pollResults);
 
-  // Forecast: derive coalition probabilities from latest poll
-  const rightBloc = ["NAT", "ACT", "NZF"];
-  const leftBloc = ["LAB", "GRN", "TPM"];
-  const rightSeats = seatProjection.filter((p) => rightBloc.includes(p.short)).reduce((s, p) => s + p.seats, 0);
-  const leftSeats = seatProjection.filter((p) => leftBloc.includes(p.short)).reduce((s, p) => s + p.seats, 0);
+  // Forecast: derive coalition seat counts
+  const rightSeats = coalitionSeats(seatProjection, RIGHT_BLOC);
+  const leftSeats = coalitionSeats(seatProjection, LEFT_BLOC);
   const totalSeats = seatProjection.reduce((s, p) => s + p.seats, 0) || 120;
 
   // Simple probability proxy from seat share (will be replaced by Monte Carlo)
@@ -155,7 +151,7 @@ export default async function Home() {
                 : "No clear majority — too close to call"}
           </h1>
           <p className="mt-2 max-w-xl text-sm text-stone-400">
-            Live forecast based on Sainte-Laguë MMP seat allocation from the latest polling data, sentiment analysis, and electorate modelling.
+            Live forecast based on {pollInputs.length > 1 ? `weighted average of ${pollInputs.length} polls` : "latest polling data"}, Sainte-Laguë MMP seat allocation, and sentiment analysis.
           </p>
         </div>
       </div>
@@ -183,7 +179,7 @@ export default async function Home() {
       <div className="grid gap-6 lg:grid-cols-3">
         <PollSnapshotWidget
           poll={latestPoll}
-          results={pollResults}
+          results={latestPollResults}
         />
         <SentimentPulseWidget data={sentimentData} />
         <ContentFeedWidget

@@ -1,4 +1,13 @@
 import { createClient } from "@supabase/supabase-js";
+import {
+  allocateSeats,
+  weightedPollingAverage,
+  coalitionSeats,
+  RIGHT_BLOC,
+  LEFT_BLOC,
+  type PollResult,
+  type WeightedPollInput,
+} from "@/lib/election";
 
 export const revalidate = 300;
 
@@ -9,78 +18,67 @@ function getSupabase() {
   );
 }
 
-/** Sainte-Laguë MMP seat allocation from party vote percentages */
-function allocateSeats(
-  results: { short_name: string; name: string; colour: string; value: number }[],
-  totalSeats: number = 120,
-) {
-  const eligible = results.filter((p) => p.value >= 5);
-  if (eligible.length === 0) return [];
-
-  const totalVote = eligible.reduce((s, p) => s + p.value, 0);
-  const quotients: { party: string; q: number }[] = [];
-  for (const p of eligible) {
-    const normalisedVote = (p.value / totalVote) * 100;
-    for (let d = 1; d <= totalSeats * 2; d += 2) {
-      quotients.push({ party: p.short_name, q: normalisedVote / d });
-    }
-  }
-  quotients.sort((a, b) => b.q - a.q);
-
-  const seatCount: Record<string, number> = {};
-  for (let i = 0; i < totalSeats; i++) {
-    const p = quotients[i].party;
-    seatCount[p] = (seatCount[p] || 0) + 1;
-  }
-
-  return eligible.map((p) => ({
-    name: p.name.replace(/^New Zealand /, "").replace(/ Party.*$/, "").replace("of Aotearoa NZ", ""),
-    short: p.short_name,
-    seats: seatCount[p.short_name] || 0,
-    colour: p.colour,
-    votePct: p.value,
-  }));
-}
-
 export default async function ForecastPage() {
   const supabase = getSupabase();
 
-  // Fetch latest poll with results + party info
-  const { data: latestPoll } = await supabase
+  // Fetch recent polls (up to 90 days) for weighted average
+  const { data: recentPolls } = await supabase
     .from("polls")
     .select("id, pollster, published_date, sample_size, margin_of_error, poll_type")
     .eq("poll_type", "party_vote")
     .order("published_date", { ascending: false })
-    .limit(1)
-    .maybeSingle();
+    .limit(50);
 
-  let pollResults: { short_name: string; name: string; colour: string; value: number }[] = [];
-  if (latestPoll) {
-    const { data } = await supabase
+  const latestPoll = recentPolls?.[0] ?? null;
+  const pollInputs: WeightedPollInput[] = [];
+
+  if (recentPolls && recentPolls.length > 0) {
+    const pollIds = recentPolls.map((p) => p.id);
+    const { data: allResults } = await supabase
       .from("poll_results")
-      .select("value, party_id, parties(short_name, name, colour)")
-      .eq("poll_id", latestPoll.id)
+      .select("poll_id, value, parties(short_name, name, colour)")
+      .in("poll_id", pollIds)
       .order("value", { ascending: false });
-    if (data) {
-      pollResults = data
-        .filter((r: Record<string, unknown>) => r.parties)
-        .map((r: Record<string, unknown>) => {
-          const party = r.parties as { short_name: string; name: string; colour: string };
-          return { short_name: party.short_name, name: party.name, colour: party.colour, value: r.value as number };
+
+    if (allResults) {
+      const byPoll: Record<string, PollResult[]> = {};
+      for (const r of allResults as { poll_id: string; value: number; parties: { short_name: string; name: string; colour: string } | null }[]) {
+        if (!r.parties) continue;
+        if (!byPoll[r.poll_id]) byPoll[r.poll_id] = [];
+        byPoll[r.poll_id].push({
+          short_name: r.parties.short_name,
+          name: r.parties.name,
+          colour: r.parties.colour,
+          value: r.value,
         });
+      }
+
+      for (const poll of recentPolls) {
+        if (byPoll[poll.id]) {
+          pollInputs.push({
+            poll_id: poll.id,
+            pollster: poll.pollster,
+            published_date: poll.published_date,
+            results: byPoll[poll.id],
+          });
+        }
+      }
     }
   }
 
-  // Seat projection via Sainte-Laguë
+  // Compute weighted polling average (exponential decay, 14-day half-life)
+  const pollResults = pollInputs.length > 1
+    ? weightedPollingAverage(pollInputs)
+    : (pollInputs[0]?.results ?? []);
+
   const seatProjection = allocateSeats(pollResults);
-  const rightBloc = ["NAT", "ACT", "NZF"];
-  const leftBloc = ["LAB", "GRN", "TPM"];
-  const rightSeats = seatProjection.filter((p) => rightBloc.includes(p.short)).reduce((s, p) => s + p.seats, 0);
-  const leftSeats = seatProjection.filter((p) => leftBloc.includes(p.short)).reduce((s, p) => s + p.seats, 0);
+  const rightSeats = coalitionSeats(seatProjection, RIGHT_BLOC);
+  const leftSeats = coalitionSeats(seatProjection, LEFT_BLOC);
   const totalSeats = seatProjection.reduce((s, p) => s + p.seats, 0) || 120;
   const rightPct = totalSeats > 0 ? Math.round((rightSeats / totalSeats) * 100) : 0;
   const leftPct = totalSeats > 0 ? Math.round((leftSeats / totalSeats) * 100) : 0;
   const hungPct = Math.max(0, 100 - rightPct - leftPct);
+  const pollCount = pollInputs.length;
 
   const hasPollData = pollResults.length > 0;
 
@@ -89,7 +87,7 @@ export default async function ForecastPage() {
       <div>
         <h1 className="text-2xl font-bold text-stone-900">Forecast</h1>
         <p className="mt-1 text-sm text-stone-400">
-          Seat projection via Sainte-Laguë MMP allocation from latest polling data.
+          Seat projection via Sainte-Laguë MMP allocation{pollCount > 1 ? ` from weighted average of ${pollCount} polls` : " from latest poll"}.
           {!hasPollData && " Awaiting poll data — run the polling ingestion pipeline."}
         </p>
       </div>
@@ -121,7 +119,7 @@ export default async function ForecastPage() {
               </div>
             </div>
             <p className="mt-4 text-xs text-stone-400">
-              Based on {latestPoll?.pollster} poll ({new Date(latestPoll!.published_date).toLocaleDateString("en-NZ", { day: "numeric", month: "short", year: "numeric" })}).
+              Based on {pollCount > 1 ? `weighted average of ${pollCount} polls (14-day half-life)` : `${latestPoll?.pollster} poll`} as of {new Date(latestPoll!.published_date).toLocaleDateString("en-NZ", { day: "numeric", month: "short", year: "numeric" })}.
               61 seats needed for a majority.
             </p>
           </>
@@ -174,7 +172,7 @@ export default async function ForecastPage() {
             </div>
             <p className="text-xs text-stone-500">
               {hasPollData
-                ? `Latest poll: ${latestPoll?.pollster}. Sainte-Laguë seat allocation with 5% threshold.`
+                ? `Weighted average of ${pollCount} poll${pollCount > 1 ? "s" : ""} with 14-day exponential decay half-life. Sainte-Laguë seat allocation with 5% threshold.`
                 : "Weighted average of recent polls with recency decay and house-effect adjustment per pollster."}
             </p>
           </div>
@@ -210,18 +208,18 @@ export default async function ForecastPage() {
               <div className="text-[10px] text-stone-400">Wikipedia scraper live</div>
             </div>
           </div>
-          <div className="flex items-center gap-3 rounded-lg bg-amber-50 px-3 py-2.5 ring-1 ring-amber-200">
-            <span className="text-amber-500 font-bold">◐</span>
+          <div className="flex items-center gap-3 rounded-lg bg-emerald-50 px-3 py-2.5 ring-1 ring-emerald-200">
+            <span className="text-emerald-600 font-bold">✓</span>
             <div>
               <div className="text-xs font-semibold text-stone-700">Historical results</div>
-              <div className="text-[10px] text-stone-400">2017–2023 for backtesting</div>
+              <div className="text-[10px] text-stone-400">2017–2023 seeded</div>
             </div>
           </div>
-          <div className="flex items-center gap-3 rounded-lg bg-stone-50 px-3 py-2.5 ring-1 ring-stone-200">
-            <span className="text-stone-400 font-bold">○</span>
+          <div className="flex items-center gap-3 rounded-lg bg-emerald-50 px-3 py-2.5 ring-1 ring-emerald-200">
+            <span className="text-emerald-600 font-bold">✓</span>
             <div>
               <div className="text-xs font-semibold text-stone-700">Weighted average</div>
-              <div className="text-[10px] text-stone-400">Recency decay + house effects</div>
+              <div className="text-[10px] text-stone-400">14-day half-life decay</div>
             </div>
           </div>
           <div className="flex items-center gap-3 rounded-lg bg-stone-50 px-3 py-2.5 ring-1 ring-stone-200">

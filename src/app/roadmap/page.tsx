@@ -75,14 +75,14 @@ const ROADMAP: RoadmapItem[] = [
   },
   {
     title: "Weighted Polling Average",
-    description: "Recency-weighted and methodologically-adjusted polling averages with confidence bands.",
-    status: "building",
+    description: "Recency-weighted polling averages with 14-day exponential decay half-life across all recent polls.",
+    status: "live",
     category: "Analytics & Models",
   },
   {
     title: "Historical Election Results",
-    description: "Full NZ election history (2002–2023) for trend analysis and electorate-level comparisons.",
-    status: "planned",
+    description: "Full NZ election party vote results (2017, 2020, 2023) for trend analysis and model backtesting.",
+    status: "live",
     category: "Analytics & Models",
   },
   {
