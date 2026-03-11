@@ -138,27 +138,27 @@ export default async function Home() {
   return (
     <div className="space-y-6">
       {/* Hero banner */}
-      <div className="relative overflow-hidden rounded-2xl border border-stone-200 dark:border-stone-700 bg-gradient-to-br from-blue-50 via-white to-indigo-50 dark:from-blue-950/30 dark:via-stone-900 dark:to-indigo-950/30 p-6 md:p-8">
-        <div className="absolute -top-24 -right-24 h-64 w-64 rounded-full bg-blue-200/40 dark:bg-blue-800/20 blur-3xl" />
-        <div className="absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-indigo-200/40 dark:bg-indigo-800/20 blur-3xl" />
+      <div className="relative overflow-hidden rounded-2xl border border-blue-200/70 bg-gradient-to-br from-sky-50 via-white to-cyan-50 p-6 md:p-8 shadow-[0_12px_32px_rgba(14,116,144,0.1)]">
+        <div className="absolute -top-24 -right-24 h-64 w-64 rounded-full bg-cyan-300/35 blur-3xl" />
+        <div className="absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-blue-300/30 blur-3xl" />
         <div className="relative">
-          <p className="text-xs font-semibold uppercase tracking-widest text-blue-600">NZ Election Tracker</p>
-          <h1 className="mt-2 text-2xl font-bold text-stone-900 dark:text-stone-100 md:text-3xl">
+          <p className="text-xs font-semibold uppercase tracking-widest text-cyan-700">NZ Election Tracker</p>
+          <h1 className="mt-2 text-2xl font-bold text-slate-900 md:text-3xl">
             {rightSeats >= 61
               ? `Centre-right leads with ${rightSeats} seats`
               : leftSeats >= 61
                 ? `Centre-left leads with ${leftSeats} seats`
                 : "No clear majority — too close to call"}
           </h1>
-          <p className="mt-2 max-w-xl text-sm text-stone-400">
+          <p className="mt-2 max-w-xl text-sm text-slate-600">
             Live forecast based on {pollInputs.length > 1 ? `weighted average of ${pollInputs.length} polls` : "latest polling data"}, Sainte-Laguë MMP seat allocation, and sentiment analysis.
           </p>
         </div>
       </div>
 
       {/* Top row: Forecast + Countdown */}
-      <div className="grid gap-6 lg:grid-cols-4">
-        <div className="lg:col-span-3">
+      <div className="grid items-stretch gap-6 lg:grid-cols-4">
+        <div className="lg:col-span-3 h-full">
           <ForecastWidget
             rightPct={rightPct}
             leftPct={leftPct}
@@ -167,7 +167,7 @@ export default async function Home() {
             leftSeats={leftSeats}
           />
         </div>
-        <div>
+        <div className="h-full">
           <ElectionCountdownWidget />
         </div>
       </div>

@@ -1,21 +1,12 @@
 @import "tailwindcss";
 
 :root {
-  --background: #fafaf9;
-  --foreground: #1c1917;
+  --background: #f3f8ff;
+  --foreground: #0f172a;
   --card: #ffffff;
-  --card-border: #e7e5e4;
-  --muted: #78716c;
-  --accent: #f5f5f4;
-}
-
-.dark {
-  --background: #1c1917;
-  --foreground: #fafaf9;
-  --card: #292524;
-  --card-border: #44403c;
-  --muted: #a8a29e;
-  --accent: #292524;
+  --card-border: #d4e5ff;
+  --muted: #64748b;
+  --accent: #e8f2ff;
 }
 
 @theme inline {
@@ -39,11 +30,21 @@ body {
   font-family: var(--font-geist-sans), system-ui, sans-serif;
 }
 
+.tron-grid-bg {
+  background-image:
+    radial-gradient(circle at 8% -20%, rgba(6, 182, 212, 0.2), transparent 60%),
+    radial-gradient(circle at 92% -8%, rgba(59, 130, 246, 0.16), transparent 56%),
+    linear-gradient(rgba(59, 130, 246, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(59, 130, 246, 0.045) 1px, transparent 1px);
+  background-size: auto, auto, 28px 28px, 28px 28px;
+  background-color: var(--background);
+}
+
 /* Refined scrollbar for scrollable widgets */
 .scrollbar-thin::-webkit-scrollbar { width: 4px; }
 .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
-.scrollbar-thin::-webkit-scrollbar-thumb { background: rgba(120, 113, 108, 0.2); border-radius: 9999px; }
-.scrollbar-thin::-webkit-scrollbar-thumb:hover { background: rgba(120, 113, 108, 0.4); }
+.scrollbar-thin::-webkit-scrollbar-thumb { background: rgba(37, 99, 235, 0.24); border-radius: 9999px; }
+.scrollbar-thin::-webkit-scrollbar-thumb:hover { background: rgba(37, 99, 235, 0.4); }
 
 @keyframes fade-in {
   from { opacity: 0; transform: translateY(8px); }
@@ -69,7 +70,7 @@ body {
 .animate-slide-up { animation: slide-up 0.4s ease-out both; }
 .animate-bar-fill { animation: bar-fill 0.8s ease-out both; transform-origin: left; }
 .animate-shimmer {
-  background: linear-gradient(90deg, transparent 25%, rgba(0,0,0,0.03) 50%, transparent 75%);
+  background: linear-gradient(90deg, rgba(37, 99, 235, 0.04) 25%, rgba(6, 182, 212, 0.16) 50%, rgba(37, 99, 235, 0.04) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.8s infinite;
 }
