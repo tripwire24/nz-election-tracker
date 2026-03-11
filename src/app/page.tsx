@@ -138,12 +138,12 @@ export default async function Home() {
   return (
     <div className="space-y-6">
       {/* Hero banner */}
-      <div className="relative overflow-hidden rounded-2xl border border-stone-200 bg-gradient-to-br from-blue-50 via-white to-indigo-50 p-6 md:p-8">
-        <div className="absolute -top-24 -right-24 h-64 w-64 rounded-full bg-blue-200/40 blur-3xl" />
-        <div className="absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-indigo-200/40 blur-3xl" />
+      <div className="relative overflow-hidden rounded-2xl border border-stone-200 dark:border-stone-700 bg-gradient-to-br from-blue-50 via-white to-indigo-50 dark:from-blue-950/30 dark:via-stone-900 dark:to-indigo-950/30 p-6 md:p-8">
+        <div className="absolute -top-24 -right-24 h-64 w-64 rounded-full bg-blue-200/40 dark:bg-blue-800/20 blur-3xl" />
+        <div className="absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-indigo-200/40 dark:bg-indigo-800/20 blur-3xl" />
         <div className="relative">
           <p className="text-xs font-semibold uppercase tracking-widest text-blue-600">NZ Election Tracker</p>
-          <h1 className="mt-2 text-2xl font-bold text-stone-900 md:text-3xl">
+          <h1 className="mt-2 text-2xl font-bold text-stone-900 dark:text-stone-100 md:text-3xl">
             {rightSeats >= 61
               ? `Centre-right leads with ${rightSeats} seats`
               : leftSeats >= 61

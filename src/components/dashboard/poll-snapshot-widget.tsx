@@ -26,12 +26,12 @@ export function PollSnapshotWidget({
     return (
       <DashboardCard title="Latest Poll" badge="Awaiting data" accent="#a855f7">
         <div className="space-y-3">
-          <div className="h-4 w-1/3 rounded bg-stone-100 animate-shimmer" />
+           <div className="h-4 w-1/3 rounded bg-stone-100 dark:bg-stone-700 animate-shimmer" />
           {[1, 2, 3, 4].map((i) => (
             <div key={i} className="flex items-center gap-3">
-              <div className="w-12 h-3 rounded bg-stone-100 animate-shimmer" />
-              <div className="flex-1 h-5 rounded bg-stone-100 animate-shimmer" />
-              <div className="w-10 h-3 rounded bg-stone-100 animate-shimmer" />
+              <div className="w-12 h-3 rounded bg-stone-100 dark:bg-stone-700 animate-shimmer" />
+              <div className="flex-1 h-5 rounded bg-stone-100 dark:bg-stone-700 animate-shimmer" />
+              <div className="w-10 h-3 rounded bg-stone-100 dark:bg-stone-700 animate-shimmer" />
             </div>
           ))}
         </div>
@@ -39,7 +39,7 @@ export function PollSnapshotWidget({
           <p className="text-xs text-stone-400">Expected pollsters:</p>
           <div className="flex flex-wrap gap-2 text-xs text-stone-500">
             {["Curia", "Reid Research", "Verian", "Talbot Mills", "Taxpayers Union"].map((p) => (
-              <span key={p} className="rounded-full bg-stone-100 px-2.5 py-0.5 ring-1 ring-stone-200">{p}</span>
+              <span key={p} className="rounded-full bg-stone-100 dark:bg-stone-700 px-2.5 py-0.5 ring-1 ring-stone-200 dark:ring-stone-600">{p}</span>
             ))}
           </div>
         </div>
@@ -63,18 +63,18 @@ export function PollSnapshotWidget({
       <div className="space-y-2.5">
         {results.map((p) => (
           <div key={p.short_name} className="flex items-center gap-3">
-            <span className="w-12 text-xs font-semibold text-stone-600">
+            <span className="w-12 text-xs font-semibold text-stone-600 dark:text-stone-300">
               {p.short_name}
             </span>
             <div className="flex-1">
-              <div className="h-5 rounded-md bg-stone-100 overflow-hidden">
+              <div className="h-5 rounded-md bg-stone-100 dark:bg-stone-700 overflow-hidden">
                 <div
                   className="h-full rounded-md animate-bar-fill"
                   style={{ width: `${p.value}%`, backgroundColor: p.colour }}
                 />
               </div>
             </div>
-            <span className="w-12 text-right text-sm font-bold tabular-nums text-stone-700">
+            <span className="w-12 text-right text-sm font-bold tabular-nums text-stone-700 dark:text-stone-200">
               {p.value}%
             </span>
           </div>

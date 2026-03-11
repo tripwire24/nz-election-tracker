@@ -4,7 +4,6 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { useState } from "react";
 import { ThemeToggle } from "./theme-toggle";
-import { NotificationToggle } from "./notification-toggle";
 
 const NAV_LINKS = [
   { href: "/", label: "Dashboard" },
@@ -29,10 +28,10 @@ export function NavBar() {
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 text-xs font-black text-white shadow-md shadow-blue-500/20">
             NZ
           </div>
-          <span className="text-base font-bold tracking-tight text-stone-900 group-hover:text-blue-600 transition-colors">
+          <span className="text-base font-bold tracking-tight text-stone-900 dark:text-stone-100 group-hover:text-blue-600 transition-colors">
             Election Tracker
           </span>
-          <span className="hidden sm:inline-flex rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-blue-600 ring-1 ring-blue-200">
+          <span className="hidden sm:inline-flex rounded-full bg-blue-50 dark:bg-blue-950/40 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-blue-600 dark:text-blue-400 ring-1 ring-blue-200 dark:ring-blue-800">
             Beta
           </span>
         </Link>
@@ -47,8 +46,8 @@ export function NavBar() {
                 href={href}
                 className={`relative px-3 py-1.5 text-sm font-medium rounded-lg transition-all duration-200 ${
                   active
-                    ? "text-stone-900 bg-stone-100"
-                    : "text-stone-500 hover:text-stone-900 hover:bg-stone-50"
+                    ? "text-stone-900 dark:text-stone-100 bg-stone-100 dark:bg-stone-800"
+                    : "text-stone-500 hover:text-stone-900 dark:hover:text-stone-100 hover:bg-stone-50 dark:hover:bg-stone-800"
                 }`}
               >
                 {label}
@@ -63,13 +62,12 @@ export function NavBar() {
         {/* Utilities */}
         <div className="hidden md:flex items-center gap-1">
           <ThemeToggle />
-          <NotificationToggle />
         </div>
 
         {/* Mobile hamburger */}
         <button
           onClick={() => setOpen(!open)}
-          className="md:hidden flex flex-col gap-1.5 p-2 rounded-lg hover:bg-stone-100 transition-colors"
+          className="md:hidden flex flex-col gap-1.5 p-2 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
           aria-label="Toggle navigation"
         >
           <span className={`block h-0.5 w-5 bg-stone-400 transition-all duration-200 ${open ? "rotate-45 translate-y-2" : ""}`} />
@@ -90,17 +88,16 @@ export function NavBar() {
                 onClick={() => setOpen(false)}
                 className={`block px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                   active
-                    ? "text-stone-900 bg-stone-100"
-                    : "text-stone-500 hover:text-stone-900 hover:bg-stone-50"
+                    ? "text-stone-900 dark:text-stone-100 bg-stone-100 dark:bg-stone-800"
+                    : "text-stone-500 hover:text-stone-900 dark:hover:text-stone-100 hover:bg-stone-50 dark:hover:bg-stone-800"
                 }`}
               >
                 {label}
               </Link>
             );
           })}
-          <div className="flex items-center gap-2 mt-2 pt-2 border-t border-stone-200">
+          <div className="flex items-center gap-2 mt-2 pt-2 border-t border-stone-200 dark:border-stone-700">
             <ThemeToggle />
-            <NotificationToggle />
           </div>
         </div>
       )}

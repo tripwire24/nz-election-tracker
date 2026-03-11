@@ -109,7 +109,7 @@ export default async function ForecastPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-stone-900">Forecast</h1>
+        <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-100">Forecast</h1>
         <p className="mt-1 text-sm text-stone-400">
           Seat projection via Sainte-Laguë MMP allocation{pollCount > 1 ? ` from weighted average of ${pollCount} polls` : " from latest poll"}.
           {!hasPollData && " Awaiting poll data — run the polling ingestion pipeline."}
@@ -117,14 +117,14 @@ export default async function ForecastPage() {
       </div>
 
       {/* Coalition probabilities */}
-      <div className="rounded-xl border border-stone-200 bg-white p-6">
+      <div className="rounded-xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 p-6">
         <h2 className="text-xs font-semibold uppercase tracking-wider text-stone-500 mb-4">
           {hasMC ? "Monte Carlo coalition probabilities" : "Coalition seat projection"}
         </h2>
         {hasPollData ? (
           <>
             <div className="grid gap-6 md:grid-cols-3">
-              <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 text-center">
+              <div className="rounded-lg border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950/40 p-4 text-center">
                 {hasMC ? (
                   <>
                     <div className="text-3xl font-bold text-blue-600">{(mcCoalition.centre_right * 100).toFixed(0)}%</div>
@@ -141,7 +141,7 @@ export default async function ForecastPage() {
                   </>
                 )}
               </div>
-              <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-center">
+              <div className="rounded-lg border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/40 p-4 text-center">
                 {hasMC ? (
                   <>
                     <div className="text-3xl font-bold text-red-500">{(mcCoalition.centre_left * 100).toFixed(0)}%</div>
@@ -158,7 +158,7 @@ export default async function ForecastPage() {
                   </>
                 )}
               </div>
-              <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-center">
+              <div className="rounded-lg border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/40 p-4 text-center">
                 {hasMC ? (
                   <>
                     <div className="text-3xl font-bold text-amber-600">{(mcCoalition.hung * 100).toFixed(0)}%</div>
@@ -189,7 +189,7 @@ export default async function ForecastPage() {
 
       {/* Party seat breakdown */}
       {seatProjection.length > 0 && (
-        <div className="rounded-xl border border-stone-200 bg-white p-6">
+        <div className="rounded-xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 p-6">
           <h2 className="text-xs font-semibold uppercase tracking-wider text-stone-500 mb-4">
             Party seat allocation (Sainte-Laguë)
           </h2>
@@ -199,10 +199,10 @@ export default async function ForecastPage() {
                 <span className="w-10 text-xs font-bold text-stone-400">{p.short}</span>
                 <div className="flex-1">
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-sm text-stone-600">{p.name}</span>
-                    <span className="text-sm font-semibold text-stone-700">{p.seats} seats</span>
+                    <span className="text-sm text-stone-600 dark:text-stone-300">{p.name}</span>
+                    <span className="text-sm font-semibold text-stone-700 dark:text-stone-200">{p.seats} seats</span>
                   </div>
-                  <div className="h-3 w-full rounded bg-stone-100">
+                  <div className="h-3 w-full rounded bg-stone-100 dark:bg-stone-700">
                     <div
                       className="h-3 rounded transition-all"
                       style={{ width: `${(p.seats / 120) * 100}%`, backgroundColor: p.colour }}
@@ -218,7 +218,7 @@ export default async function ForecastPage() {
 
       {/* Monte Carlo seat ranges */}
       {hasMC && mcSeats && (
-        <div className="rounded-xl border border-stone-200 bg-white p-6">
+        <div className="rounded-xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 p-6">
           <h2 className="text-xs font-semibold uppercase tracking-wider text-stone-500 mb-4">
             Seat range by party (90% confidence interval)
           </h2>
@@ -232,14 +232,14 @@ export default async function ForecastPage() {
                     <span className="w-10 text-xs font-bold text-stone-400">{party}</span>
                     <div className="flex-1">
                       <div className="flex items-center justify-between mb-1">
-                        <span className="text-sm text-stone-600">
+                        <span className="text-sm text-stone-600 dark:text-stone-300">
                           {seatProjection.find((p) => p.short === party)?.name ?? party}
                         </span>
                         <span className="text-xs font-medium text-stone-500">
                           {q.p5}–{q.p95} seats (median {q.median})
                         </span>
                       </div>
-                      <div className="relative h-3 w-full rounded bg-stone-100">
+                      <div className="relative h-3 w-full rounded bg-stone-100 dark:bg-stone-700">
                         {/* p5–p95 range bar */}
                         <div
                           className="absolute top-0 h-3 rounded opacity-30"
@@ -271,37 +271,37 @@ export default async function ForecastPage() {
       )}
 
       {/* Model methodology */}
-      <div className="rounded-xl border border-stone-200 bg-white p-6">
+      <div className="rounded-xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 p-6">
         <h2 className="text-xs font-semibold uppercase tracking-wider text-stone-500 mb-4">
           Model methodology
         </h2>
         <div className="grid gap-4 md:grid-cols-3">
-          <div className="rounded-lg border border-stone-200 p-4">
+          <div className="rounded-lg border border-stone-200 dark:border-stone-700 p-4">
             <div className="flex items-center gap-2 mb-2">
               <div className={`h-8 w-8 rounded-lg flex items-center justify-center text-sm font-bold ${hasPollData ? "bg-emerald-50 text-emerald-600" : "bg-blue-600/20 text-blue-600"}`}>{hasPollData ? "✓" : "1"}</div>
-              <h3 className="text-sm font-medium text-stone-700">Polling average</h3>
+              <h3 className="text-sm font-medium text-stone-700 dark:text-stone-200">Polling average</h3>
             </div>
-            <p className="text-xs text-stone-500">
+            <p className="text-xs text-stone-500 dark:text-stone-400">
               {hasPollData
                 ? `Weighted average of ${pollCount} poll${pollCount > 1 ? "s" : ""} with 14-day exponential decay half-life. Sainte-Laguë seat allocation with 5% threshold.`
                 : "Weighted average of recent polls with recency decay and house-effect adjustment per pollster."}
             </p>
           </div>
-          <div className="rounded-lg border border-stone-200 p-4">
+          <div className="rounded-lg border border-stone-200 dark:border-stone-700 p-4">
             <div className="flex items-center gap-2 mb-2">
-              <div className="h-8 w-8 rounded-lg bg-stone-100 flex items-center justify-center text-stone-400 text-sm font-bold">2</div>
-              <h3 className="text-sm font-medium text-stone-700">Sentiment index</h3>
+              <div className="h-8 w-8 rounded-lg bg-stone-100 dark:bg-stone-700 flex items-center justify-center text-stone-400 text-sm font-bold">2</div>
+              <h3 className="text-sm font-medium text-stone-700 dark:text-stone-200">Sentiment index</h3>
             </div>
-            <p className="text-xs text-stone-500">
+            <p className="text-xs text-stone-500 dark:text-stone-400">
               AI-scored media + social sentiment per party, contributing a ±2pp adjustment to polling estimates. Not yet integrated into forecast.
             </p>
           </div>
-          <div className="rounded-lg border border-stone-200 p-4">
+          <div className="rounded-lg border border-stone-200 dark:border-stone-700 p-4">
             <div className="flex items-center gap-2 mb-2">
-              <div className={`h-8 w-8 rounded-lg flex items-center justify-center text-sm font-bold ${hasMC ? "bg-emerald-50 text-emerald-600" : "bg-stone-100 text-stone-400"}`}>{hasMC ? "✓" : "3"}</div>
-              <h3 className="text-sm font-medium text-stone-700">Monte Carlo</h3>
+              <div className={`h-8 w-8 rounded-lg flex items-center justify-center text-sm font-bold ${hasMC ? "bg-emerald-50 text-emerald-600" : "bg-stone-100 dark:bg-stone-700 text-stone-400"}`}>{hasMC ? "✓" : "3"}</div>
+              <h3 className="text-sm font-medium text-stone-700 dark:text-stone-200">Monte Carlo</h3>
             </div>
-            <p className="text-xs text-stone-500">
+            <p className="text-xs text-stone-500 dark:text-stone-400">
               {hasMC
                 ? `${mcSimCount.toLocaleString()} iteration simulation on logit-scale. Perturbs polling averages with Gaussian noise, re-allocates seats via Sainte-Laguë per iteration.`
                 : "10K+ iteration Monte Carlo simulation on logit-scale with economic fundamentals. Run the simulation script to populate."}
@@ -311,34 +311,34 @@ export default async function ForecastPage() {
       </div>
 
       {/* Roadmap */}
-      <div className="rounded-xl border border-stone-200 bg-white p-6">
-        <h2 className="text-sm font-semibold text-stone-700 mb-3">Model roadmap</h2>
+      <div className="rounded-xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 p-6">
+        <h2 className="text-sm font-semibold text-stone-700 dark:text-stone-200 mb-3">Model roadmap</h2>
         <div className="grid gap-3 md:grid-cols-4">
-          <div className="flex items-center gap-3 rounded-lg bg-emerald-50 px-3 py-2.5 ring-1 ring-emerald-200">
+          <div className="flex items-center gap-3 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 px-3 py-2.5 ring-1 ring-emerald-200 dark:ring-emerald-800">
             <span className="text-emerald-600 font-bold">✓</span>
             <div>
-              <div className="text-xs font-semibold text-stone-700">Polling data</div>
+              <div className="text-xs font-semibold text-stone-700 dark:text-stone-200">Polling data</div>
               <div className="text-[10px] text-stone-400">Wikipedia scraper live</div>
             </div>
           </div>
           <div className="flex items-center gap-3 rounded-lg bg-emerald-50 px-3 py-2.5 ring-1 ring-emerald-200">
             <span className="text-emerald-600 font-bold">✓</span>
             <div>
-              <div className="text-xs font-semibold text-stone-700">Historical results</div>
+              <div className="text-xs font-semibold text-stone-700 dark:text-stone-200">Historical results</div>
               <div className="text-[10px] text-stone-400">2017–2023 seeded</div>
             </div>
           </div>
-          <div className="flex items-center gap-3 rounded-lg bg-emerald-50 px-3 py-2.5 ring-1 ring-emerald-200">
+          <div className="flex items-center gap-3 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 px-3 py-2.5 ring-1 ring-emerald-200 dark:ring-emerald-800">
             <span className="text-emerald-600 font-bold">✓</span>
             <div>
-              <div className="text-xs font-semibold text-stone-700">Weighted average</div>
+              <div className="text-xs font-semibold text-stone-700 dark:text-stone-200">Weighted average</div>
               <div className="text-[10px] text-stone-400">14-day half-life decay</div>
             </div>
           </div>
-          <div className={`flex items-center gap-3 rounded-lg px-3 py-2.5 ring-1 ${hasMC ? "bg-emerald-50 ring-emerald-200" : "bg-stone-50 ring-stone-200"}`}>
+          <div className={`flex items-center gap-3 rounded-lg px-3 py-2.5 ring-1 ${hasMC ? "bg-emerald-50 dark:bg-emerald-950/40 ring-emerald-200 dark:ring-emerald-800" : "bg-stone-50 dark:bg-stone-800 ring-stone-200 dark:ring-stone-700"}`}>
             <span className={`font-bold ${hasMC ? "text-emerald-600" : "text-stone-400"}`}>{hasMC ? "✓" : "○"}</span>
             <div>
-              <div className="text-xs font-semibold text-stone-700">Monte Carlo</div>
+              <div className="text-xs font-semibold text-stone-700 dark:text-stone-200">Monte Carlo</div>
               <div className="text-[10px] text-stone-400">{hasMC ? `${mcSimCount.toLocaleString()} sims live` : "10K sims + economic data"}</div>
             </div>
           </div>

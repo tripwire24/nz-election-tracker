@@ -16,8 +16,8 @@ export function ForecastWidget({ rightPct, leftPct, hungPct, rightSeats, leftSea
     return (
       <DashboardCard title="Forecast" badge="Awaiting data" accent="linear-gradient(90deg, #3b82f6, #6366f1)">
         <div className="space-y-3">
-          <div className="h-16 rounded-lg bg-stone-100 animate-shimmer" />
-          <div className="h-4 w-2/3 rounded bg-stone-100 animate-shimmer" />
+          <div className="h-16 rounded-lg bg-stone-100 dark:bg-stone-700 animate-shimmer" />
+          <div className="h-4 w-2/3 rounded bg-stone-100 dark:bg-stone-700 animate-shimmer" />
         </div>
       </DashboardCard>
     );
@@ -35,7 +35,7 @@ export function ForecastWidget({ rightPct, leftPct, hungPct, rightSeats, leftSea
             <span className="text-4xl font-black tabular-nums text-blue-600">{rightPct}%</span>
             <span className="text-sm text-stone-400">{rightSeats} seats</span>
           </div>
-          <div className="h-2.5 w-full rounded-full bg-stone-100 overflow-hidden">
+          <div className="h-2.5 w-full rounded-full bg-stone-100 dark:bg-stone-700 overflow-hidden">
             <div className="h-full rounded-full bg-gradient-to-r from-blue-500 to-blue-400 animate-bar-fill" style={{ width: `${rightPct}%` }} />
           </div>
         </div>
@@ -45,14 +45,14 @@ export function ForecastWidget({ rightPct, leftPct, hungPct, rightSeats, leftSea
             <span className="text-4xl font-black tabular-nums text-red-500">{leftPct}%</span>
             <span className="text-sm text-stone-400">{leftSeats} seats</span>
           </div>
-          <div className="h-2.5 w-full rounded-full bg-stone-100 overflow-hidden">
+          <div className="h-2.5 w-full rounded-full bg-stone-100 dark:bg-stone-700 overflow-hidden">
             <div className="h-full rounded-full bg-gradient-to-r from-red-500 to-red-400 animate-bar-fill" style={{ width: `${leftPct}%` }} />
           </div>
         </div>
         <div className="flex-none text-center space-y-1 w-24">
           <div className="text-xs font-medium text-stone-400">Hung</div>
           <div className="text-3xl font-black tabular-nums text-amber-500">{hungPct}%</div>
-          <div className="h-2.5 w-full rounded-full bg-stone-100 overflow-hidden">
+          <div className="h-2.5 w-full rounded-full bg-stone-100 dark:bg-stone-700 overflow-hidden">
             <div className="h-full rounded-full bg-gradient-to-r from-amber-500 to-amber-400 animate-bar-fill" style={{ width: `${hungPct}%` }} />
           </div>
         </div>

@@ -36,7 +36,7 @@ export default async function FeedPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-stone-900">Content Feed</h1>
+          <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-100">Content Feed</h1>
         <p className="mt-1 text-sm text-stone-400">
           {totalCount} articles from NZ political sources — aggregated from RSS feeds across media, government, and blogs. Click a source to filter.
         </p>

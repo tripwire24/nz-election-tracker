@@ -81,7 +81,7 @@ export default async function SentimentPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-stone-900">Sentiment Analysis</h1>
+        <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-100">Sentiment Analysis</h1>
         <p className="mt-1 text-sm text-stone-400">
           AI-powered media sentiment tracking per party and topic, scored using Claude API.
         </p>
@@ -89,19 +89,19 @@ export default async function SentimentPage() {
 
       {/* Status overview */}
       <div className="grid gap-4 md:grid-cols-3">
-        <div className="rounded-xl border border-stone-200 bg-white p-5">
+        <div className="rounded-xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 p-5">
           <div className="text-xs font-semibold uppercase tracking-wider text-stone-500">Articles ingested</div>
-          <div className="mt-2 text-3xl font-bold text-stone-900">{articles}</div>
+          <div className="mt-2 text-3xl font-bold text-stone-900 dark:text-stone-100">{articles}</div>
           <div className="mt-1 text-xs text-stone-500">from RSS + Bluesky</div>
         </div>
-        <div className="rounded-xl border border-stone-200 bg-white p-5">
+        <div className="rounded-xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 p-5">
           <div className="text-xs font-semibold uppercase tracking-wider text-stone-500">Items scored</div>
-          <div className="mt-2 text-3xl font-bold text-stone-900">{scored}</div>
+          <div className="mt-2 text-3xl font-bold text-stone-900 dark:text-stone-100">{scored}</div>
           <div className="mt-1 text-xs text-stone-500">{articles ? `${Math.round((scored / articles) * 100)}% coverage` : "awaiting scoring"}</div>
         </div>
-        <div className="rounded-xl border border-stone-200 bg-white p-5">
+        <div className="rounded-xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 p-5">
           <div className="text-xs font-semibold uppercase tracking-wider text-stone-500">Model</div>
-          <div className="mt-2 text-lg font-bold text-stone-900">AFINN-165 + Claude</div>
+          <div className="mt-2 text-lg font-bold text-stone-900 dark:text-stone-100">AFINN-165 + Claude</div>
           <div className="mt-1 text-xs text-stone-500">
             {claudeScored > 0
               ? `AFINN: ${afinnScored} · Claude Haiku: ${claudeScored}`
@@ -111,21 +111,21 @@ export default async function SentimentPage() {
       </div>
 
       {/* How to read sentiment scores */}
-      <div className="rounded-xl border border-stone-200 bg-stone-50 p-5">
-        <h2 className="text-sm font-semibold text-stone-700 mb-3">How to read sentiment scores</h2>
+      <div className="rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 p-5">
+        <h2 className="text-sm font-semibold text-stone-700 dark:text-stone-200 mb-3">How to read sentiment scores</h2>
         <p className="text-xs text-stone-400 leading-relaxed mb-4">
           Each article or social post mentioning a party is scored on a scale from <strong className="text-red-500">−1</strong> (very negative) to <strong className="text-emerald-600">+1</strong> (very positive). Zero means neutral. We average all scores per party over a rolling 7-day window.
         </p>
         <div className="flex flex-wrap gap-3">
-          <div className="flex items-center gap-2 rounded-lg bg-red-50 px-3 py-1.5 ring-1 ring-red-200">
+          <div className="flex items-center gap-2 rounded-lg bg-red-50 dark:bg-red-950/40 px-3 py-1.5 ring-1 ring-red-200 dark:ring-red-800">
             <span className="text-red-500 font-bold text-sm">−1.0 → −0.05</span>
             <span className="text-xs text-stone-500">Negative coverage</span>
           </div>
-          <div className="flex items-center gap-2 rounded-lg bg-stone-100 px-3 py-1.5 ring-1 ring-stone-200">
+          <div className="flex items-center gap-2 rounded-lg bg-stone-100 dark:bg-stone-700 px-3 py-1.5 ring-1 ring-stone-200 dark:ring-stone-600">
             <span className="text-stone-400 font-bold text-sm">−0.05 → +0.05</span>
             <span className="text-xs text-stone-400">Neutral</span>
           </div>
-          <div className="flex items-center gap-2 rounded-lg bg-emerald-50 px-3 py-1.5 ring-1 ring-emerald-200">
+          <div className="flex items-center gap-2 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 px-3 py-1.5 ring-1 ring-emerald-200 dark:ring-emerald-800">
             <span className="text-emerald-600 font-bold text-sm">+0.05 → +1.0</span>
             <span className="text-xs text-stone-500">Positive coverage</span>
           </div>
@@ -133,7 +133,7 @@ export default async function SentimentPage() {
       </div>
 
       {/* Party sentiment grid */}
-      <div className="rounded-xl border border-stone-200 bg-white p-6">
+      <div className="rounded-xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 p-6">
         <h2 className="text-xs font-semibold uppercase tracking-wider text-stone-500 mb-4">
           Sentiment by party (7-day rolling average)
         </h2>
@@ -144,7 +144,7 @@ export default async function SentimentPage() {
             return (
               <div
                 key={party.short_name}
-                className="flex items-center gap-3 rounded-lg border border-stone-200 p-3"
+                className="flex items-center gap-3 rounded-lg border border-stone-200 dark:border-stone-700 p-3"
               >
                 <div
                   className="h-8 w-8 rounded-lg flex items-center justify-center text-[10px] font-bold text-stone-900"
@@ -153,7 +153,7 @@ export default async function SentimentPage() {
                   {party.short_name}
                 </div>
                 <div className="flex-1">
-                  <div className="text-sm font-medium text-stone-700">{party.name}</div>
+                  <div className="text-sm font-medium text-stone-700 dark:text-stone-200">{party.name}</div>
                   <div className="text-xs text-stone-500">
                     {ps ? `${ps.count} scores` : "No data yet"}
                   </div>
@@ -169,7 +169,7 @@ export default async function SentimentPage() {
 
       {/* Composite Sentiment Index */}
       {Object.keys(compositeIndex).length > 0 && (
-        <div className="rounded-xl border border-stone-200 bg-white p-6">
+        <div className="rounded-xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 p-6">
           <h2 className="text-xs font-semibold uppercase tracking-wider text-stone-500 mb-1">
             Composite Sentiment Index
           </h2>
@@ -195,14 +195,14 @@ export default async function SentimentPage() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between mb-1">
-                        <span className="text-sm font-medium text-stone-700 truncate">{party.name}</span>
+                        <span className="text-sm font-medium text-stone-700 dark:text-stone-200 truncate">{party.name}</span>
                         <span className={`text-sm font-bold tabular-nums ${isPos ? "text-emerald-600" : isNeg ? "text-red-500" : "text-stone-400"}`}>
                           {ci.score > 0 ? "+" : ""}{ci.score}
                         </span>
                       </div>
-                      <div className="relative h-2.5 w-full rounded-full bg-stone-100">
+                      <div className="relative h-2.5 w-full rounded-full bg-stone-100 dark:bg-stone-700">
                         {/* Centre line */}
-                        <div className="absolute left-1/2 top-0 h-full w-px bg-stone-300" />
+                        <div className="absolute left-1/2 top-0 h-full w-px bg-stone-300 dark:bg-stone-500" />
                         {/* Bar from centre */}
                         {ci.score !== 0 && (
                           <div
@@ -229,27 +229,27 @@ export default async function SentimentPage() {
       )}
 
       {/* Scoring pipeline */}
-      <div className="rounded-xl border border-dashed border-stone-200 bg-stone-50 p-6">
-        <h2 className="text-sm font-semibold text-stone-600 mb-3">Sentiment scoring pipeline</h2>
+      <div className="rounded-xl border border-dashed border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 p-6">
+        <h2 className="text-sm font-semibold text-stone-600 dark:text-stone-300 mb-3">Sentiment scoring pipeline</h2>
         <div className="grid gap-4 md:grid-cols-4">
           <div className="text-center">
             <div className="mx-auto h-10 w-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600 text-lg">✓</div>
-            <div className="mt-2 text-xs font-medium text-stone-600">Content Ingestion</div>
+            <div className="mt-2 text-xs font-medium text-stone-600 dark:text-stone-300">Content Ingestion</div>
             <div className="mt-0.5 text-[10px] text-stone-500">{articles} items</div>
           </div>
           <div className="text-center">
             <div className={`mx-auto h-10 w-10 rounded-full flex items-center justify-center text-lg ${scored > 0 ? "bg-emerald-50 text-emerald-600" : "bg-stone-100 text-stone-400"}`}>{scored > 0 ? "✓" : "○"}</div>
-            <div className="mt-2 text-xs font-medium text-stone-600">AFINN / VADER scoring</div>
+            <div className="mt-2 text-xs font-medium text-stone-600 dark:text-stone-300">AFINN / VADER scoring</div>
             <div className="mt-0.5 text-[10px] text-stone-500">{scored} scored</div>
           </div>
           <div className="text-center">
             <div className={`mx-auto h-10 w-10 rounded-full flex items-center justify-center text-lg ${Object.keys(partyScores).length > 0 ? "bg-emerald-50 text-emerald-600" : "bg-stone-100 text-stone-400"}`}>{Object.keys(partyScores).length > 0 ? "✓" : "○"}</div>
-            <div className="mt-2 text-xs font-medium text-stone-600">Party attribution</div>
+            <div className="mt-2 text-xs font-medium text-stone-600 dark:text-stone-300">Party attribution</div>
             <div className="mt-0.5 text-[10px] text-stone-500">{Object.keys(partyScores).length} parties</div>
           </div>
           <div className="text-center">
-            <div className="mx-auto h-10 w-10 rounded-full bg-stone-100 flex items-center justify-center text-stone-400 text-lg">○</div>
-            <div className="mt-2 text-xs font-medium text-stone-600">Rolling averages</div>
+            <div className="mx-auto h-10 w-10 rounded-full bg-stone-100 dark:bg-stone-700 flex items-center justify-center text-stone-400 text-lg">○</div>
+            <div className="mt-2 text-xs font-medium text-stone-600 dark:text-stone-300">Rolling averages</div>
             <div className="mt-0.5 text-[10px] text-stone-500">7-day window</div>
           </div>
         </div>

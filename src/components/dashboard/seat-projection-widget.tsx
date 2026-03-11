@@ -24,8 +24,8 @@ export function SeatProjectionWidget({ seats }: { seats: SeatData[] }) {
     return (
       <DashboardCard title="Seat Projection" badge="Awaiting data" accent="#6366f1">
         <div className="space-y-3">
-          <div className="h-10 rounded-lg bg-stone-100 animate-shimmer" />
-          <div className="h-3 w-1/2 rounded bg-stone-100 animate-shimmer" />
+          <div className="h-10 rounded-lg bg-stone-100 dark:bg-stone-700 animate-shimmer" />
+          <div className="h-3 w-1/2 rounded bg-stone-100 dark:bg-stone-700 animate-shimmer" />
         </div>
       </DashboardCard>
     );
@@ -39,7 +39,7 @@ export function SeatProjectionWidget({ seats }: { seats: SeatData[] }) {
           <div
             key={p.short}
             title={`${p.name}: ${p.seats} seats`}
-            className="relative flex items-center justify-center text-[10px] font-bold text-stone-900/90 transition-all hover:brightness-110"
+            className="relative flex items-center justify-center text-[10px] font-bold text-stone-900/90 dark:text-white/90 transition-all hover:brightness-110"
             style={{
               width: `${(p.seats / TOTAL_SEATS) * 100}%`,
               backgroundColor: p.colour,
@@ -53,11 +53,11 @@ export function SeatProjectionWidget({ seats }: { seats: SeatData[] }) {
       {/* Majority line indicator */}
       <div className="relative mt-1 h-5">
         <div
-          className="absolute top-0 h-5 border-l-2 border-dashed border-stone-400"
+          className="absolute top-0 h-5 border-l-2 border-dashed border-stone-400 dark:border-stone-500"
           style={{ left: `${(MAJORITY / TOTAL_SEATS) * 100}%` }}
         />
         <span
-          className="absolute top-0.5 text-[9px] font-medium text-stone-500"
+          className="absolute top-0.5 text-[9px] font-medium text-stone-500 dark:text-stone-400"
           style={{ left: `${(MAJORITY / TOTAL_SEATS) * 100}%`, transform: "translateX(-50%)" }}
         >
           {MAJORITY} majority

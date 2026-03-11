@@ -155,7 +155,7 @@ export default function RoadmapPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold text-stone-900">Roadmap</h1>
+        <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-100">Roadmap</h1>
         <p className="mt-1 text-sm text-stone-500">
           What&apos;s live, what&apos;s coming, and what we&apos;re exploring for the 2026 NZ election cycle.
         </p>
@@ -188,10 +188,10 @@ export default function RoadmapPage() {
                   return (
                     <div
                       key={item.title}
-                      className="rounded-xl border border-stone-200 bg-white p-5 shadow-sm"
+                        className="rounded-xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 p-5 shadow-sm"
                     >
                       <div className="flex items-start justify-between gap-3">
-                        <h3 className="text-sm font-semibold text-stone-800 leading-snug">
+                          <h3 className="text-sm font-semibold text-stone-800 dark:text-stone-100 leading-snug">
                           {item.title}
                         </h3>
                         <span
@@ -213,8 +213,8 @@ export default function RoadmapPage() {
       </div>
 
       {/* CTA */}
-      <div className="rounded-xl border border-stone-200 bg-gradient-to-br from-blue-50 via-white to-indigo-50 p-6 shadow-sm text-center">
-        <h3 className="text-base font-semibold text-stone-900">Got a feature idea?</h3>
+        <div className="rounded-xl border border-stone-200 dark:border-stone-700 bg-gradient-to-br from-blue-50 via-white to-indigo-50 dark:from-blue-950/30 dark:via-stone-800 dark:to-indigo-950/30 p-6 shadow-sm text-center">
+          <h3 className="text-base font-semibold text-stone-900 dark:text-stone-100">Got a feature idea?</h3>
         <p className="mt-1 text-sm text-stone-500">
           We&apos;re building this in the open and value community input.
         </p>

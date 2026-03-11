@@ -24,7 +24,7 @@ export function DashboardCard({
           {title}
         </h2>
         {badge && (
-          <span className="rounded-full bg-stone-100 px-2.5 py-0.5 text-[10px] font-medium text-stone-500 ring-1 ring-stone-200">
+          <span className="rounded-full bg-stone-100 dark:bg-stone-700 px-2.5 py-0.5 text-[10px] font-medium text-stone-500 dark:text-stone-400 ring-1 ring-stone-200 dark:ring-stone-600">
             {badge}
           </span>
         )}
