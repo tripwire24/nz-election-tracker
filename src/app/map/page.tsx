@@ -96,23 +96,31 @@ export default async function MapPage() {
 
       {/* Roadmap */}
       <div className="rounded-xl border border-dashed border-stone-200 bg-stone-50 p-6">
-        <h2 className="text-sm font-semibold text-stone-600 mb-3">Map enhancements coming:</h2>
-        <ul className="space-y-2 text-sm text-stone-400">
+        <h2 className="text-sm font-semibold text-stone-600 mb-3">Map progress</h2>
+        <ul className="space-y-2 text-sm">
           <li className="flex items-start gap-2">
-            <span className="mt-0.5 text-stone-400">○</span>
-            <span>Full LINZ electorate boundary GeoJSON (2024 redistribution)</span>
+            <span className="mt-0.5 text-emerald-500">✓</span>
+            <span className="text-stone-600">72 electorates plotted at real geographic coordinates</span>
           </li>
           <li className="flex items-start gap-2">
-            <span className="mt-0.5 text-stone-400">○</span>
-            <span>Colour-coded party lean from 2023 election results</span>
+            <span className="mt-0.5 text-emerald-500">✓</span>
+            <span className="text-stone-600">General vs Māori electorate distinction</span>
           </li>
           <li className="flex items-start gap-2">
-            <span className="mt-0.5 text-stone-400">○</span>
-            <span>Census demographic overlays from Stats NZ</span>
+            <span className="mt-0.5 text-amber-500">○</span>
+            <span className="text-stone-400">Full LINZ electorate boundary GeoJSON (2024 redistribution)</span>
           </li>
           <li className="flex items-start gap-2">
-            <span className="mt-0.5 text-stone-400">○</span>
-            <span>Candidate data per electorate</span>
+            <span className="mt-0.5 text-amber-500">○</span>
+            <span className="text-stone-400">Colour-coded party lean from 2023 election results</span>
+          </li>
+          <li className="flex items-start gap-2">
+            <span className="mt-0.5 text-amber-500">○</span>
+            <span className="text-stone-400">Census demographic overlays from Stats NZ</span>
+          </li>
+          <li className="flex items-start gap-2">
+            <span className="mt-0.5 text-amber-500">○</span>
+            <span className="text-stone-400">Candidate data per electorate</span>
           </li>
         </ul>
       </div>
