@@ -76,7 +76,7 @@ export function SeatProjectionWidget({ seats }: { seats: SeatData[] }) {
       </div>
 
       {/* Coalition summary */}
-      <div className="mt-3 flex gap-4 text-xs">
+      <div className="mt-3 flex flex-wrap items-center gap-2 text-xs">
         <span className="rounded-full bg-blue-500/10 px-2.5 py-1 text-blue-400 ring-1 ring-blue-500/20">
           Right bloc: {coalitionRight}
         </span>

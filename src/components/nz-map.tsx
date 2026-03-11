@@ -246,8 +246,7 @@ export default function NZMap({ electorates }: NZMapProps) {
       `}</style>
       <div
         ref={containerRef}
-        className="w-full rounded-lg"
-        style={{ height: "600px" }}
+        className="h-[320px] sm:h-[440px] lg:h-[600px] w-full rounded-lg"
       />
     </>
   );

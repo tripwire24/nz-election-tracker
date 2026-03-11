@@ -5,11 +5,13 @@ import { useState, type FormEvent } from "react";
 export default function ContactPage() {
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
+  const [deliveryNotice, setDeliveryNotice] = useState("");
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setStatus("sending");
     setErrorMsg("");
+    setDeliveryNotice("");
 
     const form = e.currentTarget;
     const data = {
@@ -26,9 +28,14 @@ export default function ContactPage() {
         body: JSON.stringify(data),
       });
 
+      const json = await res.json();
+
       if (!res.ok) {
-        const json = await res.json();
         throw new Error(json.error || "Something went wrong.");
+      }
+
+      if (json.warning) {
+        setDeliveryNotice(String(json.warning));
       }
 
       setStatus("sent");
@@ -58,8 +65,15 @@ export default function ContactPage() {
               </div>
               <h2 className="mt-4 text-lg font-semibold text-stone-900">Message sent</h2>
               <p className="mt-1 text-sm text-stone-500">
-                Thanks for getting in touch. We&apos;ll get back to you shortly.
+                {deliveryNotice
+                  ? "Your message was saved successfully."
+                  : "Thanks for getting in touch. We&apos;ll get back to you shortly."}
               </p>
+              {deliveryNotice && (
+                <p className="mt-2 max-w-md rounded-lg bg-amber-50 px-4 py-3 text-xs leading-relaxed text-amber-700 ring-1 ring-amber-200">
+                  {deliveryNotice}
+                </p>
+              )}
               <button
                 onClick={() => setStatus("idle")}
                 className="mt-6 rounded-lg bg-stone-100 px-4 py-2 text-sm font-medium text-stone-700 transition-colors hover:bg-stone-200"
