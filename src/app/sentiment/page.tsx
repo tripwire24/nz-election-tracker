@@ -34,16 +34,42 @@ export default async function SentimentPage() {
   // Fetch actual per-party sentiment scores
   const { data: sentimentRows } = await supabase
     .from("sentiment_scores")
-    .select("score, party_id, parties(short_name)")
+    .select("score, party_id, scored_at, parties(short_name)")
     .not("party_id", "is", null);
 
   const partyScores: Record<string, { total: number; count: number }> = {};
-  for (const row of (sentimentRows ?? []) as { score: number; parties: { short_name: string } | null }[]) {
+  // Also compute composite index: recency-weighted sentiment with volume factor
+  const now = Date.now();
+  const SEVEN_DAYS = 7 * 86_400_000;
+  const compositeAccum: Record<string, { weightedSum: number; totalWeight: number; count7d: number }> = {};
+
+  for (const row of (sentimentRows ?? []) as { score: number; scored_at: string; parties: { short_name: string } | null }[]) {
     if (!row.parties) continue;
     const key = row.parties.short_name;
     if (!partyScores[key]) partyScores[key] = { total: 0, count: 0 };
     partyScores[key].total += row.score;
     partyScores[key].count += 1;
+
+    // Composite: exponential decay over 7 days
+    if (!compositeAccum[key]) compositeAccum[key] = { weightedSum: 0, totalWeight: 0, count7d: 0 };
+    const ageMs = now - new Date(row.scored_at).getTime();
+    if (ageMs >= 0 && ageMs <= SEVEN_DAYS) {
+      const w = Math.exp(-Math.LN2 * (ageMs / SEVEN_DAYS)); // half-life = 7 days
+      compositeAccum[key].weightedSum += row.score * w;
+      compositeAccum[key].totalWeight += w;
+      compositeAccum[key].count7d += 1;
+    }
+  }
+
+  // Build composite index: score from -100 to +100
+  // Formula: weighted_avg_sentiment * volume_multiplier * 100
+  // Volume multiplier: log2(count+1) / log2(50) capped at 1 (50+ mentions = full weight)
+  const compositeIndex: Record<string, { score: number; volume: number; raw: number }> = {};
+  for (const [key, acc] of Object.entries(compositeAccum)) {
+    const rawAvg = acc.totalWeight > 0 ? acc.weightedSum / acc.totalWeight : 0;
+    const volMult = Math.min(1, Math.log2(acc.count7d + 1) / Math.log2(50));
+    const composite = Math.round(rawAvg * volMult * 100);
+    compositeIndex[key] = { score: composite, volume: acc.count7d, raw: Math.round(rawAvg * 1000) / 1000 };
   }
 
   const partyList = (parties ?? []) as { short_name: string; name: string; colour: string }[];
@@ -140,6 +166,67 @@ export default async function SentimentPage() {
           })}
         </div>
       </div>
+
+      {/* Composite Sentiment Index */}
+      {Object.keys(compositeIndex).length > 0 && (
+        <div className="rounded-xl border border-stone-200 bg-white p-6">
+          <h2 className="text-xs font-semibold uppercase tracking-wider text-stone-500 mb-1">
+            Composite Sentiment Index
+          </h2>
+          <p className="text-[11px] text-stone-400 mb-4">
+            Single score (−100 to +100) combining recency-weighted sentiment and media volume over the past 7 days.
+          </p>
+          <div className="space-y-3">
+            {partyList
+              .filter((p) => compositeIndex[p.short_name])
+              .sort((a, b) => (compositeIndex[b.short_name]?.score ?? 0) - (compositeIndex[a.short_name]?.score ?? 0))
+              .map((party) => {
+                const ci = compositeIndex[party.short_name];
+                const pct = Math.abs(ci.score);
+                const isPos = ci.score > 0;
+                const isNeg = ci.score < 0;
+                return (
+                  <div key={party.short_name} className="flex items-center gap-3">
+                    <div
+                      className="h-7 w-7 rounded-md flex items-center justify-center text-[9px] font-bold text-white shrink-0"
+                      style={{ backgroundColor: party.colour }}
+                    >
+                      {party.short_name}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-sm font-medium text-stone-700 truncate">{party.name}</span>
+                        <span className={`text-sm font-bold tabular-nums ${isPos ? "text-emerald-600" : isNeg ? "text-red-500" : "text-stone-400"}`}>
+                          {ci.score > 0 ? "+" : ""}{ci.score}
+                        </span>
+                      </div>
+                      <div className="relative h-2.5 w-full rounded-full bg-stone-100">
+                        {/* Centre line */}
+                        <div className="absolute left-1/2 top-0 h-full w-px bg-stone-300" />
+                        {/* Bar from centre */}
+                        {ci.score !== 0 && (
+                          <div
+                            className={`absolute top-0 h-full rounded-full ${isPos ? "bg-emerald-400" : "bg-red-400"}`}
+                            style={{
+                              left: isPos ? "50%" : `${50 - pct / 2}%`,
+                              width: `${pct / 2}%`,
+                            }}
+                          />
+                        )}
+                      </div>
+                      <div className="mt-0.5 text-[10px] text-stone-400">
+                        {ci.volume} mentions · avg {ci.raw > 0 ? "+" : ""}{ci.raw.toFixed(3)}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+          </div>
+          <div className="mt-4 text-[10px] text-stone-400 leading-relaxed">
+            Formula: weighted_avg × volume_factor × 100. Volume factor scales with log₂(mentions) up to 50 mentions for full weight. Recency uses 7-day exponential decay.
+          </div>
+        </div>
+      )}
 
       {/* Scoring pipeline */}
       <div className="rounded-xl border border-dashed border-stone-200 bg-stone-50 p-6">

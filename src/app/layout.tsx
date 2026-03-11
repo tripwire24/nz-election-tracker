@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { NavBar } from "@/components/nav-bar";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,13 +31,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-stone-50 text-stone-900`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
       >
+        <ThemeProvider>
         <NavBar />
         <main className="mx-auto max-w-7xl px-4 py-6">{children}</main>
-        <footer className="mt-12 border-t border-stone-200">
+        <footer className="mt-12 border-t border-card-border">
           <div className="mx-auto max-w-7xl px-4 py-8">
             <div className="flex flex-col items-center gap-4 text-xs text-stone-400 sm:flex-row sm:justify-between">
               <div className="flex flex-col items-center gap-1 sm:items-start">
@@ -53,6 +55,7 @@ export default function RootLayout({
             </div>
           </div>
         </footer>
+        </ThemeProvider>
       </body>
     </html>
   );

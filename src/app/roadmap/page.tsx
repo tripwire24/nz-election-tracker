@@ -99,8 +99,8 @@ const ROADMAP: RoadmapItem[] = [
   },
   {
     title: "Composite Sentiment Index",
-    description: "A single numeric index combining all sentiment sources into a party health score over time.",
-    status: "planned",
+    description: "Single numeric party health score (−100 to +100) combining recency-weighted sentiment and media volume over a rolling 7-day window.",
+    status: "live",
     category: "Analytics & Models",
   },
   {
@@ -125,8 +125,8 @@ const ROADMAP: RoadmapItem[] = [
   },
   {
     title: "Push Notifications (PWA)",
-    description: "Opt-in browser notifications for poll releases, major news, and sentiment shifts.",
-    status: "planned",
+    description: "Opt-in browser notifications via service worker for poll releases, major news, and sentiment shifts.",
+    status: "live",
     category: "Features & UX",
   },
   {
@@ -143,8 +143,8 @@ const ROADMAP: RoadmapItem[] = [
   },
   {
     title: "Dark / Light Theme Toggle",
-    description: "User-selectable light and dark mode with persistent preference.",
-    status: "planned",
+    description: "User-selectable light, dark, and system theme with persistent localStorage preference.",
+    status: "live",
     category: "Features & UX",
   },
 ];

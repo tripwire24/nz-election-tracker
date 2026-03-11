@@ -14,7 +14,7 @@ export function DashboardCard({
 }) {
   return (
     <div
-      className={`relative rounded-xl border border-stone-200 bg-white p-5 shadow-sm animate-fade-in ${className}`}
+      className={`relative rounded-xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 p-5 shadow-sm animate-fade-in ${className}`}
     >
       {accent && (
         <div className="absolute inset-x-0 top-0 h-0.5 rounded-t-xl" style={{ background: accent }} />

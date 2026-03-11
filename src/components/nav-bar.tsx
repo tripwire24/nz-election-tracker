@@ -3,6 +3,8 @@
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { useState } from "react";
+import { ThemeToggle } from "./theme-toggle";
+import { NotificationToggle } from "./notification-toggle";
 
 const NAV_LINKS = [
   { href: "/", label: "Dashboard" },
@@ -20,7 +22,7 @@ export function NavBar() {
   const [open, setOpen] = useState(false);
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-stone-200 bg-white/80 backdrop-blur-md">
+    <nav className="sticky top-0 z-50 border-b border-stone-200 dark:border-stone-700 bg-white/80 dark:bg-stone-900/80 backdrop-blur-md">
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2.5 group">
@@ -58,6 +60,12 @@ export function NavBar() {
           })}
         </div>
 
+        {/* Utilities */}
+        <div className="hidden md:flex items-center gap-1">
+          <ThemeToggle />
+          <NotificationToggle />
+        </div>
+
         {/* Mobile hamburger */}
         <button
           onClick={() => setOpen(!open)}
@@ -72,7 +80,7 @@ export function NavBar() {
 
       {/* Mobile menu */}
       {open && (
-        <div className="md:hidden border-t border-stone-200 bg-white/95 backdrop-blur-md px-4 pb-4 pt-2 space-y-1">
+        <div className="md:hidden border-t border-stone-200 dark:border-stone-700 bg-white/95 dark:bg-stone-900/95 backdrop-blur-md px-4 pb-4 pt-2 space-y-1">
           {NAV_LINKS.map(({ href, label }) => {
             const active = href === "/" ? pathname === "/" : pathname.startsWith(href);
             return (
@@ -90,6 +98,10 @@ export function NavBar() {
               </Link>
             );
           })}
+          <div className="flex items-center gap-2 mt-2 pt-2 border-t border-stone-200">
+            <ThemeToggle />
+            <NotificationToggle />
+          </div>
         </div>
       )}
     </nav>
