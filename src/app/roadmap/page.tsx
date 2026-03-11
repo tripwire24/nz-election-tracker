@@ -44,7 +44,7 @@ const ROADMAP: RoadmapItem[] = [
   {
     title: "Reddit Integration",
     description: "Ingest posts and comments from r/newzealand and r/nzpolitics for broader sentiment coverage.",
-    status: "planned",
+    status: "building",
     category: "Data Sources",
   },
   {
@@ -93,8 +93,8 @@ const ROADMAP: RoadmapItem[] = [
   },
   {
     title: "Monte Carlo Seat Simulation",
-    description: "Probabilistic seat projections using Monte Carlo simulation across electorate and list seats.",
-    status: "planned",
+    description: "Probabilistic seat projections using 10K Monte Carlo iterations on logit-scale with Sainte-Laguë allocation per iteration.",
+    status: "live",
     category: "Analytics & Models",
   },
   {
