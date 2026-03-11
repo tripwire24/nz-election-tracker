@@ -65,6 +65,12 @@ const ROADMAP: RoadmapItem[] = [
     status: "exploring",
     category: "Data Sources",
   },
+  {
+    title: "Prediction Market Data",
+    description: "Observational layer surfacing speculative odds from platforms like Polymarket and PredictIt — kept separate from polling-based models.",
+    status: "exploring",
+    category: "Data Sources",
+  },
 
   // Analytics & models
   {
