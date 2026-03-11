@@ -6,10 +6,13 @@ import { useState } from "react";
 
 const NAV_LINKS = [
   { href: "/", label: "Dashboard" },
+  { href: "/polls", label: "Polls" },
   { href: "/forecast", label: "Forecast" },
   { href: "/sentiment", label: "Sentiment" },
   { href: "/map", label: "Map" },
   { href: "/feed", label: "Feed" },
+  { href: "/roadmap", label: "Roadmap" },
+  { href: "/contact", label: "Contact" },
 ];
 
 export function NavBar() {
