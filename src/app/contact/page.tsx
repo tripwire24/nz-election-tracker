@@ -42,7 +42,7 @@ export default function ContactPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-100">Contact Us</h1>
+        <h1 className="text-2xl font-bold text-stone-900">Contact Us</h1>
         <p className="mt-1 text-sm text-stone-500">
           Questions, feedback, or partnership enquiries — we&apos;d love to hear from you.
         </p>
@@ -50,19 +50,19 @@ export default function ContactPage() {
 
       <div className="grid gap-8 lg:grid-cols-5">
         {/* Form */}
-        <div className="lg:col-span-3 rounded-xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 p-6 shadow-sm">
+        <div className="lg:col-span-3 rounded-xl border border-stone-200 bg-white p-6 shadow-sm">
           {status === "sent" ? (
             <div className="flex flex-col items-center justify-center py-12 text-center">
               <div className="flex h-14 w-14 items-center justify-center rounded-full bg-emerald-50 text-2xl">
                 ✓
               </div>
-              <h2 className="mt-4 text-lg font-semibold text-stone-900 dark:text-stone-100">Message sent</h2>
+              <h2 className="mt-4 text-lg font-semibold text-stone-900">Message sent</h2>
               <p className="mt-1 text-sm text-stone-500">
                 Thanks for getting in touch. We&apos;ll get back to you shortly.
               </p>
               <button
                 onClick={() => setStatus("idle")}
-                className="mt-6 rounded-lg bg-stone-100 dark:bg-stone-700 px-4 py-2 text-sm font-medium text-stone-700 dark:text-stone-200 transition-colors hover:bg-stone-200 dark:hover:bg-stone-600"
+                className="mt-6 rounded-lg bg-stone-100 px-4 py-2 text-sm font-medium text-stone-700 transition-colors hover:bg-stone-200"
               >
                 Send another message
               </button>
@@ -80,7 +80,7 @@ export default function ContactPage() {
                     type="text"
                     required
                     maxLength={200}
-                    className="w-full rounded-lg border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-900 px-3 py-2.5 text-sm text-stone-900 dark:text-stone-100 placeholder:text-stone-400 focus:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900 transition-colors"
+                    className="w-full rounded-lg border border-stone-200 bg-stone-50 px-3 py-2.5 text-sm text-stone-900 placeholder:text-stone-400 focus:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-100 transition-colors"
                     placeholder="Your name"
                   />
                 </div>
@@ -94,7 +94,7 @@ export default function ContactPage() {
                     type="email"
                     required
                     maxLength={320}
-                    className="w-full rounded-lg border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-900 px-3 py-2.5 text-sm text-stone-900 dark:text-stone-100 placeholder:text-stone-400 focus:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900 transition-colors"
+                    className="w-full rounded-lg border border-stone-200 bg-stone-50 px-3 py-2.5 text-sm text-stone-900 placeholder:text-stone-400 focus:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-100 transition-colors"
                     placeholder="you@example.com"
                   />
                 </div>
@@ -110,7 +110,7 @@ export default function ContactPage() {
                   type="text"
                   required
                   maxLength={500}
-                  className="w-full rounded-lg border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-900 px-3 py-2.5 text-sm text-stone-900 dark:text-stone-100 placeholder:text-stone-400 focus:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900 transition-colors"
+                  className="w-full rounded-lg border border-stone-200 bg-stone-50 px-3 py-2.5 text-sm text-stone-900 placeholder:text-stone-400 focus:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-100 transition-colors"
                   placeholder="What's this about?"
                 />
               </div>
@@ -125,7 +125,7 @@ export default function ContactPage() {
                   required
                   maxLength={5000}
                   rows={5}
-                  className="w-full rounded-lg border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-900 px-3 py-2.5 text-sm text-stone-900 dark:text-stone-100 placeholder:text-stone-400 focus:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900 transition-colors resize-y"
+                  className="w-full rounded-lg border border-stone-200 bg-stone-50 px-3 py-2.5 text-sm text-stone-900 placeholder:text-stone-400 focus:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-100 transition-colors resize-y"
                   placeholder="Tell us more..."
                 />
               </div>
@@ -149,9 +149,9 @@ export default function ContactPage() {
 
         {/* Sidebar */}
         <div className="lg:col-span-2 space-y-5">
-          <div className="rounded-xl border border-stone-200 dark:border-stone-700 bg-gradient-to-br from-blue-50 via-white to-indigo-50 dark:from-blue-900/20 dark:via-stone-800 dark:to-indigo-900/20 p-6 shadow-sm">
-            <h3 className="text-sm font-semibold text-stone-900 dark:text-stone-100">Partnership &amp; Sponsorship</h3>
-            <p className="mt-2 text-xs leading-relaxed text-stone-500 dark:text-stone-400">
+          <div className="rounded-xl border border-stone-200 bg-gradient-to-br from-blue-50 via-white to-indigo-50 p-6 shadow-sm">
+            <h3 className="text-sm font-semibold text-stone-900">Partnership &amp; Sponsorship</h3>
+            <p className="mt-2 text-xs leading-relaxed text-stone-500">
               Interested in sponsoring the NZ Election Tracker or integrating our data into your platform?
               We&apos;re open to media partnerships, data licensing, and custom dashboards for the 2026 election cycle.
             </p>
@@ -161,3 +161,4 @@ export default function ContactPage() {
     </div>
   );
 }
+

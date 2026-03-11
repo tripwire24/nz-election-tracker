@@ -14,7 +14,7 @@ const trendArrow = (score: number) =>
   score > 0.05 ? "↑" : score < -0.05 ? "↓" : "→";
 
 const bgTrend = (score: number) =>
-  score > 0.05 ? "bg-emerald-50 ring-emerald-200 dark:bg-emerald-950/40 dark:ring-emerald-800" : score < -0.05 ? "bg-red-50 ring-red-200 dark:bg-red-950/40 dark:ring-red-800" : "bg-stone-50 ring-stone-200 dark:bg-stone-700 dark:ring-stone-600";
+  score > 0.05 ? "bg-emerald-50 ring-emerald-200" : score < -0.05 ? "bg-red-50 ring-red-200" : "bg-stone-50 ring-stone-200";
 
 /** 7-day sentiment pulse per party — wired to Supabase */
 export function SentimentPulseWidget({ data }: { data: SentimentData[] }) {
@@ -23,7 +23,7 @@ export function SentimentPulseWidget({ data }: { data: SentimentData[] }) {
       <DashboardCard title="Sentiment Pulse" badge="Awaiting data" accent="linear-gradient(90deg, #10b981, #06b6d4)">
         <div className="grid grid-cols-3 gap-3">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="h-14 rounded-lg bg-stone-100 dark:bg-stone-700 animate-shimmer" />
+            <div key={i} className="h-14 rounded-lg bg-stone-100 animate-shimmer" />
           ))}
         </div>
       </DashboardCard>
@@ -40,10 +40,10 @@ export function SentimentPulseWidget({ data }: { data: SentimentData[] }) {
           >
             <div className="flex items-center gap-2">
               <div className="h-3 w-3 rounded-sm shrink-0 shadow-sm" style={{ backgroundColor: p.colour }} />
-              <span className="text-sm font-semibold text-stone-700 dark:text-stone-200 truncate">{p.party}</span>
+              <span className="text-sm font-semibold text-stone-700 truncate">{p.party}</span>
             </div>
             <div className="flex items-baseline justify-between">
-              <span className="text-lg font-bold tabular-nums text-stone-800 dark:text-stone-100">
+              <span className="text-lg font-bold tabular-nums text-stone-800">
                 {p.score > 0 ? "+" : ""}{p.score.toFixed(2)}
               </span>
               <span className={`text-base font-bold ${trendColour(p.score)}`}>
@@ -64,3 +64,4 @@ export function SentimentPulseWidget({ data }: { data: SentimentData[] }) {
     </DashboardCard>
   );
 }
+

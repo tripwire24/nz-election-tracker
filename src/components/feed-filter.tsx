@@ -3,10 +3,10 @@
 import { useState } from "react";
 
 const sourceColour: Record<string, string> = {
-  official: "bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-400",
-  media: "bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-300",
-  blog: "bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-400",
-  social: "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400",
+  official: "bg-blue-50 text-blue-700",
+  media: "bg-stone-100 text-stone-600",
+  blog: "bg-purple-50 text-purple-700",
+  social: "bg-emerald-50 text-emerald-700",
 };
 
 function relativeTime(dateStr: string): string {
@@ -66,8 +66,8 @@ export default function FeedFilter({
           onClick={() => setActiveSource(null)}
           className={`rounded-full border px-3 py-1 text-xs transition-colors ${
             activeSource === null
-              ? "border-stone-900 bg-stone-900 text-white dark:border-stone-100 dark:bg-stone-100 dark:text-stone-900"
-              : "border-stone-200 bg-stone-100 text-stone-600 hover:border-stone-300 hover:bg-stone-200 dark:border-stone-700 dark:bg-stone-700 dark:text-stone-300 dark:hover:border-stone-600 dark:hover:bg-stone-600"
+              ? "border-cyan-500 bg-cyan-500 text-white"
+              : "border-stone-200 bg-stone-100 text-stone-600 hover:border-stone-300 hover:bg-stone-200"
           }`}
         >
           All <span className="opacity-60">({items.length})</span>
@@ -80,8 +80,8 @@ export default function FeedFilter({
             }
             className={`rounded-full border px-3 py-1 text-xs transition-colors ${
               activeSource === name
-                ? "border-stone-900 bg-stone-900 text-white dark:border-stone-100 dark:bg-stone-100 dark:text-stone-900"
-                : "border-stone-200 bg-stone-100 text-stone-600 hover:border-stone-300 hover:bg-stone-200 dark:border-stone-700 dark:bg-stone-700 dark:text-stone-300 dark:hover:border-stone-600 dark:hover:bg-stone-600"
+                ? "border-cyan-500 bg-cyan-500 text-white"
+                : "border-stone-200 bg-stone-100 text-stone-600 hover:border-stone-300 hover:bg-stone-200"
             }`}
           >
             {name} <span className="opacity-60">({count})</span>
@@ -94,11 +94,11 @@ export default function FeedFilter({
         <div className="flex items-center gap-2 text-xs text-stone-500">
           <span>
             Showing {filtered.length} of {items.length} articles from{" "}
-            <strong className="text-stone-700 dark:text-stone-200">{activeSource}</strong>
+            <strong className="text-stone-700">{activeSource}</strong>
           </span>
           <button
             onClick={() => setActiveSource(null)}
-            className="rounded border border-stone-200 dark:border-stone-700 px-2 py-0.5 hover:bg-stone-100 dark:hover:bg-stone-700"
+            className="rounded border border-stone-200 px-2 py-0.5 hover:bg-stone-100"
           >
             Clear
           </button>
@@ -107,7 +107,7 @@ export default function FeedFilter({
 
       {/* Feed list */}
       {filtered.length === 0 ? (
-        <div className="rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-100 dark:bg-stone-800 p-8 text-center">
+        <div className="rounded-xl border border-stone-200 bg-stone-100 p-8 text-center">
           <p className="text-sm text-stone-500">
             No articles ingested yet. Run the RSS ingestion endpoint to
             populate.
@@ -121,11 +121,11 @@ export default function FeedFilter({
               href={item.source_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="block rounded-xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 p-4 transition-colors hover:border-stone-200 dark:hover:border-stone-600 hover:bg-stone-100 dark:hover:bg-stone-700"
+              className="block rounded-xl border border-stone-200 bg-white p-4 transition-colors hover:border-stone-200 hover:bg-stone-100"
             >
               <div className="flex items-start justify-between gap-4">
                 <div className="min-w-0 flex-1">
-                  <h3 className="text-sm font-medium leading-snug text-stone-700 dark:text-stone-200 line-clamp-2">
+                  <h3 className="text-sm font-medium leading-snug text-stone-700 line-clamp-2">
                     {item.title}
                   </h3>
                   {item.excerpt && (
@@ -137,7 +137,7 @@ export default function FeedFilter({
                     <span
                       className={`rounded px-1.5 py-0.5 text-[10px] font-medium ${
                         sourceColour[item.source_type] ??
-                        "bg-stone-100 dark:bg-stone-700 text-stone-500 dark:text-stone-400"
+                        "bg-stone-100 text-stone-500"
                       }`}
                     >
                       {item.source_name}
@@ -152,7 +152,7 @@ export default function FeedFilter({
                   {item.topics.map((topic) => (
                     <span
                       key={topic}
-                      className="rounded bg-stone-100 dark:bg-stone-700 px-2 py-0.5 text-[10px] text-stone-500 dark:text-stone-400"
+                      className="rounded bg-stone-100 px-2 py-0.5 text-[10px] text-stone-500"
                     >
                       {topic.replace(/_/g, " ")}
                     </span>
@@ -173,3 +173,4 @@ export default function FeedFilter({
     </>
   );
 }
+

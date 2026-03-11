@@ -12,7 +12,7 @@ export function ThemeToggle() {
   return (
     <button
       onClick={toggle}
-      className="flex h-8 w-8 items-center justify-center rounded-lg text-stone-500 hover:text-stone-900 hover:bg-stone-100 dark:text-stone-400 dark:hover:text-stone-100 dark:hover:bg-stone-800 transition-colors"
+      className="flex h-8 w-8 items-center justify-center rounded-lg text-stone-500 hover:text-stone-900 hover:bg-stone-100 transition-colors"
       title={resolved === "light" ? "Switch to dark mode" : "Switch to light mode"}
       aria-label={resolved === "light" ? "Switch to dark mode" : "Switch to light mode"}
     >
@@ -28,3 +28,4 @@ export function ThemeToggle() {
     </button>
   );
 }
+
