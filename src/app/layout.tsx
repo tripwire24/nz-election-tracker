@@ -65,20 +65,20 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-K2VQJPG6" height="0" width="0" style={{display:'none',visibility:'hidden'}} /></noscript>
         <NavBar />
         <main className="mx-auto max-w-7xl px-4 py-6">{children}</main>
-        <footer className="mt-12 border-t border-blue-200/70 bg-white/75 backdrop-blur-sm">
+        <footer className="mt-12 border-t border-[#22345F] bg-[rgba(10,16,36,0.82)] backdrop-blur-sm">
           <div className="mx-auto max-w-7xl px-4 py-8">
-            <div className="flex flex-col items-center gap-4 text-xs text-stone-400 sm:flex-row sm:justify-between">
+            <div className="flex flex-col items-center gap-4 text-xs text-[#7288A8] sm:flex-row sm:justify-between">
               <div className="flex flex-col items-center gap-1 sm:items-start">
-                <span className="font-medium text-slate-600">NZ Election Tracker</span>
+                <span className="font-medium text-[#A9BEDD]">NZ Election Tracker</span>
                 <span>&copy; {new Date().getFullYear()} Tripwire Digital Ltd. All Rights Reserved.</span>
               </div>
               <div className="flex flex-col items-center gap-1 sm:items-end">
                 <span>Data: Wikipedia polls, Bluesky, NZ media RSS</span>
-                <a href="/contact" className="text-cyan-700 hover:text-cyan-600 transition-colors">Contact Us</a>
+                <a href="/contact" className="text-[#6DDCFF] hover:text-[#B8F1FF] transition-colors">Contact Us</a>
               </div>
             </div>
-            <div className="mt-4 rounded-lg bg-blue-50/90 px-4 py-3 text-[11px] leading-relaxed text-slate-500 ring-1 ring-blue-200/70">
-              <strong className="text-slate-600">Disclaimer:</strong> This site is an independent project and is not affiliated with, endorsed by, or connected to any political party, government body, or electoral agency. All polling data, sentiment analysis, and forecasts are provided for informational purposes only and should not be taken as definitive predictions of election outcomes. Data is sourced from publicly available information and may contain inaccuracies. Use at your own discretion.
+            <div className="mt-4 rounded-lg bg-[rgba(15,23,48,0.85)] px-4 py-3 text-[11px] leading-relaxed text-[#7288A8] ring-1 ring-[rgba(109,220,255,0.18)]">
+              <strong className="text-[#A9BEDD]">Disclaimer:</strong> This site is an independent project and is not affiliated with, endorsed by, or connected to any political party, government body, or electoral agency. All polling data, sentiment analysis, and forecasts are provided for informational purposes only and should not be taken as definitive predictions of election outcomes. Data is sourced from publicly available information and may contain inaccuracies. Use at your own discretion.
             </div>
           </div>
         </footer>

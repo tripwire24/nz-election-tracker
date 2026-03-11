@@ -1,12 +1,43 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f3f8ff;
-  --foreground: #0f172a;
-  --card: #ffffff;
-  --card-border: #d4e5ff;
-  --muted: #64748b;
-  --accent: #e8f2ff;
+  --bg-void: #050816;
+  --bg-midnight: #0A1024;
+  --surface-card: #0F1730;
+  --surface-raised: #152041;
+  --border-subtle: #22345F;
+
+  --primary: #00CFFF;
+  --primary-hover: #34B6FF;
+  --primary-soft: #6DDCFF;
+  --primary-pale: #B8F1FF;
+
+  --secondary-cobalt: #2D6BFF;
+  --secondary-indigo: #5B5FFF;
+  --secondary-violet: #8A63FF;
+  --secondary-teal: #1FE0C4;
+
+  --text-primary: #E6F2FF;
+  --text-secondary: #A9BEDD;
+  --text-muted: #7288A8;
+  --text-disabled: #53637D;
+
+  --success: #22E6A7;
+  --warning: #FFB84D;
+  --danger: #FF5C7A;
+  --info: #44D9FF;
+
+  --glow-primary: 0 0 24px rgba(0, 207, 255, 0.28);
+  --glow-soft: 0 0 18px rgba(109, 220, 255, 0.16);
+  --glow-success: 0 0 18px rgba(34, 230, 167, 0.18);
+  --glow-danger: 0 0 18px rgba(255, 92, 122, 0.18);
+
+  --background: var(--bg-void);
+  --foreground: var(--text-primary);
+  --card: var(--surface-card);
+  --card-border: var(--border-subtle);
+  --muted: var(--text-muted);
+  --accent: var(--surface-raised);
 }
 
 @theme inline {
@@ -32,19 +63,45 @@ body {
 
 .tron-grid-bg {
   background-image:
-    radial-gradient(circle at 8% -20%, rgba(6, 182, 212, 0.2), transparent 60%),
-    radial-gradient(circle at 92% -8%, rgba(59, 130, 246, 0.16), transparent 56%),
-    linear-gradient(rgba(59, 130, 246, 0.045) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(59, 130, 246, 0.045) 1px, transparent 1px);
+    radial-gradient(circle at 10% -30%, rgba(0, 207, 255, 0.2), transparent 58%),
+    radial-gradient(circle at 90% -15%, rgba(45, 107, 255, 0.16), transparent 56%),
+    linear-gradient(rgba(52, 182, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(52, 182, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(180deg, #050816 0%, #0A1024 100%);
   background-size: auto, auto, 28px 28px, 28px 28px;
   background-color: var(--background);
+}
+
+/* Staging skin remap: allows existing utility-heavy pages to inherit Tron palette */
+.tron-grid-bg :is(.bg-white, .bg-stone-50, .bg-stone-100) {
+  background-color: rgba(15, 23, 48, 0.82) !important;
+}
+
+.tron-grid-bg :is(.border-stone-200, .border-blue-200, .border-blue-200\/70) {
+  border-color: rgba(34, 52, 95, 0.92) !important;
+}
+
+.tron-grid-bg :is(.text-stone-900, .text-slate-900, .text-stone-800, .text-slate-800) {
+  color: var(--text-primary) !important;
+}
+
+.tron-grid-bg :is(.text-stone-700, .text-stone-600, .text-slate-600, .text-slate-500, .text-stone-500) {
+  color: var(--text-secondary) !important;
+}
+
+.tron-grid-bg :is(.text-stone-400, .text-stone-300) {
+  color: var(--text-muted) !important;
+}
+
+.tron-grid-bg :is(.ring-stone-200, .ring-blue-200, .ring-cyan-200) {
+  --tw-ring-color: rgba(109, 220, 255, 0.18) !important;
 }
 
 /* Refined scrollbar for scrollable widgets */
 .scrollbar-thin::-webkit-scrollbar { width: 4px; }
 .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
-.scrollbar-thin::-webkit-scrollbar-thumb { background: rgba(37, 99, 235, 0.24); border-radius: 9999px; }
-.scrollbar-thin::-webkit-scrollbar-thumb:hover { background: rgba(37, 99, 235, 0.4); }
+.scrollbar-thin::-webkit-scrollbar-thumb { background: rgba(109, 220, 255, 0.22); border-radius: 9999px; }
+.scrollbar-thin::-webkit-scrollbar-thumb:hover { background: rgba(109, 220, 255, 0.4); }
 
 @keyframes fade-in {
   from { opacity: 0; transform: translateY(8px); }
@@ -70,7 +127,7 @@ body {
 .animate-slide-up { animation: slide-up 0.4s ease-out both; }
 .animate-bar-fill { animation: bar-fill 0.8s ease-out both; transform-origin: left; }
 .animate-shimmer {
-  background: linear-gradient(90deg, rgba(37, 99, 235, 0.04) 25%, rgba(6, 182, 212, 0.16) 50%, rgba(37, 99, 235, 0.04) 75%);
+  background: linear-gradient(90deg, rgba(109, 220, 255, 0.05) 20%, rgba(0, 207, 255, 0.24) 50%, rgba(109, 220, 255, 0.05) 80%);
   background-size: 200% 100%;
   animation: shimmer 1.8s infinite;
 }

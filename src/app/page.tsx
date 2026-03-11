@@ -138,19 +138,19 @@ export default async function Home() {
   return (
     <div className="space-y-6">
       {/* Hero banner */}
-      <div className="relative overflow-hidden rounded-2xl border border-blue-200/70 bg-gradient-to-br from-sky-50 via-white to-cyan-50 p-6 md:p-8 shadow-[0_12px_32px_rgba(14,116,144,0.1)]">
-        <div className="absolute -top-24 -right-24 h-64 w-64 rounded-full bg-cyan-300/35 blur-3xl" />
-        <div className="absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-blue-300/30 blur-3xl" />
+      <div className="relative overflow-hidden rounded-2xl border border-[rgba(109,220,255,0.22)] bg-gradient-to-b from-[#050816] to-[#0A1024] p-6 md:p-8 shadow-[0_0_0_1px_rgba(52,182,255,0.06),0_20px_48px_rgba(0,0,0,0.45)]">
+        <div className="absolute -top-24 -right-24 h-64 w-64 rounded-full bg-cyan-400/18 blur-3xl" />
+        <div className="absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-blue-500/18 blur-3xl" />
         <div className="relative">
-          <p className="text-xs font-semibold uppercase tracking-widest text-cyan-700">NZ Election Tracker</p>
-          <h1 className="mt-2 text-2xl font-bold text-slate-900 md:text-3xl">
+          <p className="text-xs font-semibold uppercase tracking-widest text-[#6DDCFF]">NZ Election Tracker</p>
+          <h1 className="mt-2 text-2xl font-bold text-[#EAFBFF] drop-shadow-[0_0_22px_rgba(0,207,255,0.25)] md:text-3xl">
             {rightSeats >= 61
               ? `Centre-right leads with ${rightSeats} seats`
               : leftSeats >= 61
                 ? `Centre-left leads with ${leftSeats} seats`
                 : "No clear majority — too close to call"}
           </h1>
-          <p className="mt-2 max-w-xl text-sm text-slate-600">
+          <p className="mt-2 max-w-xl text-sm text-[#A9BEDD]">
             Live forecast based on {pollInputs.length > 1 ? `weighted average of ${pollInputs.length} polls` : "latest polling data"}, Sainte-Laguë MMP seat allocation, and sentiment analysis.
           </p>
         </div>
