@@ -158,7 +158,7 @@ export default async function Home() {
 
       {/* Top row: Forecast + Countdown */}
       <div className="grid items-stretch gap-6 lg:grid-cols-4">
-        <div className="lg:col-span-3 h-full">
+        <div className="lg:col-span-3 h-full min-w-0">
           <ForecastWidget
             rightPct={rightPct}
             leftPct={leftPct}
@@ -167,7 +167,7 @@ export default async function Home() {
             leftSeats={leftSeats}
           />
         </div>
-        <div className="h-full">
+        <div className="h-full min-w-0">
           <ElectionCountdownWidget />
         </div>
       </div>
