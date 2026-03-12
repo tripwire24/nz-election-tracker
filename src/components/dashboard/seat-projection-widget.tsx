@@ -22,24 +22,24 @@ export function SeatProjectionWidget({ seats }: { seats: SeatData[] }) {
 
   if (totalAllocated === 0) {
     return (
-      <DashboardCard title="Seat Projection" badge="Awaiting data" accent="#6366f1">
+      <DashboardCard title="Seat Projection" badge="Awaiting data" tooltip="120 parliamentary seats allocated using the Sainte-Laguë method from NZ's MMP system, based on the weighted polling average." accent="#6366f1">
         <div className="space-y-3">
-          <div className="h-10 rounded-lg bg-stone-100 animate-shimmer" />
-          <div className="h-3 w-1/2 rounded bg-stone-100 animate-shimmer" />
+          <div className="h-10 rounded-lg bg-white/5 animate-shimmer" />
+          <div className="h-3 w-1/2 rounded bg-white/5 animate-shimmer" />
         </div>
       </DashboardCard>
     );
   }
 
   return (
-    <DashboardCard title="Seat Projection" badge="Sainte-Laguë" accent="#6366f1">
+    <DashboardCard title="Seat Projection" badge="Sainte-Laguë" tooltip="120 parliamentary seats allocated using the Sainte-Laguë method from NZ's MMP system, based on the weighted polling average." accent="#6366f1">
       {/* Seat bar */}
       <div className="flex h-10 overflow-hidden rounded-lg shadow-inner">
         {seats.map((p) => (
           <div
             key={p.short}
             title={`${p.name}: ${p.seats} seats`}
-            className="relative flex items-center justify-center text-[10px] font-bold text-stone-900/90 transition-all hover:brightness-110"
+            className="relative flex items-center justify-center text-[10px] font-bold text-white/90 transition-all hover:brightness-110"
             style={{
               width: `${(p.seats / TOTAL_SEATS) * 100}%`,
               backgroundColor: p.colour,
@@ -53,11 +53,11 @@ export function SeatProjectionWidget({ seats }: { seats: SeatData[] }) {
       {/* Majority line indicator */}
       <div className="relative mt-1 h-5">
         <div
-          className="absolute top-0 h-5 border-l-2 border-dashed border-stone-400"
+          className="absolute top-0 h-5 border-l-2 border-dashed border-neutral-500"
           style={{ left: `${(MAJORITY / TOTAL_SEATS) * 100}%` }}
         />
         <span
-          className="absolute top-0.5 text-[9px] font-medium text-stone-500"
+          className="absolute top-0.5 text-[9px] font-medium text-neutral-400"
           style={{ left: `${(MAJORITY / TOTAL_SEATS) * 100}%`, transform: "translateX(-50%)" }}
         >
           {MAJORITY} majority
@@ -67,10 +67,10 @@ export function SeatProjectionWidget({ seats }: { seats: SeatData[] }) {
       {/* Legend */}
       <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1.5">
         {seats.map((p) => (
-          <div key={p.short} className="flex items-center gap-1.5 text-xs text-stone-400">
+          <div key={p.short} className="flex items-center gap-1.5 text-xs text-neutral-400">
             <div className="h-2.5 w-2.5 rounded-sm shadow-sm" style={{ backgroundColor: p.colour }} />
             <span className="font-medium">{p.short}</span>
-            <span className="text-stone-500">{p.seats}</span>
+            <span className="text-neutral-500">{p.seats}</span>
           </div>
         ))}
       </div>
@@ -83,7 +83,7 @@ export function SeatProjectionWidget({ seats }: { seats: SeatData[] }) {
         <span className="rounded-full bg-red-500/10 px-2.5 py-1 text-red-400 ring-1 ring-red-500/20">
           Left bloc: {coalitionLeft}
         </span>
-        <span className="text-stone-400 py-1">{totalAllocated} seats allocated</span>
+        <span className="text-neutral-500 py-1">{totalAllocated} seats allocated</span>
       </div>
     </DashboardCard>
   );

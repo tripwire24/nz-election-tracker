@@ -56,40 +56,40 @@ export default async function PollsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-stone-900">Polls</h1>
-        <p className="mt-1 text-sm text-stone-400">
+        <h1 className="text-2xl font-bold text-neutral-100">Polls</h1>
+        <p className="mt-1 text-sm text-neutral-500">
           Party vote polling data from NZ pollsters. Auto-scraped from Wikipedia and direct sources.
         </p>
       </div>
 
       {pollList.length === 0 ? (
-        <div className="rounded-xl border border-stone-200 bg-stone-100 p-8">
-          <h2 className="text-lg font-semibold text-stone-900">Awaiting polling data</h2>
-          <p className="mt-2 text-sm text-stone-400">
+        <div className="rounded-xl border border-white/10 bg-white/5 p-8">
+          <h2 className="text-lg font-semibold text-neutral-100">Awaiting polling data</h2>
+          <p className="mt-2 text-sm text-neutral-500">
             No polls have been ingested yet. The Wikipedia polling scraper will populate this page
             once 2026 NZ election polling data is published.
           </p>
           <div className="mt-6">
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-stone-500 mb-3">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-3">
               Expected pollsters
             </h3>
             <div className="flex flex-wrap gap-2">
               {["Curia / Taxpayers Union", "Reid Research / Newshub", "Verian (Colmar Brunton)", "Talbot Mills / 1News", "Roy Morgan", "Horizon Research"].map((p) => (
-                <span key={p} className="rounded-lg border border-stone-200 bg-stone-100 px-3 py-1.5 text-sm text-stone-600">
+                <span key={p} className="rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-sm text-neutral-300">
                   {p}
                 </span>
               ))}
             </div>
           </div>
           <div className="mt-6">
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-stone-500 mb-3">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-3">
               Parties tracked
             </h3>
             <div className="flex flex-wrap gap-2">
               {partyList.filter(p => p.short_name !== "OTH").map((p) => (
                 <span
                   key={p.short_name}
-                  className="flex items-center gap-1.5 rounded-lg border border-stone-200 bg-stone-100 px-3 py-1.5 text-sm text-stone-600"
+                  className="flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-sm text-neutral-300"
                 >
                   <span
                     className="h-2.5 w-2.5 rounded-sm"
@@ -111,12 +111,12 @@ export default async function PollsPage() {
             return (
               <div
                 key={poll.id}
-                className="rounded-xl border border-stone-200 bg-white p-5"
+                className="rounded-xl border border-white/10 bg-[#242424] p-5"
               >
                 <div className="mb-4 flex items-baseline justify-between">
                   <div>
-                    <h3 className="text-sm font-semibold text-stone-900">{poll.pollster}</h3>
-                    <p className="text-xs text-stone-500">
+                    <h3 className="text-sm font-semibold text-neutral-100">{poll.pollster}</h3>
+                    <p className="text-xs text-neutral-400">
                       {new Date(poll.published_date).toLocaleDateString("en-NZ", {
                         day: "numeric",
                         month: "long",
@@ -131,7 +131,7 @@ export default async function PollsPage() {
                       href={poll.source_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-xs text-blue-600 hover:text-blue-300"
+                      className="text-xs text-blue-400 hover:text-blue-300"
                     >
                       Source →
                     </a>
@@ -140,11 +140,11 @@ export default async function PollsPage() {
                 <div className="space-y-2">
                   {results.map((r) => (
                     <div key={r.parties!.short_name} className="flex items-center gap-3">
-                      <span className="w-12 text-xs font-medium text-stone-400">
+                      <span className="w-12 text-xs font-medium text-neutral-500">
                         {r.parties!.short_name}
                       </span>
                       <div className="flex-1">
-                        <div className="h-4 rounded bg-stone-100">
+                        <div className="h-4 rounded bg-white/5">
                           <div
                             className="h-4 rounded transition-all"
                             style={{
@@ -154,7 +154,7 @@ export default async function PollsPage() {
                           />
                         </div>
                       </div>
-                      <span className="w-14 text-right text-sm font-semibold text-stone-600">
+                      <span className="w-14 text-right text-sm font-semibold text-neutral-300">
                         {r.value}%
                       </span>
                     </div>

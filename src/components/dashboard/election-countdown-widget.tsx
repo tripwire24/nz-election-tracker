@@ -27,16 +27,16 @@ export function ElectionCountdownWidget() {
   }, []);
 
   return (
-    <DashboardCard title="Election Day" badge="7 Nov 2026" accent="linear-gradient(90deg, #f59e0b, #ef4444)">
+    <DashboardCard title="Election Day" badge="7 Nov 2026" tooltip="Countdown to the NZ General Election on 7 November 2026." accent="linear-gradient(90deg, #f59e0b, #ef4444)">
       <div className="flex flex-col items-center text-center py-2">
-        <span className="text-6xl font-black tabular-nums text-stone-800 leading-none">{remaining.days}</span>
-        <span className="mt-1 text-sm font-medium text-stone-500">days to go</span>
-        <div className="mt-2 font-mono text-lg tabular-nums text-stone-600 tracking-wide">
+        <span className="text-6xl font-black tabular-nums text-neutral-100 leading-none">{remaining.days}</span>
+        <span className="mt-1 text-sm font-medium text-neutral-500">days to go</span>
+        <div className="mt-2 font-mono text-lg tabular-nums text-neutral-400 tracking-wide">
           {String(remaining.hours).padStart(2, "0")}:{String(remaining.mins).padStart(2, "0")}:{remaining.secs.toFixed(1).padStart(4, "0")}
         </div>
-        <div className="mt-3 flex gap-3 text-xs text-stone-500">
-          <span className="rounded-full bg-stone-100 px-2.5 py-1 ring-1 ring-stone-200">{remaining.weeks} weeks</span>
-          <span className="rounded-full bg-stone-100 px-2.5 py-1 ring-1 ring-stone-200">{remaining.months} months</span>
+        <div className="mt-3 flex gap-3 text-xs text-neutral-400">
+          <span className="rounded-full bg-white/5 px-2.5 py-1 ring-1 ring-white/10">{remaining.weeks} weeks</span>
+          <span className="rounded-full bg-white/5 px-2.5 py-1 ring-1 ring-white/10">{remaining.months} months</span>
         </div>
       </div>
     </DashboardCard>

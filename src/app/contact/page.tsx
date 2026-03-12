@@ -42,27 +42,27 @@ export default function ContactPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold text-stone-900">Contact Us</h1>
-        <p className="mt-1 text-sm text-stone-500">
+        <h1 className="text-2xl font-bold text-neutral-100">Contact Us</h1>
+        <p className="mt-1 text-sm text-neutral-400">
           Questions, feedback, or partnership enquiries — we&apos;d love to hear from you.
         </p>
       </div>
 
       <div className="grid gap-8 lg:grid-cols-5">
         {/* Form */}
-        <div className="lg:col-span-3 rounded-xl border border-stone-200 bg-white p-6 shadow-sm">
+        <div className="lg:col-span-3 rounded-xl border border-white/10 bg-[#242424] p-6 shadow-sm">
           {status === "sent" ? (
             <div className="flex flex-col items-center justify-center py-12 text-center">
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-emerald-50 text-2xl">
+              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500/10 text-2xl">
                 ✓
               </div>
-              <h2 className="mt-4 text-lg font-semibold text-stone-900">Message sent</h2>
-              <p className="mt-1 text-sm text-stone-500">
+              <h2 className="mt-4 text-lg font-semibold text-neutral-100">Message sent</h2>
+              <p className="mt-1 text-sm text-neutral-400">
                 Thanks for getting in touch. We&apos;ll get back to you shortly.
               </p>
               <button
                 onClick={() => setStatus("idle")}
-                className="mt-6 rounded-lg bg-stone-100 px-4 py-2 text-sm font-medium text-stone-700 transition-colors hover:bg-stone-200"
+                className="mt-6 rounded-lg bg-white/5 px-4 py-2 text-sm font-medium text-neutral-200 transition-colors hover:bg-white/10"
               >
                 Send another message
               </button>
@@ -71,7 +71,7 @@ export default function ContactPage() {
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="grid gap-5 sm:grid-cols-2">
                 <div>
-                  <label htmlFor="name" className="block text-xs font-medium text-stone-500 mb-1.5">
+                  <label htmlFor="name" className="block text-xs font-medium text-neutral-400 mb-1.5">
                     Name
                   </label>
                   <input
@@ -80,12 +80,12 @@ export default function ContactPage() {
                     type="text"
                     required
                     maxLength={200}
-                    className="w-full rounded-lg border border-stone-200 bg-stone-50 px-3 py-2.5 text-sm text-stone-900 placeholder:text-stone-400 focus:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-100 transition-colors"
+                    className="w-full rounded-lg border border-white/10 bg-[#2a2a2a] px-3 py-2.5 text-sm text-neutral-100 placeholder:text-neutral-600 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-colors"
                     placeholder="Your name"
                   />
                 </div>
                 <div>
-                  <label htmlFor="email" className="block text-xs font-medium text-stone-500 mb-1.5">
+                  <label htmlFor="email" className="block text-xs font-medium text-neutral-400 mb-1.5">
                     Email
                   </label>
                   <input
@@ -94,14 +94,14 @@ export default function ContactPage() {
                     type="email"
                     required
                     maxLength={320}
-                    className="w-full rounded-lg border border-stone-200 bg-stone-50 px-3 py-2.5 text-sm text-stone-900 placeholder:text-stone-400 focus:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-100 transition-colors"
+                    className="w-full rounded-lg border border-white/10 bg-[#2a2a2a] px-3 py-2.5 text-sm text-neutral-100 placeholder:text-neutral-600 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-colors"
                     placeholder="you@example.com"
                   />
                 </div>
               </div>
 
               <div>
-                <label htmlFor="subject" className="block text-xs font-medium text-stone-500 mb-1.5">
+                <label htmlFor="subject" className="block text-xs font-medium text-neutral-400 mb-1.5">
                   Subject
                 </label>
                 <input
@@ -110,13 +110,13 @@ export default function ContactPage() {
                   type="text"
                   required
                   maxLength={500}
-                  className="w-full rounded-lg border border-stone-200 bg-stone-50 px-3 py-2.5 text-sm text-stone-900 placeholder:text-stone-400 focus:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-100 transition-colors"
+                  className="w-full rounded-lg border border-white/10 bg-[#2a2a2a] px-3 py-2.5 text-sm text-neutral-100 placeholder:text-neutral-600 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-colors"
                   placeholder="What's this about?"
                 />
               </div>
 
               <div>
-                <label htmlFor="message" className="block text-xs font-medium text-stone-500 mb-1.5">
+                <label htmlFor="message" className="block text-xs font-medium text-neutral-400 mb-1.5">
                   Message
                 </label>
                 <textarea
@@ -125,13 +125,13 @@ export default function ContactPage() {
                   required
                   maxLength={5000}
                   rows={5}
-                  className="w-full rounded-lg border border-stone-200 bg-stone-50 px-3 py-2.5 text-sm text-stone-900 placeholder:text-stone-400 focus:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-100 transition-colors resize-y"
+                  className="w-full rounded-lg border border-white/10 bg-[#2a2a2a] px-3 py-2.5 text-sm text-neutral-100 placeholder:text-neutral-600 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-colors resize-y"
                   placeholder="Tell us more..."
                 />
               </div>
 
               {status === "error" && (
-                <div className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600 ring-1 ring-red-200">
+                <div className="rounded-lg bg-red-500/10 px-4 py-3 text-sm text-red-600 ring-1 ring-red-500/20">
                   {errorMsg}
                 </div>
               )}
@@ -139,7 +139,7 @@ export default function ContactPage() {
               <button
                 type="submit"
                 disabled={status === "sending"}
-                className="rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600 px-6 py-2.5 text-sm font-semibold text-white shadow-md shadow-blue-500/20 transition-all hover:shadow-lg hover:shadow-blue-500/30 disabled:opacity-60 disabled:cursor-not-allowed"
+                className="rounded-lg bg-gradient-to-r from-[#242424]0 to-emerald-700 px-6 py-2.5 text-sm font-semibold text-white shadow-md shadow-emerald-500/20 transition-all hover:shadow-lg hover:shadow-emerald-500/30 disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 {status === "sending" ? "Sending…" : "Send Message"}
               </button>
@@ -149,9 +149,9 @@ export default function ContactPage() {
 
         {/* Sidebar */}
         <div className="lg:col-span-2 space-y-5">
-          <div className="rounded-xl border border-stone-200 bg-gradient-to-br from-blue-50 via-white to-indigo-50 p-6 shadow-sm">
-            <h3 className="text-sm font-semibold text-stone-900">Partnership &amp; Sponsorship</h3>
-            <p className="mt-2 text-xs leading-relaxed text-stone-500">
+          <div className="rounded-xl border border-white/10 bg-gradient-to-br from-[#242424] via-[#2a2a2a] to-[#1a2a1a] p-6 shadow-sm">
+            <h3 className="text-sm font-semibold text-neutral-100">Partnership &amp; Sponsorship</h3>
+            <p className="mt-2 text-xs leading-relaxed text-neutral-400">
               Interested in sponsoring the NZ Election Tracker or integrating our data into your platform?
               We&apos;re open to media partnerships, data licensing, and custom dashboards for the 2026 election cycle.
             </p>

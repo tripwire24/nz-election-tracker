@@ -1,12 +1,14 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f3f8ff;
-  --foreground: #0f172a;
-  --card: #ffffff;
-  --card-border: #d4e5ff;
-  --muted: #64748b;
-  --accent: #e8f2ff;
+  --background: #1a1a1a;
+  --foreground: #f0f0f0;
+  --card: #242424;
+  --card-border: #3a3a3a;
+  --muted: #9ca3af;
+  --accent: #2d2d2d;
+  --nz-green: #00853D;
+  --nz-silver: #c0c0c0;
 }
 
 @theme inline {
@@ -16,6 +18,8 @@
   --color-card-border: var(--card-border);
   --color-muted: var(--muted);
   --color-accent: var(--accent);
+  --color-nz-green: var(--nz-green);
+  --color-nz-silver: var(--nz-silver);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --animate-fade-in: fade-in 0.5s ease-out both;
@@ -32,10 +36,10 @@ body {
 
 .tron-grid-bg {
   background-image:
-    radial-gradient(circle at 8% -20%, rgba(6, 182, 212, 0.2), transparent 60%),
-    radial-gradient(circle at 92% -8%, rgba(59, 130, 246, 0.16), transparent 56%),
-    linear-gradient(rgba(59, 130, 246, 0.045) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(59, 130, 246, 0.045) 1px, transparent 1px);
+    radial-gradient(circle at 8% -20%, rgba(0, 133, 61, 0.12), transparent 60%),
+    radial-gradient(circle at 92% -8%, rgba(192, 192, 192, 0.06), transparent 56%),
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
   background-size: auto, auto, 28px 28px, 28px 28px;
   background-color: var(--background);
 }
@@ -43,8 +47,8 @@ body {
 /* Refined scrollbar for scrollable widgets */
 .scrollbar-thin::-webkit-scrollbar { width: 4px; }
 .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
-.scrollbar-thin::-webkit-scrollbar-thumb { background: rgba(37, 99, 235, 0.24); border-radius: 9999px; }
-.scrollbar-thin::-webkit-scrollbar-thumb:hover { background: rgba(37, 99, 235, 0.4); }
+.scrollbar-thin::-webkit-scrollbar-thumb { background: rgba(192, 192, 192, 0.24); border-radius: 9999px; }
+.scrollbar-thin::-webkit-scrollbar-thumb:hover { background: rgba(192, 192, 192, 0.4); }
 
 @keyframes fade-in {
   from { opacity: 0; transform: translateY(8px); }
@@ -70,7 +74,7 @@ body {
 .animate-slide-up { animation: slide-up 0.4s ease-out both; }
 .animate-bar-fill { animation: bar-fill 0.8s ease-out both; transform-origin: left; }
 .animate-shimmer {
-  background: linear-gradient(90deg, rgba(37, 99, 235, 0.04) 25%, rgba(6, 182, 212, 0.16) 50%, rgba(37, 99, 235, 0.04) 75%);
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.03) 25%, rgba(192, 192, 192, 0.08) 50%, rgba(255, 255, 255, 0.03) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.8s infinite;
 }

@@ -6,10 +6,10 @@ export const metadata: Metadata = {
 };
 
 const STATUS = {
-  live: { label: "Live", colour: "bg-emerald-50 text-emerald-700 ring-emerald-200" },
-  building: { label: "In Progress", colour: "bg-blue-50 text-blue-700 ring-blue-200" },
-  planned: { label: "Planned", colour: "bg-amber-50 text-amber-700 ring-amber-200" },
-  exploring: { label: "Exploring", colour: "bg-purple-50 text-purple-700 ring-purple-200" },
+  live: { label: "Live", colour: "bg-emerald-500/10 text-emerald-400 ring-emerald-500/20" },
+  building: { label: "In Progress", colour: "bg-blue-500/10 text-blue-400 ring-blue-500/20" },
+  planned: { label: "Planned", colour: "bg-amber-500/10 text-amber-400 ring-amber-500/20" },
+  exploring: { label: "Exploring", colour: "bg-purple-500/10 text-purple-400 ring-purple-500/20" },
 } as const;
 
 type Status = keyof typeof STATUS;
@@ -155,8 +155,8 @@ export default function RoadmapPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold text-stone-900">Roadmap</h1>
-        <p className="mt-1 text-sm text-stone-500">
+        <h1 className="text-2xl font-bold text-neutral-100">Roadmap</h1>
+        <p className="mt-1 text-sm text-neutral-400">
           What&apos;s live, what&apos;s coming, and what we&apos;re exploring for the 2026 NZ election cycle.
         </p>
       </div>
@@ -179,7 +179,7 @@ export default function RoadmapPage() {
           const items = ROADMAP.filter((i) => i.category === cat);
           return (
             <section key={cat}>
-              <h2 className="text-sm font-semibold uppercase tracking-wider text-stone-400 mb-4">
+              <h2 className="text-sm font-semibold uppercase tracking-wider text-neutral-500 mb-4">
                 {cat}
               </h2>
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -188,10 +188,10 @@ export default function RoadmapPage() {
                   return (
                     <div
                       key={item.title}
-                        className="rounded-xl border border-stone-200 bg-white p-5 shadow-sm"
+                        className="rounded-xl border border-white/10 bg-[#242424] p-5 shadow-sm"
                     >
                       <div className="flex items-start justify-between gap-3">
-                          <h3 className="text-sm font-semibold text-stone-800 leading-snug">
+                          <h3 className="text-sm font-semibold text-neutral-200 leading-snug">
                           {item.title}
                         </h3>
                         <span
@@ -200,7 +200,7 @@ export default function RoadmapPage() {
                           {s.label}
                         </span>
                       </div>
-                      <p className="mt-2 text-xs leading-relaxed text-stone-500">
+                      <p className="mt-2 text-xs leading-relaxed text-neutral-400">
                         {item.description}
                       </p>
                     </div>
@@ -213,14 +213,14 @@ export default function RoadmapPage() {
       </div>
 
       {/* CTA */}
-        <div className="rounded-xl border border-stone-200 bg-gradient-to-br from-blue-50 via-white to-indigo-50 p-6 shadow-sm text-center">
-          <h3 className="text-base font-semibold text-stone-900">Got a feature idea?</h3>
-        <p className="mt-1 text-sm text-stone-500">
+        <div className="rounded-xl border border-white/10 bg-gradient-to-br from-[#242424] via-[#2a2a2a] to-[#1a2a1a] p-6 shadow-sm text-center">
+          <h3 className="text-base font-semibold text-neutral-100">Got a feature idea?</h3>
+        <p className="mt-1 text-sm text-neutral-400">
           We&apos;re building this in the open and value community input.
         </p>
         <a
           href="/contact"
-          className="mt-4 inline-block rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-blue-500/20 transition-all hover:shadow-lg hover:shadow-blue-500/30"
+          className="mt-4 inline-block rounded-lg bg-gradient-to-r from-[#242424]0 to-emerald-700 px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-emerald-500/20 transition-all hover:shadow-lg hover:shadow-emerald-500/30"
         >
           Suggest a Feature
         </a>

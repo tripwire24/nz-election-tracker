@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import ArticleSummaryModal from "./article-summary-modal";
 
 const sourceColour: Record<string, string> = {
-  official: "bg-blue-50 text-blue-700",
-  media: "bg-stone-100 text-stone-600",
-  blog: "bg-purple-50 text-purple-700",
-  social: "bg-emerald-50 text-emerald-700",
+  official: "bg-blue-500/10 text-blue-400",
+  media: "bg-white/5 text-neutral-300",
+  blog: "bg-purple-500/10 text-purple-400",
+  social: "bg-emerald-500/10 text-emerald-400",
 };
 
 function relativeTime(dateStr: string): string {
@@ -43,6 +44,7 @@ export default function FeedFilter({
   totalCount: number;
 }) {
   const [activeSource, setActiveSource] = useState<string | null>(null);
+  const [selectedArticle, setSelectedArticle] = useState<ContentItem | null>(null);
 
   // Build source counts from all items
   const sourceCounts: Record<string, number> = {};
@@ -66,8 +68,8 @@ export default function FeedFilter({
           onClick={() => setActiveSource(null)}
           className={`rounded-full border px-3 py-1 text-xs transition-colors ${
             activeSource === null
-              ? "border-cyan-500 bg-cyan-500 text-white"
-              : "border-stone-200 bg-stone-100 text-stone-600 hover:border-stone-300 hover:bg-stone-200"
+              ? "border-emerald-500 bg-emerald-500 text-white"
+              : "border-white/10 bg-white/5 text-neutral-300 hover:border-white/15 hover:bg-white/10"
           }`}
         >
           All <span className="opacity-60">({items.length})</span>
@@ -80,8 +82,8 @@ export default function FeedFilter({
             }
             className={`rounded-full border px-3 py-1 text-xs transition-colors ${
               activeSource === name
-                ? "border-cyan-500 bg-cyan-500 text-white"
-                : "border-stone-200 bg-stone-100 text-stone-600 hover:border-stone-300 hover:bg-stone-200"
+                ? "border-emerald-500 bg-emerald-500 text-white"
+                : "border-white/10 bg-white/5 text-neutral-300 hover:border-white/15 hover:bg-white/10"
             }`}
           >
             {name} <span className="opacity-60">({count})</span>
@@ -91,14 +93,14 @@ export default function FeedFilter({
 
       {/* Active filter indicator */}
       {activeSource && (
-        <div className="flex items-center gap-2 text-xs text-stone-500">
+        <div className="flex items-center gap-2 text-xs text-neutral-400">
           <span>
             Showing {filtered.length} of {items.length} articles from{" "}
-            <strong className="text-stone-700">{activeSource}</strong>
+            <strong className="text-neutral-200">{activeSource}</strong>
           </span>
           <button
             onClick={() => setActiveSource(null)}
-            className="rounded border border-stone-200 px-2 py-0.5 hover:bg-stone-100"
+            className="rounded border border-white/10 px-2 py-0.5 hover:bg-white/5"
           >
             Clear
           </button>
@@ -107,8 +109,8 @@ export default function FeedFilter({
 
       {/* Feed list */}
       {filtered.length === 0 ? (
-        <div className="rounded-xl border border-stone-200 bg-stone-100 p-8 text-center">
-          <p className="text-sm text-stone-500">
+        <div className="rounded-xl border border-white/10 bg-white/5 p-8 text-center">
+          <p className="text-sm text-neutral-400">
             No articles ingested yet. Run the RSS ingestion endpoint to
             populate.
           </p>
@@ -116,28 +118,27 @@ export default function FeedFilter({
       ) : (
         <div className="space-y-3">
           {filtered.map((item) => (
-            <a
+            <button
               key={item.id}
-              href={item.source_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block rounded-xl border border-stone-200 bg-white p-4 transition-colors hover:border-stone-200 hover:bg-stone-100"
+              type="button"
+              onClick={() => setSelectedArticle(item)}
+              className="block w-full text-left rounded-xl border border-white/10 bg-[#242424] p-4 transition-colors hover:border-white/10 hover:bg-white/5"
             >
               <div className="flex items-start justify-between gap-4">
                 <div className="min-w-0 flex-1">
-                  <h3 className="text-sm font-medium leading-snug text-stone-700 line-clamp-2">
+                  <h3 className="text-sm font-medium leading-snug text-neutral-200 line-clamp-2">
                     {item.title}
                   </h3>
                   {item.excerpt && (
-                    <p className="mt-1.5 text-xs text-stone-500 line-clamp-2">
+                    <p className="mt-1.5 text-xs text-neutral-400 line-clamp-2">
                       {item.excerpt}
                     </p>
                   )}
-                  <div className="mt-2 flex items-center gap-2 text-xs text-stone-500">
+                  <div className="mt-2 flex items-center gap-2 text-xs text-neutral-400">
                     <span
                       className={`rounded px-1.5 py-0.5 text-[10px] font-medium ${
                         sourceColour[item.source_type] ??
-                        "bg-stone-100 text-stone-500"
+                        "bg-white/5 text-neutral-400"
                       }`}
                     >
                       {item.source_name}
@@ -152,23 +153,34 @@ export default function FeedFilter({
                   {item.topics.map((topic) => (
                     <span
                       key={topic}
-                      className="rounded bg-stone-100 px-2 py-0.5 text-[10px] text-stone-500"
+                      className="rounded bg-white/5 px-2 py-0.5 text-[10px] text-neutral-400"
                     >
                       {topic.replace(/_/g, " ")}
                     </span>
                   ))}
                 </div>
               )}
-            </a>
+            </button>
           ))}
         </div>
       )}
 
       {totalCount > 50 && (
-        <p className="text-center text-xs text-stone-400">
+        <p className="text-center text-xs text-neutral-500">
           Showing {filtered.length} of {totalCount} articles
           {activeSource ? ` (filtered by ${activeSource})` : ""}
         </p>
+      )}
+
+      {selectedArticle && (
+        <ArticleSummaryModal
+          title={selectedArticle.title}
+          sourceName={selectedArticle.source_name}
+          sourceUrl={selectedArticle.source_url}
+          excerpt={selectedArticle.excerpt}
+          publishedAt={selectedArticle.published_at}
+          onClose={() => setSelectedArticle(null)}
+        />
       )}
     </>
   );

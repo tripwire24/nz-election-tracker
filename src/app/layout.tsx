@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const viewport: Viewport = {
-  themeColor: "#0891b2",
+  themeColor: "#1a1a1a",
 };
 
 export const metadata: Metadata = {
@@ -65,20 +65,34 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-K2VQJPG6" height="0" width="0" style={{display:'none',visibility:'hidden'}} /></noscript>
         <NavBar />
         <main className="mx-auto max-w-7xl px-4 py-6">{children}</main>
-        <footer className="mt-12 border-t border-blue-200/70 bg-white/75 backdrop-blur-sm">
+        <footer className="mt-12 border-t border-white/10 bg-[#141414]">
           <div className="mx-auto max-w-7xl px-4 py-8">
-            <div className="flex flex-col items-center gap-4 text-xs text-stone-400 sm:flex-row sm:justify-between">
+            <div className="flex flex-col items-center gap-4 text-xs text-neutral-500 sm:flex-row sm:justify-between">
               <div className="flex flex-col items-center gap-1 sm:items-start">
-                <span className="font-medium text-slate-600">NZ Election Tracker</span>
-                <span>&copy; {new Date().getFullYear()} Tripwire Digital Ltd. All Rights Reserved.</span>
+                <span className="font-medium text-neutral-300">NZ Election Tracker</span>
+                <span>&copy; {new Date().getFullYear()} All Rights Reserved.</span>
               </div>
-              <div className="flex flex-col items-center gap-1 sm:items-end">
-                <span>Data: Wikipedia polls, Bluesky, NZ media RSS</span>
-                <a href="/contact" className="text-cyan-700 hover:text-cyan-600 transition-colors">Contact Us</a>
+              <div className="flex flex-col items-center gap-2 sm:items-end">
+                <div className="flex items-center gap-3">
+                  <span className="text-neutral-400">Developed by</span>
+                  {/* Dripwire logo placeholder */}
+                  <span className="inline-flex items-center gap-1.5 rounded bg-white/5 px-2 py-1 ring-1 ring-white/10">
+                    <span className="text-[11px] font-semibold tracking-wide text-neutral-300">DRIPWIRE</span>
+                  </span>
+                  <span className="text-neutral-600">&amp;</span>
+                  {/* AFQ logo placeholder */}
+                  <span className="inline-flex items-center gap-1.5 rounded bg-white/5 px-2 py-1 ring-1 ring-white/10">
+                    <span className="text-[11px] font-semibold tracking-wide text-neutral-300">AFQ</span>
+                  </span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span>Data: Wikipedia polls, Bluesky, NZ media RSS</span>
+                  <a href="/contact" className="text-emerald-500 hover:text-emerald-400 transition-colors">Contact Us</a>
+                </div>
               </div>
             </div>
-            <div className="mt-4 rounded-lg bg-blue-50/90 px-4 py-3 text-[11px] leading-relaxed text-slate-500 ring-1 ring-blue-200/70">
-              <strong className="text-slate-600">Disclaimer:</strong> This site is an independent project and is not affiliated with, endorsed by, or connected to any political party, government body, or electoral agency. All polling data, sentiment analysis, and forecasts are provided for informational purposes only and should not be taken as definitive predictions of election outcomes. Data is sourced from publicly available information and may contain inaccuracies. Use at your own discretion.
+            <div className="mt-4 rounded-lg bg-white/5 px-4 py-3 text-[11px] leading-relaxed text-neutral-500 ring-1 ring-white/10">
+              <strong className="text-neutral-400">Disclaimer:</strong> This site is an independent project and is not affiliated with, endorsed by, or connected to any political party, government body, or electoral agency. All polling data, sentiment analysis, and forecasts are provided for informational purposes only and should not be taken as definitive predictions of election outcomes. Data is sourced from publicly available information and may contain inaccuracies. Use at your own discretion.
             </div>
           </div>
         </footer>

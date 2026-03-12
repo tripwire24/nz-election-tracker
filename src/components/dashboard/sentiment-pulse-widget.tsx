@@ -8,22 +8,22 @@ interface SentimentData {
 }
 
 const trendColour = (score: number) =>
-  score > 0.05 ? "text-emerald-600" : score < -0.05 ? "text-red-500" : "text-stone-400";
+  score > 0.05 ? "text-emerald-400" : score < -0.05 ? "text-red-400" : "text-neutral-500";
 
 const trendArrow = (score: number) =>
   score > 0.05 ? "↑" : score < -0.05 ? "↓" : "→";
 
 const bgTrend = (score: number) =>
-  score > 0.05 ? "bg-emerald-50 ring-emerald-200" : score < -0.05 ? "bg-red-50 ring-red-200" : "bg-stone-50 ring-stone-200";
+  score > 0.05 ? "bg-emerald-500/10 ring-emerald-500/20" : score < -0.05 ? "bg-red-500/10 ring-red-500/20" : "bg-white/5 ring-white/10";
 
 /** 7-day sentiment pulse per party — wired to Supabase */
 export function SentimentPulseWidget({ data }: { data: SentimentData[] }) {
   if (data.length === 0) {
     return (
-      <DashboardCard title="Sentiment Pulse" badge="Awaiting data" accent="linear-gradient(90deg, #10b981, #06b6d4)">
+      <DashboardCard title="Sentiment Pulse" badge="Awaiting data" tooltip="AI-scored media sentiment per party, averaging scores from −1 (negative) to +1 (positive) over a 7-day rolling window." accent="linear-gradient(90deg, #10b981, #06b6d4)">
         <div className="grid grid-cols-3 gap-3">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="h-14 rounded-lg bg-stone-100 animate-shimmer" />
+            <div key={i} className="h-14 rounded-lg bg-white/5 animate-shimmer" />
           ))}
         </div>
       </DashboardCard>
@@ -31,7 +31,7 @@ export function SentimentPulseWidget({ data }: { data: SentimentData[] }) {
   }
 
   return (
-    <DashboardCard title="Sentiment Pulse" badge={`${data.reduce((s, d) => s + d.volume, 0)} scores`} accent="linear-gradient(90deg, #10b981, #06b6d4)">
+    <DashboardCard title="Sentiment Pulse" badge={`${data.reduce((s, d) => s + d.volume, 0)} scores`} tooltip="AI-scored media sentiment per party, averaging scores from −1 (negative) to +1 (positive) over a 7-day rolling window." accent="linear-gradient(90deg, #10b981, #06b6d4)">
       <div className="grid grid-cols-2 md:grid-cols-3 gap-2.5">
         {data.map((p) => (
           <div
@@ -40,10 +40,10 @@ export function SentimentPulseWidget({ data }: { data: SentimentData[] }) {
           >
             <div className="flex items-center gap-2">
               <div className="h-3 w-3 rounded-sm shrink-0 shadow-sm" style={{ backgroundColor: p.colour }} />
-              <span className="text-sm font-semibold text-stone-700 truncate">{p.party}</span>
+              <span className="text-sm font-semibold text-neutral-200 truncate">{p.party}</span>
             </div>
             <div className="flex items-baseline justify-between">
-              <span className="text-lg font-bold tabular-nums text-stone-800">
+              <span className="text-lg font-bold tabular-nums text-neutral-100">
                 {p.score > 0 ? "+" : ""}{p.score.toFixed(2)}
               </span>
               <span className={`text-base font-bold ${trendColour(p.score)}`}>
@@ -53,12 +53,12 @@ export function SentimentPulseWidget({ data }: { data: SentimentData[] }) {
           </div>
         ))}
       </div>
-      <div className="mt-3 flex items-center gap-4 text-[11px] text-stone-400">
-        <span className="flex items-center gap-1"><span className="text-emerald-600">↑</span> Positive (&gt;0.05)</span>
-        <span className="flex items-center gap-1"><span className="text-stone-400">→</span> Neutral</span>
-        <span className="flex items-center gap-1"><span className="text-red-500">↓</span> Negative (&lt;−0.05)</span>
+      <div className="mt-3 flex items-center gap-4 text-[11px] text-neutral-500">
+        <span className="flex items-center gap-1"><span className="text-emerald-400">↑</span> Positive (&gt;0.05)</span>
+        <span className="flex items-center gap-1"><span className="text-neutral-500">→</span> Neutral</span>
+        <span className="flex items-center gap-1"><span className="text-red-400">↓</span> Negative (&lt;−0.05)</span>
       </div>
-      <p className="mt-1.5 text-[11px] text-stone-400">
+      <p className="mt-1.5 text-[11px] text-neutral-500">
         Scale: −1 (very negative) to +1 (very positive). Scored via AFINN-165 + Claude Haiku.
       </p>
     </DashboardCard>
