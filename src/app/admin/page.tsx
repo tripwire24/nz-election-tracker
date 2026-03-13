@@ -16,6 +16,7 @@ export default function AdminDashboardPage() {
   const [pages, setPages] = useState<PageSetting[]>([]);
   const [loading, setLoading] = useState(true);
   const [toggling, setToggling] = useState<string | null>(null);
+  const [resettingPoll, setResettingPoll] = useState(false);
 
   const fetchPages = useCallback(async () => {
     const res = await fetch("/api/admin/pages");
@@ -49,6 +50,14 @@ export default function AdminDashboardPage() {
       );
     }
     setToggling(null);
+  }
+
+  async function handleResetPoll() {
+    if (!confirm("Are you sure you want to reset ALL poll votes? This cannot be undone.")) return;
+    if (!confirm("Final confirmation — this will permanently delete every vote. Continue?")) return;
+    setResettingPoll(true);
+    await fetch("/api/admin/poll", { method: "DELETE" });
+    setResettingPoll(false);
   }
 
   return (
@@ -85,6 +94,26 @@ export default function AdminDashboardPage() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
             </svg>
           </a>
+        </section>
+
+        {/* Poll Management */}
+        <section>
+          <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-neutral-400">
+            Poll
+          </h2>
+          <div className="flex items-center justify-between rounded-xl border border-white/10 bg-[#242424] px-5 py-4">
+            <div>
+              <span className="font-medium text-neutral-100">Reset Poll</span>
+              <p className="mt-0.5 text-xs text-neutral-500">Delete all votes and start fresh</p>
+            </div>
+            <button
+              onClick={handleResetPoll}
+              disabled={resettingPoll}
+              className="rounded-lg border border-red-500/20 px-3 py-1.5 text-sm font-medium text-red-400 transition-colors hover:bg-red-500/10 disabled:opacity-40"
+            >
+              {resettingPoll ? "Resetting…" : "Reset votes"}
+            </button>
+          </div>
         </section>
 
         {/* Page Visibility */}

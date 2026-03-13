@@ -8,6 +8,7 @@ interface BlogPost {
   title: string;
   slug: string;
   excerpt: string | null;
+  body: string | null;
   author: string | null;
   published: boolean;
   published_at: string | null;
@@ -59,15 +60,8 @@ export default function AdminBlogPage() {
     setSlug(post.slug);
     setExcerpt(post.excerpt || "");
     setAuthor(post.author || "");
-    setBody("");
+    setBody(post.body || "");
     setEditing(true);
-    // Load full body
-    fetch(`/api/admin/blog`)
-      .then((r) => r.json())
-      .then((all: BlogPost[]) => {
-        // The list doesn't include body — for the scaffold we re-fetch individual posts
-        // For now, body editing starts empty for existing posts
-      });
   }
 
   async function handleSave() {
