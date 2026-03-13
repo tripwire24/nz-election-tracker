@@ -99,11 +99,11 @@ export default async function MapPage() {
         <h2 className="text-sm font-semibold text-neutral-300 mb-3">Map progress</h2>
         <ul className="space-y-2 text-sm">
           <li className="flex items-start gap-2">
-            <span className="mt-0.5 text-emerald-500">✓</span>
+            <span className="mt-0.5 text-neutral-300">✓</span>
             <span className="text-neutral-300">72 electorates plotted at real geographic coordinates</span>
           </li>
           <li className="flex items-start gap-2">
-            <span className="mt-0.5 text-emerald-500">✓</span>
+            <span className="mt-0.5 text-neutral-300">✓</span>
             <span className="text-neutral-300">General vs Māori electorate distinction</span>
           </li>
           <li className="flex items-start gap-2">

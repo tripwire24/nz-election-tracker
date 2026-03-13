@@ -75,19 +75,19 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
               <div className="flex flex-col items-center gap-2 sm:items-end">
                 <div className="flex items-center gap-3">
                   <span className="text-neutral-400">Developed by</span>
-                  {/* Dripwire logo placeholder */}
+                  {/* TripWire logo placeholder */}
                   <span className="inline-flex items-center gap-1.5 rounded bg-white/5 px-2 py-1 ring-1 ring-white/10">
-                    <span className="text-[11px] font-semibold tracking-wide text-neutral-300">DRIPWIRE</span>
+                    <span className="text-[11px] font-semibold tracking-wide text-neutral-300">TRIPWIRE</span>
                   </span>
                   <span className="text-neutral-600">&amp;</span>
-                  {/* AFQ logo placeholder */}
+                  {/* AFQY logo placeholder */}
                   <span className="inline-flex items-center gap-1.5 rounded bg-white/5 px-2 py-1 ring-1 ring-white/10">
-                    <span className="text-[11px] font-semibold tracking-wide text-neutral-300">AFQ</span>
+                    <span className="text-[11px] font-semibold tracking-wide text-neutral-300">AFQY</span>
                   </span>
                 </div>
                 <div className="flex items-center gap-3">
                   <span>Data: Wikipedia polls, Bluesky, NZ media RSS</span>
-                  <a href="/contact" className="text-emerald-500 hover:text-emerald-400 transition-colors">Contact Us</a>
+                  <a href="/contact" className="text-neutral-300 hover:text-white transition-colors">Contact Us</a>
                 </div>
               </div>
             </div>

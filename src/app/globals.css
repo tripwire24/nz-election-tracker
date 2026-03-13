@@ -36,8 +36,8 @@ body {
 
 .tron-grid-bg {
   background-image:
-    radial-gradient(circle at 8% -20%, rgba(0, 133, 61, 0.12), transparent 60%),
-    radial-gradient(circle at 92% -8%, rgba(192, 192, 192, 0.06), transparent 56%),
+    radial-gradient(circle at 8% -20%, rgba(192, 192, 192, 0.07), transparent 60%),
+    radial-gradient(circle at 92% -8%, rgba(192, 192, 192, 0.05), transparent 56%),
     linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
   background-size: auto, auto, 28px 28px, 28px 28px;

@@ -45,7 +45,7 @@ export function NotificationToggle() {
       disabled={perm === "denied"}
       className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
         perm === "granted"
-          ? "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200 cursor-default"
+          ? "bg-stone-50 text-stone-700 ring-1 ring-stone-200 cursor-default"
           : perm === "denied"
             ? "bg-stone-100 text-stone-400 cursor-not-allowed"
             : "bg-blue-50 text-blue-700 ring-1 ring-blue-200 hover:bg-blue-100"

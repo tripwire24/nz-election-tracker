@@ -19,11 +19,7 @@ export default async function SentimentPage() {
     .from("sentiment_scores")
     .select("id", { count: "exact", head: true });
 
-  // Count how many were scored by Claude vs AFINN
-  const { count: claudeCount } = await supabase
-    .from("sentiment_scores")
-    .select("id", { count: "exact", head: true })
-    .eq("model_version", "claude-haiku-1");
+  // Count how many were scored by Claude vs AFINN (reserved for future use)
 
   const { data: parties } = await supabase
     .from("parties")
@@ -75,8 +71,6 @@ export default async function SentimentPage() {
   const partyList = (parties ?? []) as { short_name: string; name: string; colour: string }[];
   const scored = scoredCount ?? 0;
   const articles = articleCount ?? 0;
-  const claudeScored = claudeCount ?? 0;
-  const afinnScored = scored - claudeScored;
 
   return (
     <div className="space-y-6">
@@ -100,12 +94,12 @@ export default async function SentimentPage() {
           <div className="mt-1 text-xs text-neutral-400">{articles ? `${Math.round((scored / articles) * 100)}% coverage` : "awaiting scoring"}</div>
         </div>
         <div className="rounded-xl border border-white/10 bg-[#242424] p-5">
-          <div className="text-xs font-semibold uppercase tracking-wider text-neutral-400">Model</div>
-          <div className="mt-2 text-lg font-bold text-neutral-100">AFINN-165 + Claude</div>
+          <div className="text-xs font-semibold uppercase tracking-wider text-neutral-400">Scoring</div>
+          <div className="mt-2 text-lg font-bold text-neutral-100">Scored automatically</div>
           <div className="mt-1 text-xs text-neutral-400">
-            {claudeScored > 0
-              ? `AFINN: ${afinnScored} · Claude Haiku: ${claudeScored}`
-              : "AFINN only — Claude not yet triggered"}
+            {scored > 0
+              ? `${scored} items scored · updated daily`
+              : "Awaiting first scoring run"}
           </div>
         </div>
       </div>
@@ -233,17 +227,17 @@ export default async function SentimentPage() {
         <h2 className="text-sm font-semibold text-neutral-300 mb-3">Sentiment scoring pipeline</h2>
         <div className="grid gap-4 md:grid-cols-4">
           <div className="text-center">
-            <div className="mx-auto h-10 w-10 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400 text-lg">✓</div>
+            <div className="mx-auto h-10 w-10 rounded-full bg-white/10 flex items-center justify-center text-neutral-200 text-lg">✓</div>
             <div className="mt-2 text-xs font-medium text-neutral-300">Content Ingestion</div>
             <div className="mt-0.5 text-[10px] text-neutral-400">{articles} items</div>
           </div>
           <div className="text-center">
-            <div className={`mx-auto h-10 w-10 rounded-full flex items-center justify-center text-lg ${scored > 0 ? "bg-emerald-500/10 text-emerald-400" : "bg-white/5 text-neutral-500"}`}>{scored > 0 ? "✓" : "○"}</div>
+            <div className={`mx-auto h-10 w-10 rounded-full flex items-center justify-center text-lg ${scored > 0 ? "bg-white/10 text-neutral-200" : "bg-white/5 text-neutral-500"}`}>{scored > 0 ? "✓" : "○"}</div>
             <div className="mt-2 text-xs font-medium text-neutral-300">AFINN / VADER scoring</div>
             <div className="mt-0.5 text-[10px] text-neutral-400">{scored} scored</div>
           </div>
           <div className="text-center">
-            <div className={`mx-auto h-10 w-10 rounded-full flex items-center justify-center text-lg ${Object.keys(partyScores).length > 0 ? "bg-emerald-500/10 text-emerald-400" : "bg-white/5 text-neutral-500"}`}>{Object.keys(partyScores).length > 0 ? "✓" : "○"}</div>
+            <div className={`mx-auto h-10 w-10 rounded-full flex items-center justify-center text-lg ${Object.keys(partyScores).length > 0 ? "bg-white/10 text-neutral-200" : "bg-white/5 text-neutral-500"}`}>{Object.keys(partyScores).length > 0 ? "✓" : "○"}</div>
             <div className="mt-2 text-xs font-medium text-neutral-300">Party attribution</div>
             <div className="mt-0.5 text-[10px] text-neutral-400">{Object.keys(partyScores).length} parties</div>
           </div>

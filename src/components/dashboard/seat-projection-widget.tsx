@@ -22,7 +22,7 @@ export function SeatProjectionWidget({ seats }: { seats: SeatData[] }) {
 
   if (totalAllocated === 0) {
     return (
-      <DashboardCard title="Seat Projection" badge="Awaiting data" tooltip="120 parliamentary seats allocated using the Sainte-Laguë method from NZ's MMP system, based on the weighted polling average." accent="#6366f1">
+      <DashboardCard title="Seat Projection" badge="Awaiting data" tooltip="120 parliamentary seats allocated using NZ's proportional MMP method, based on the weighted polling average." accent="#6366f1">
         <div className="space-y-3">
           <div className="h-10 rounded-lg bg-white/5 animate-shimmer" />
           <div className="h-3 w-1/2 rounded bg-white/5 animate-shimmer" />
@@ -32,7 +32,7 @@ export function SeatProjectionWidget({ seats }: { seats: SeatData[] }) {
   }
 
   return (
-    <DashboardCard title="Seat Projection" badge="Sainte-Laguë" tooltip="120 parliamentary seats allocated using the Sainte-Laguë method from NZ's MMP system, based on the weighted polling average." accent="#6366f1">
+    <DashboardCard title="Seat Projection" badge="120 Seats" tooltip="120 parliamentary seats allocated using NZ's proportional MMP method, based on the weighted polling average." accent="#6366f1">
       {/* Seat bar */}
       <div className="flex h-10 overflow-hidden rounded-lg shadow-inner">
         {seats.map((p) => (
@@ -51,16 +51,16 @@ export function SeatProjectionWidget({ seats }: { seats: SeatData[] }) {
       </div>
 
       {/* Majority line indicator */}
-      <div className="relative mt-1 h-5">
+      <div className="relative mt-1 h-7">
         <div
-          className="absolute top-0 h-5 border-l-2 border-dashed border-neutral-500"
+          className="absolute top-0 h-7 border-l-2 border-dashed border-neutral-500"
           style={{ left: `${(MAJORITY / TOTAL_SEATS) * 100}%` }}
         />
         <span
-          className="absolute top-0.5 text-[9px] font-medium text-neutral-400"
+          className="absolute top-1 rounded-full bg-white/10 px-2 py-0.5 text-[11px] font-semibold text-neutral-300 ring-1 ring-white/10"
           style={{ left: `${(MAJORITY / TOTAL_SEATS) * 100}%`, transform: "translateX(-50%)" }}
         >
-          {MAJORITY} majority
+          {MAJORITY} to win
         </span>
       </div>
 

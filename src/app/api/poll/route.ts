@@ -54,12 +54,34 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Invalid age_bracket" }, { status: 400 });
   }
 
+  // Simple IP-based dedup — hash the IP so we don't store raw addresses
+  const forwarded = request.headers.get("x-forwarded-for");
+  const ip = forwarded ? forwarded.split(",")[0].trim() : "unknown";
+  const encoder = new TextEncoder();
+  const hashBuffer = await crypto.subtle.digest("SHA-256", encoder.encode(ip + "_nzet_poll"));
+  const voterHash = Array.from(new Uint8Array(hashBuffer))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+
   const admin = createAdminClient();
+
+  // Check for existing vote by this hash
+  const { data: existing } = await admin
+    .from("user_polls")
+    .select("id")
+    .eq("voter_hash", voterHash)
+    .limit(1);
+
+  if (existing && existing.length > 0) {
+    return NextResponse.json({ error: "Already voted", alreadyVoted: true }, { status: 409 });
+  }
+
   const { error } = await admin.from("user_polls").insert({
     party_vote,
     electorate_vote: electorate_vote || null,
     age_bracket: age_bracket || null,
     region: region || null,
+    voter_hash: voterHash,
   });
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });

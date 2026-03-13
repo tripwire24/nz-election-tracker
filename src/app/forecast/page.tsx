@@ -11,6 +11,11 @@ import {
 
 export const revalidate = 300;
 
+// 2023 actual election results (current parliament)
+const PARLIAMENT_2023: Record<string, number> = {
+  NAT: 48, LAB: 34, GRN: 15, ACT: 11, NZF: 8, TPM: 6,
+};
+
 function getSupabase() {
   return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -111,7 +116,7 @@ export default async function ForecastPage() {
       <div>
         <h1 className="text-2xl font-bold text-neutral-100">Forecast</h1>
         <p className="mt-1 text-sm text-neutral-500">
-          Seat projection via Sainte-Laguë MMP allocation{pollCount > 1 ? ` from weighted average of ${pollCount} polls` : " from latest poll"}.
+          Seat projection via proportional MMP allocation{pollCount > 1 ? ` from weighted average of ${pollCount} polls` : " from latest poll"}.
           {!hasPollData && " Awaiting poll data — run the polling ingestion pipeline."}
         </p>
       </div>
@@ -119,7 +124,7 @@ export default async function ForecastPage() {
       {/* Coalition probabilities */}
       <div className="rounded-xl border border-white/10 bg-[#242424] p-6">
         <h2 className="text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-4">
-          {hasMC ? "Monte Carlo coalition probabilities" : "Coalition seat projection"}
+          {hasMC ? "Simulated coalition probabilities" : "Coalition seat projection"}
         </h2>
         {hasPollData ? (
           <>
@@ -176,7 +181,7 @@ export default async function ForecastPage() {
             </div>
             <p className="mt-4 text-xs text-neutral-500">
               {hasMC
-                ? `Based on ${mcSimCount.toLocaleString()} Monte Carlo simulations as of ${mcDate}. Each iteration perturbs polling on logit scale and allocates seats via Sainte-Laguë.`
+                ? `Based on ${mcSimCount.toLocaleString()} simulations as of ${mcDate}. Each run adds random variation to polling and re-allocates seats proportionally.`
                 : `Based on ${pollCount > 1 ? `weighted average of ${pollCount} polls (14-day half-life)` : `${latestPoll?.pollster} poll`} as of ${new Date(latestPoll!.published_date).toLocaleDateString("en-NZ", { day: "numeric", month: "short", year: "numeric" })}. 61 seats needed for a majority.`}
             </p>
           </>
@@ -190,28 +195,52 @@ export default async function ForecastPage() {
       {/* Party seat breakdown */}
       {seatProjection.length > 0 && (
         <div className="rounded-xl border border-white/10 bg-[#242424] p-6">
-          <h2 className="text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-4">
-            Party seat allocation (Sainte-Laguë)
-          </h2>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
+              Party seat allocation (proportional MMP)
+            </h2>
+            <span className="text-[10px] text-neutral-500">vs 2023 election result</span>
+          </div>
           <div className="space-y-3">
-            {seatProjection.sort((a, b) => b.seats - a.seats).map((p) => (
+            {seatProjection.sort((a, b) => b.seats - a.seats).map((p) => {
+              const prev = PARLIAMENT_2023[p.short] ?? 0;
+              const diff = p.seats - prev;
+              return (
               <div key={p.short} className="flex items-center gap-3">
                 <span className="w-10 text-xs font-bold text-neutral-500">{p.short}</span>
                 <div className="flex-1">
                   <div className="flex items-center justify-between mb-1">
                     <span className="text-sm text-neutral-300">{p.name}</span>
-                    <span className="text-sm font-semibold text-neutral-200">{p.seats} seats</span>
+                    <span className="text-sm font-semibold text-neutral-200">
+                      {p.seats} seats
+                      {prev > 0 && (
+                        <span className={`ml-2 text-xs font-medium ${diff > 0 ? "text-emerald-400" : diff < 0 ? "text-red-400" : "text-neutral-500"}`}>
+                          {diff > 0 ? `+${diff}` : diff === 0 ? "±0" : diff}
+                        </span>
+                      )}
+                    </span>
                   </div>
-                  <div className="h-3 w-full rounded bg-white/5">
+                  <div className="relative h-3 w-full rounded bg-white/5">
+                    {prev > 0 && (
+                      <div
+                        className="absolute top-0 h-3 border-r-2 border-dashed border-white/20"
+                        style={{ left: 0, width: `${(prev / 120) * 100}%` }}
+                        title={`2023: ${prev} seats`}
+                      />
+                    )}
                     <div
                       className="h-3 rounded transition-all"
                       style={{ width: `${(p.seats / 120) * 100}%`, backgroundColor: p.colour }}
                     />
                   </div>
-                  <div className="mt-0.5 text-[10px] text-neutral-500">{p.votePct}% party vote</div>
+                  <div className="mt-0.5 flex items-center justify-between">
+                    <span className="text-[10px] text-neutral-500">{p.votePct}% party vote</span>
+                    {prev > 0 && <span className="text-[10px] text-neutral-500">2023: {prev} seats</span>}
+                  </div>
                 </div>
               </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}
@@ -278,13 +307,13 @@ export default async function ForecastPage() {
         <div className="grid gap-4 md:grid-cols-3">
           <div className="rounded-lg border border-white/10 p-4">
             <div className="flex items-center gap-2 mb-2">
-              <div className={`h-8 w-8 rounded-lg flex items-center justify-center text-sm font-bold ${hasPollData ? "bg-emerald-500/10 text-emerald-400" : "bg-blue-600/20 text-blue-400"}`}>{hasPollData ? "✓" : "1"}</div>
+              <div className={`h-8 w-8 rounded-lg flex items-center justify-center text-sm font-bold ${hasPollData ? "bg-white/10 text-neutral-200" : "bg-blue-600/20 text-blue-400"}`}>{hasPollData ? "✓" : "1"}</div>
               <h3 className="text-sm font-medium text-neutral-200">Polling average</h3>
             </div>
             <p className="text-xs text-neutral-400">
               {hasPollData
-                ? `Weighted average of ${pollCount} poll${pollCount > 1 ? "s" : ""} with 14-day exponential decay half-life. Sainte-Laguë seat allocation with 5% threshold.`
-                : "Weighted average of recent polls with recency decay and house-effect adjustment per pollster."}
+                ? `Weighted average of ${pollCount} poll${pollCount > 1 ? "s" : ""} with 14-day exponential decay half-life. Proportional seat allocation with 5% threshold.`
+                : "Weighted average of recent polls with recency decay and per-pollster adjustment."}
             </p>
           </div>
           <div className="rounded-lg border border-white/10 p-4">
@@ -298,13 +327,13 @@ export default async function ForecastPage() {
           </div>
           <div className="rounded-lg border border-white/10 p-4">
             <div className="flex items-center gap-2 mb-2">
-              <div className={`h-8 w-8 rounded-lg flex items-center justify-center text-sm font-bold ${hasMC ? "bg-emerald-500/10 text-emerald-400" : "bg-white/5 text-neutral-500"}`}>{hasMC ? "✓" : "3"}</div>
-              <h3 className="text-sm font-medium text-neutral-200">Monte Carlo</h3>
+              <div className={`h-8 w-8 rounded-lg flex items-center justify-center text-sm font-bold ${hasMC ? "bg-white/10 text-neutral-200" : "bg-white/5 text-neutral-500"}`}>{hasMC ? "✓" : "3"}</div>
+              <h3 className="text-sm font-medium text-neutral-200">Simulation</h3>
             </div>
             <p className="text-xs text-neutral-400">
               {hasMC
-                ? `${mcSimCount.toLocaleString()} iteration simulation on logit-scale. Perturbs polling averages with Gaussian noise, re-allocates seats via Sainte-Laguë per iteration.`
-                : "10K+ iteration Monte Carlo simulation on logit-scale with economic fundamentals. Run the simulation script to populate."}
+                ? `${mcSimCount.toLocaleString()} iterations — adds random variation to polling averages and re-allocates seats proportionally each time.`
+                : "10K+ statistical simulations with economic fundamentals. Run the simulation script to populate."}
             </p>
           </div>
         </div>
@@ -314,29 +343,29 @@ export default async function ForecastPage() {
       <div className="rounded-xl border border-white/10 bg-[#242424] p-6">
         <h2 className="text-sm font-semibold text-neutral-200 mb-3">Model roadmap</h2>
         <div className="grid gap-3 md:grid-cols-4">
-          <div className="flex items-center gap-3 rounded-lg bg-emerald-500/10 px-3 py-2.5 ring-1 ring-emerald-500/20">
-            <span className="text-emerald-400 font-bold">✓</span>
+          <div className="flex items-center gap-3 rounded-lg bg-white/10 px-3 py-2.5 ring-1 ring-white/10">
+            <span className="text-neutral-200 font-bold">✓</span>
             <div>
               <div className="text-xs font-semibold text-neutral-200">Polling data</div>
               <div className="text-[10px] text-neutral-500">Wikipedia scraper live</div>
             </div>
           </div>
-          <div className="flex items-center gap-3 rounded-lg bg-emerald-500/10 px-3 py-2.5 ring-1 ring-emerald-500/20">
-            <span className="text-emerald-400 font-bold">✓</span>
+          <div className="flex items-center gap-3 rounded-lg bg-white/10 px-3 py-2.5 ring-1 ring-white/10">
+            <span className="text-neutral-200 font-bold">✓</span>
             <div>
               <div className="text-xs font-semibold text-neutral-200">Historical results</div>
               <div className="text-[10px] text-neutral-500">2017–2023 seeded</div>
             </div>
           </div>
-          <div className="flex items-center gap-3 rounded-lg bg-emerald-500/10 px-3 py-2.5 ring-1 ring-emerald-500/20">
-            <span className="text-emerald-400 font-bold">✓</span>
+          <div className="flex items-center gap-3 rounded-lg bg-white/10 px-3 py-2.5 ring-1 ring-white/10">
+            <span className="text-neutral-200 font-bold">✓</span>
             <div>
               <div className="text-xs font-semibold text-neutral-200">Weighted average</div>
               <div className="text-[10px] text-neutral-500">14-day half-life decay</div>
             </div>
           </div>
-          <div className={`flex items-center gap-3 rounded-lg px-3 py-2.5 ring-1 ${hasMC ? "bg-emerald-500/10 ring-emerald-500/20" : "bg-[#2a2a2a] ring-white/10"}`}>
-            <span className={`font-bold ${hasMC ? "text-emerald-400" : "text-neutral-500"}`}>{hasMC ? "✓" : "○"}</span>
+          <div className={`flex items-center gap-3 rounded-lg px-3 py-2.5 ring-1 ${hasMC ? "bg-white/10 ring-white/10" : "bg-[#2a2a2a] ring-white/10"}`}>
+            <span className={`font-bold ${hasMC ? "text-neutral-200" : "text-neutral-500"}`}>{hasMC ? "✓" : "○"}</span>
             <div>
               <div className="text-xs font-semibold text-neutral-200">Monte Carlo</div>
               <div className="text-[10px] text-neutral-500">{hasMC ? `${mcSimCount.toLocaleString()} sims live` : "10K sims + economic data"}</div>

@@ -8,13 +8,13 @@ interface ForecastProps {
   leftSeats: number;
 }
 
-/** Headline coalition win probability — derived from Sainte-Laguë seat projection */
+/** Headline coalition win probability — derived from proportional MMP seat projection */
 export function ForecastWidget({ rightPct, leftPct, hungPct, rightSeats, leftSeats }: ForecastProps) {
   const hasData = rightSeats + leftSeats > 0;
 
   if (!hasData) {
     return (
-      <DashboardCard title="Forecast" badge="Awaiting data" tooltip="Weighted average of recent polls with exponential decay, allocated to seats using NZ's Sainte-Laguë MMP method." accent="linear-gradient(90deg, #3b82f6, #6366f1)">
+      <DashboardCard title="Forecast" badge="Awaiting data" tooltip="Weighted average of recent polls with exponential decay, allocated to seats using NZ's proportional MMP method." accent="linear-gradient(90deg, #3b82f6, #6366f1)">
         <div className="space-y-3">
           <div className="h-16 rounded-lg bg-white/5 animate-shimmer" />
           <div className="h-4 w-2/3 rounded bg-white/5 animate-shimmer" />
@@ -24,9 +24,9 @@ export function ForecastWidget({ rightPct, leftPct, hungPct, rightSeats, leftSea
   }
 
   return (
-    <DashboardCard title="Forecast" badge="Poll-derived" tooltip="Weighted average of recent polls with exponential decay, allocated to seats using NZ's Sainte-Laguë MMP method." accent="linear-gradient(90deg, #3b82f6, #6366f1)">
+    <DashboardCard title="Forecast" badge="Poll-derived" tooltip="Weighted average of recent polls with exponential decay, allocated to seats using NZ's proportional MMP method." accent="linear-gradient(90deg, #3b82f6, #6366f1)">
       <p className="mb-4 text-xs text-neutral-500 leading-relaxed">
-        Seat share percentages for each coalition bloc, derived from the latest poll using NZ&apos;s Sainte-Laguë MMP allocation. 61 of 120 seats needed for a majority.
+        Combined seat totals for each coalition bloc (see Seat Projection below for individual parties). 61 of 120 seats needed for a majority.
       </p>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:gap-6">
         <div className="min-w-0 flex-1 space-y-1">
@@ -58,7 +58,7 @@ export function ForecastWidget({ rightPct, leftPct, hungPct, rightSeats, leftSea
         </div>
       </div>
       <p className="mt-4 text-xs text-neutral-500">
-        Based on latest polling via Sainte-Laguë seat allocation. Improves as sentiment + economic data feeds in.
+        Based on latest polling via proportional seat allocation. Improves as sentiment + economic data feeds in.
       </p>
     </DashboardCard>
   );

@@ -40,13 +40,13 @@ export function NavBar() {
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2.5 group">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-600 to-emerald-800 text-xs font-black text-white shadow-md shadow-emerald-900/30">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-neutral-600 to-neutral-800 text-xs font-black text-white shadow-md shadow-black/30">
             NZ
           </div>
-          <span className="text-base font-bold tracking-tight text-neutral-100 group-hover:text-emerald-400 transition-colors">
+          <span className="text-base font-bold tracking-tight text-neutral-100 group-hover:text-neutral-300 transition-colors">
             Election Tracker
           </span>
-          <span className="hidden sm:inline-flex rounded-full bg-emerald-900/40 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-emerald-400 ring-1 ring-emerald-700/50">
+          <span className="hidden sm:inline-flex rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-neutral-400 ring-1 ring-white/15">
             Beta
           </span>
         </Link>
@@ -67,7 +67,7 @@ export function NavBar() {
               >
                 {label}
                 {active && (
-                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 h-0.5 w-4 rounded-full bg-emerald-500" />
+                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 h-0.5 w-4 rounded-full bg-neutral-400" />
                 )}
               </Link>
             );

@@ -24,7 +24,7 @@ const sourceColour: Record<string, string> = {
   official: "bg-blue-500/10 text-blue-400 ring-1 ring-blue-500/20",
   media: "bg-white/5 text-neutral-400 ring-1 ring-white/10",
   blog: "bg-purple-500/10 text-purple-400 ring-1 ring-purple-500/20",
-  social: "bg-emerald-500/10 text-emerald-400 ring-1 ring-emerald-500/20",
+  social: "bg-sky-500/10 text-sky-400 ring-1 ring-sky-500/20",
 };
 
 /** Top breaking content items — wired to Supabase */

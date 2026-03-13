@@ -6,7 +6,7 @@ export const metadata: Metadata = {
 };
 
 const STATUS = {
-  live: { label: "Live", colour: "bg-emerald-500/10 text-emerald-400 ring-emerald-500/20" },
+  live: { label: "Live", colour: "bg-sky-500/10 text-sky-400 ring-sky-500/20" },
   building: { label: "In Progress", colour: "bg-blue-500/10 text-blue-400 ring-blue-500/20" },
   planned: { label: "Planned", colour: "bg-amber-500/10 text-amber-400 ring-amber-500/20" },
   exploring: { label: "Exploring", colour: "bg-purple-500/10 text-purple-400 ring-purple-500/20" },
@@ -92,8 +92,8 @@ const ROADMAP: RoadmapItem[] = [
     category: "Analytics & Models",
   },
   {
-    title: "Monte Carlo Seat Simulation",
-    description: "Probabilistic seat projections using 10K Monte Carlo iterations on logit-scale with Sainte-Laguë allocation per iteration.",
+    title: "Seat Simulation Engine",
+    description: "Probabilistic seat projections using 10K+ simulations with proportional MMP allocation per iteration.",
     status: "live",
     category: "Analytics & Models",
   },
@@ -213,14 +213,14 @@ export default function RoadmapPage() {
       </div>
 
       {/* CTA */}
-        <div className="rounded-xl border border-white/10 bg-gradient-to-br from-[#242424] via-[#2a2a2a] to-[#1a2a1a] p-6 shadow-sm text-center">
+        <div className="rounded-xl border border-white/10 bg-gradient-to-br from-[#242424] via-[#2a2a2a] to-[#1e1e1e] p-6 shadow-sm text-center">
           <h3 className="text-base font-semibold text-neutral-100">Got a feature idea?</h3>
         <p className="mt-1 text-sm text-neutral-400">
           We&apos;re building this in the open and value community input.
         </p>
         <a
           href="/contact"
-          className="mt-4 inline-block rounded-lg bg-gradient-to-r from-[#242424]0 to-emerald-700 px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-emerald-500/20 transition-all hover:shadow-lg hover:shadow-emerald-500/30"
+          className="mt-4 inline-block rounded-lg bg-gradient-to-r from-[#242424]0 to-neutral-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-black/20 transition-all hover:shadow-lg hover:shadow-black/30"
         >
           Suggest a Feature
         </a>

@@ -53,7 +53,7 @@ export default function ContactPage() {
         <div className="lg:col-span-3 rounded-xl border border-white/10 bg-[#242424] p-6 shadow-sm">
           {status === "sent" ? (
             <div className="flex flex-col items-center justify-center py-12 text-center">
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500/10 text-2xl">
+              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white/10 text-2xl">
                 ✓
               </div>
               <h2 className="mt-4 text-lg font-semibold text-neutral-100">Message sent</h2>
@@ -80,7 +80,7 @@ export default function ContactPage() {
                     type="text"
                     required
                     maxLength={200}
-                    className="w-full rounded-lg border border-white/10 bg-[#2a2a2a] px-3 py-2.5 text-sm text-neutral-100 placeholder:text-neutral-600 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-colors"
+                    className="w-full rounded-lg border border-white/10 bg-[#2a2a2a] px-3 py-2.5 text-sm text-neutral-100 placeholder:text-neutral-600 focus:border-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-400/20 transition-colors"
                     placeholder="Your name"
                   />
                 </div>
@@ -94,7 +94,7 @@ export default function ContactPage() {
                     type="email"
                     required
                     maxLength={320}
-                    className="w-full rounded-lg border border-white/10 bg-[#2a2a2a] px-3 py-2.5 text-sm text-neutral-100 placeholder:text-neutral-600 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-colors"
+                    className="w-full rounded-lg border border-white/10 bg-[#2a2a2a] px-3 py-2.5 text-sm text-neutral-100 placeholder:text-neutral-600 focus:border-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-400/20 transition-colors"
                     placeholder="you@example.com"
                   />
                 </div>
@@ -110,7 +110,7 @@ export default function ContactPage() {
                   type="text"
                   required
                   maxLength={500}
-                  className="w-full rounded-lg border border-white/10 bg-[#2a2a2a] px-3 py-2.5 text-sm text-neutral-100 placeholder:text-neutral-600 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-colors"
+                  className="w-full rounded-lg border border-white/10 bg-[#2a2a2a] px-3 py-2.5 text-sm text-neutral-100 placeholder:text-neutral-600 focus:border-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-400/20 transition-colors"
                   placeholder="What's this about?"
                 />
               </div>
@@ -125,7 +125,7 @@ export default function ContactPage() {
                   required
                   maxLength={5000}
                   rows={5}
-                  className="w-full rounded-lg border border-white/10 bg-[#2a2a2a] px-3 py-2.5 text-sm text-neutral-100 placeholder:text-neutral-600 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-colors resize-y"
+                  className="w-full rounded-lg border border-white/10 bg-[#2a2a2a] px-3 py-2.5 text-sm text-neutral-100 placeholder:text-neutral-600 focus:border-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-400/20 transition-colors resize-y"
                   placeholder="Tell us more..."
                 />
               </div>
@@ -139,7 +139,7 @@ export default function ContactPage() {
               <button
                 type="submit"
                 disabled={status === "sending"}
-                className="rounded-lg bg-gradient-to-r from-[#242424]0 to-emerald-700 px-6 py-2.5 text-sm font-semibold text-white shadow-md shadow-emerald-500/20 transition-all hover:shadow-lg hover:shadow-emerald-500/30 disabled:opacity-60 disabled:cursor-not-allowed"
+                className="rounded-lg bg-gradient-to-r from-[#242424]0 to-neutral-600 px-6 py-2.5 text-sm font-semibold text-white shadow-md shadow-black/20 transition-all hover:shadow-lg hover:shadow-black/30 disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 {status === "sending" ? "Sending…" : "Send Message"}
               </button>
@@ -149,7 +149,7 @@ export default function ContactPage() {
 
         {/* Sidebar */}
         <div className="lg:col-span-2 space-y-5">
-          <div className="rounded-xl border border-white/10 bg-gradient-to-br from-[#242424] via-[#2a2a2a] to-[#1a2a1a] p-6 shadow-sm">
+          <div className="rounded-xl border border-white/10 bg-gradient-to-br from-[#242424] via-[#2a2a2a] to-[#1e1e1e] p-6 shadow-sm">
             <h3 className="text-sm font-semibold text-neutral-100">Partnership &amp; Sponsorship</h3>
             <p className="mt-2 text-xs leading-relaxed text-neutral-400">
               Interested in sponsoring the NZ Election Tracker or integrating our data into your platform?

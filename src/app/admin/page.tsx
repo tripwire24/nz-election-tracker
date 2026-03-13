@@ -113,7 +113,7 @@ export default function AdminDashboardPage() {
                     onClick={() => toggleVisibility(page.slug, page.visible)}
                     disabled={toggling === page.slug}
                     className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full transition-colors focus:outline-none ${
-                      page.visible ? "bg-emerald-600" : "bg-neutral-700"
+                      page.visible ? "bg-neutral-500" : "bg-neutral-700"
                     } ${toggling === page.slug ? "opacity-50" : ""}`}
                     aria-label={`Toggle ${page.label} visibility`}
                   >

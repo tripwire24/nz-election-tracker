@@ -154,7 +154,7 @@ export default function AdminBlogPage() {
             {!editing && (
               <button
                 onClick={openNew}
-                className="rounded-lg bg-emerald-600 px-3 py-1.5 text-sm font-medium text-white transition-opacity hover:opacity-90"
+                className="rounded-lg bg-neutral-600 px-3 py-1.5 text-sm font-medium text-white transition-opacity hover:opacity-90"
               >
                 New post
               </button>
@@ -177,14 +177,14 @@ export default function AdminBlogPage() {
                   setTitle(e.target.value);
                   if (!editId) setSlug(autoSlug(e.target.value));
                 }}
-                className="rounded-lg border border-white/10 bg-[#2a2a2a] px-3 py-2 text-sm text-neutral-200 outline-none focus:border-emerald-500"
+                className="rounded-lg border border-white/10 bg-[#2a2a2a] px-3 py-2 text-sm text-neutral-200 outline-none focus:border-neutral-400"
               />
               <input
                 type="text"
                 placeholder="slug-url"
                 value={slug}
                 onChange={(e) => setSlug(e.target.value)}
-                className="rounded-lg border border-white/10 bg-[#2a2a2a] px-3 py-2 text-sm text-neutral-200 outline-none focus:border-emerald-500"
+                className="rounded-lg border border-white/10 bg-[#2a2a2a] px-3 py-2 text-sm text-neutral-200 outline-none focus:border-neutral-400"
               />
             </div>
             <input
@@ -192,27 +192,27 @@ export default function AdminBlogPage() {
               placeholder="Author (optional)"
               value={author}
               onChange={(e) => setAuthor(e.target.value)}
-              className="w-full rounded-lg border border-white/10 bg-[#2a2a2a] px-3 py-2 text-sm text-neutral-200 outline-none focus:border-emerald-500"
+              className="w-full rounded-lg border border-white/10 bg-[#2a2a2a] px-3 py-2 text-sm text-neutral-200 outline-none focus:border-neutral-400"
             />
             <input
               type="text"
               placeholder="Excerpt (optional, shown on listing)"
               value={excerpt}
               onChange={(e) => setExcerpt(e.target.value)}
-              className="w-full rounded-lg border border-white/10 bg-[#2a2a2a] px-3 py-2 text-sm text-neutral-200 outline-none focus:border-emerald-500"
+              className="w-full rounded-lg border border-white/10 bg-[#2a2a2a] px-3 py-2 text-sm text-neutral-200 outline-none focus:border-neutral-400"
             />
             <textarea
               placeholder="Post body (plain text for now)"
               value={body}
               onChange={(e) => setBody(e.target.value)}
               rows={10}
-              className="w-full rounded-lg border border-white/10 bg-[#2a2a2a] px-3 py-2 text-sm text-neutral-200 outline-none focus:border-emerald-500 resize-y"
+              className="w-full rounded-lg border border-white/10 bg-[#2a2a2a] px-3 py-2 text-sm text-neutral-200 outline-none focus:border-neutral-400 resize-y"
             />
             <div className="flex items-center gap-3">
               <button
                 onClick={handleSave}
                 disabled={!title.trim() || !slug.trim() || saving}
-                className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-40"
+                className="rounded-lg bg-neutral-600 px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-40"
               >
                 {saving ? "Saving…" : editId ? "Update" : "Create"}
               </button>
@@ -252,7 +252,7 @@ export default function AdminBlogPage() {
                     <span
                       className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-medium ${
                         post.published
-                          ? "bg-emerald-500/10 text-emerald-400"
+                          ? "bg-sky-500/10 text-sky-400"
                           : "bg-yellow-500/10 text-yellow-400"
                       }`}
                     >

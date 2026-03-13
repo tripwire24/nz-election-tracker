@@ -138,11 +138,11 @@ export default async function Home() {
   return (
     <div className="space-y-6">
       {/* Hero banner */}
-      <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-[#1e1e1e] via-[#242424] to-[#1a2a1a] p-6 md:p-8 shadow-[0_12px_32px_rgba(0,0,0,0.3)]">
-        <div className="absolute -top-24 -right-24 h-64 w-64 rounded-full bg-emerald-900/30 blur-3xl" />
-        <div className="absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-emerald-800/20 blur-3xl" />
+      <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-[#1e1e1e] via-[#242424] to-[#1e1e1e] p-6 md:p-8 shadow-[0_12px_32px_rgba(0,0,0,0.3)]">
+        <div className="absolute -top-24 -right-24 h-64 w-64 rounded-full bg-white/[0.03] blur-3xl" />
+        <div className="absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-white/[0.02] blur-3xl" />
         <div className="relative">
-          <p className="text-xs font-semibold uppercase tracking-widest text-emerald-500">NZ Election Tracker</p>
+          <p className="text-xs font-semibold uppercase tracking-widest text-neutral-400">NZ Election Tracker</p>
           <h1 className="mt-2 text-2xl font-bold text-neutral-100 md:text-3xl">
             {rightSeats >= 61
               ? `Centre-right leads with ${rightSeats} seats`
@@ -151,7 +151,7 @@ export default async function Home() {
                 : "No clear majority — too close to call"}
           </h1>
           <p className="mt-2 max-w-xl text-sm text-neutral-400">
-            Live forecast based on {pollInputs.length > 1 ? `weighted average of ${pollInputs.length} polls` : "latest polling data"}, Sainte-Laguë MMP seat allocation, and sentiment analysis.
+            Live forecast based on {pollInputs.length > 1 ? `weighted average of ${pollInputs.length} polls` : "latest polling data"}, proportional MMP seat allocation, and sentiment analysis.
           </p>
         </div>
       </div>

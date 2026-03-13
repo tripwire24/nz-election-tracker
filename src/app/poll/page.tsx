@@ -45,6 +45,14 @@ export default function PollPage() {
   const [submitting, setSubmitting] = useState(false);
   const [results, setResults] = useState<PollResult[]>([]);
   const [totalVotes, setTotalVotes] = useState(0);
+  const [alreadyVoted, setAlreadyVoted] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && localStorage.getItem("nzet_voted")) {
+      setAlreadyVoted(true);
+      setSubmitted(true);
+    }
+  }, []);
 
   const fetchResults = useCallback(async () => {
     const res = await fetch("/api/poll");
@@ -61,10 +69,10 @@ export default function PollPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!selectedParty) return;
+    if (!selectedParty || alreadyVoted) return;
     setSubmitting(true);
 
-    await fetch("/api/poll", {
+    const res = await fetch("/api/poll", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -73,6 +81,14 @@ export default function PollPage() {
         region: region || undefined,
       }),
     });
+
+    if (res.ok) {
+      localStorage.setItem("nzet_voted", "1");
+      setAlreadyVoted(false);
+    } else if (res.status === 409) {
+      localStorage.setItem("nzet_voted", "1");
+      setAlreadyVoted(true);
+    }
 
     setSubmitted(true);
     setSubmitting(false);
@@ -98,16 +114,16 @@ export default function PollPage() {
         <div className="rounded-xl border border-white/10 bg-[#242424] p-6">
           {submitted ? (
             <div className="flex flex-col items-center gap-3 py-10 text-center">
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-400">
+              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white/10 text-neutral-300">
                 <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                 </svg>
               </div>
               <h2 className="text-lg font-semibold text-neutral-100">
-                Thanks for voting!
+                {alreadyVoted ? "You\u2019ve already voted" : "Thanks for voting!"}
               </h2>
               <p className="text-sm text-neutral-500">
-                Results update live — see the breakdown on the right.
+                {alreadyVoted ? "One vote per person — see the live results on the right." : "Results update live — see the breakdown on the right."}
               </p>
             </div>
           ) : (
@@ -148,7 +164,7 @@ export default function PollPage() {
                   <select
                     value={ageBracket}
                     onChange={(e) => setAgeBracket(e.target.value)}
-                    className="rounded-lg border border-white/10 bg-[#2a2a2a] px-3 py-2 text-sm text-neutral-300 outline-none focus:border-emerald-500"
+                    className="rounded-lg border border-white/10 bg-[#2a2a2a] px-3 py-2 text-sm text-neutral-300 outline-none focus:border-neutral-400"
                   >
                     <option value="">Age bracket</option>
                     {AGE_BRACKETS.map((b) => (
@@ -160,7 +176,7 @@ export default function PollPage() {
                   <select
                     value={region}
                     onChange={(e) => setRegion(e.target.value)}
-                    className="rounded-lg border border-white/10 bg-[#2a2a2a] px-3 py-2 text-sm text-neutral-300 outline-none focus:border-emerald-500"
+                    className="rounded-lg border border-white/10 bg-[#2a2a2a] px-3 py-2 text-sm text-neutral-300 outline-none focus:border-neutral-400"
                   >
                     <option value="">Region</option>
                     {REGIONS.map((r) => (
@@ -175,7 +191,7 @@ export default function PollPage() {
               <button
                 type="submit"
                 disabled={!selectedParty || submitting}
-                className="w-full rounded-xl bg-gradient-to-r from-emerald-600 to-emerald-700 px-4 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-40"
+                className="w-full rounded-xl bg-gradient-to-r from-neutral-600 to-neutral-700 px-4 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-40"
               >
                 {submitting ? "Submitting…" : "Cast your vote"}
               </button>
@@ -228,6 +244,16 @@ export default function PollPage() {
             </div>
           )}
         </div>
+      </div>
+
+      {/* Disclaimer */}
+      <div className="rounded-lg border border-white/5 bg-white/[0.02] px-4 py-3 text-xs leading-relaxed text-neutral-500">
+        <strong className="text-neutral-400">Disclaimer:</strong> This is a
+        completely anonymous and open community poll for interest purposes only.
+        It is not a scientific survey and does not represent accurate polling
+        data. Results may not reflect the views of the wider New Zealand
+        electorate. For official polling, refer to accredited research companies
+        such as Curia, Reid Research, or Talbot Mills.
       </div>
     </div>
   );

@@ -7,7 +7,7 @@ const sourceColour: Record<string, string> = {
   official: "bg-blue-500/10 text-blue-400",
   media: "bg-white/5 text-neutral-300",
   blog: "bg-purple-500/10 text-purple-400",
-  social: "bg-emerald-500/10 text-emerald-400",
+  social: "bg-sky-500/10 text-sky-400",
 };
 
 function relativeTime(dateStr: string): string {
@@ -68,7 +68,7 @@ export default function FeedFilter({
           onClick={() => setActiveSource(null)}
           className={`rounded-full border px-3 py-1 text-xs transition-colors ${
             activeSource === null
-              ? "border-emerald-500 bg-emerald-500 text-white"
+              ? "border-neutral-400 bg-neutral-500 text-white"
               : "border-white/10 bg-white/5 text-neutral-300 hover:border-white/15 hover:bg-white/10"
           }`}
         >
@@ -82,7 +82,7 @@ export default function FeedFilter({
             }
             className={`rounded-full border px-3 py-1 text-xs transition-colors ${
               activeSource === name
-                ? "border-emerald-500 bg-emerald-500 text-white"
+                ? "border-neutral-400 bg-neutral-500 text-white"
                 : "border-white/10 bg-white/5 text-neutral-300 hover:border-white/15 hover:bg-white/10"
             }`}
           >

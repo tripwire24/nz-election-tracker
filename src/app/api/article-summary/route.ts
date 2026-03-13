@@ -37,13 +37,15 @@ export async function POST(request: NextRequest) {
       "anthropic-version": "2023-06-01",
     },
     body: JSON.stringify({
-      model: "claude-haiku-4-20250414",
+      model: "claude-3-5-haiku-20241022",
       max_tokens: 256,
       messages: [{ role: "user", content: prompt }],
     }),
   });
 
   if (!response.ok) {
+    const errBody = await response.text().catch(() => "");
+    console.error("Anthropic API error", response.status, errBody);
     return NextResponse.json(
       { error: "AI request failed" },
       { status: 502 },
