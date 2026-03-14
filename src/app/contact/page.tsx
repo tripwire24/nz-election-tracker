@@ -3,14 +3,18 @@
 import { useState, type FormEvent } from "react";
 import { PageHero, PagePanel, PagePill } from "@/components/page-primitives";
 
+const CONTACT_EMAIL = "luke@nz-election-tracker.co.nz";
+
 export default function ContactPage() {
-  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "queued" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
+  const [successMsg, setSuccessMsg] = useState("");
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setStatus("sending");
     setErrorMsg("");
+    setSuccessMsg("");
 
     const form = e.currentTarget;
     const data = {
@@ -27,12 +31,20 @@ export default function ContactPage() {
         body: JSON.stringify(data),
       });
 
+      const json = await res.json();
+
       if (!res.ok) {
-        const json = await res.json();
         throw new Error(json.error || "Something went wrong.");
       }
 
-      setStatus("sent");
+      if (json.delivered) {
+        setStatus("sent");
+        setSuccessMsg(`Thanks for getting in touch. Your message has been forwarded to ${json.recipient || CONTACT_EMAIL}.`);
+      } else {
+        setStatus("queued");
+        setSuccessMsg(json.warning || `Your message has been saved, but email forwarding to ${json.recipient || CONTACT_EMAIL} is not configured yet.`);
+      }
+
       form.reset();
     } catch (err) {
       setStatus("error");
@@ -49,6 +61,7 @@ export default function ContactPage() {
         pills={[
           <PagePill key="reply">Direct contact form</PagePill>,
           <PagePill key="topics">Partnerships, feedback, and support</PagePill>,
+          <PagePill key="email">Direct inbox: {CONTACT_EMAIL}</PagePill>,
         ]}
         aside={
           <div className="space-y-3 text-sm text-neutral-300">
@@ -61,18 +74,18 @@ export default function ContactPage() {
       <div className="grid gap-8 lg:grid-cols-5">
         {/* Form */}
         <PagePanel className="lg:col-span-3 p-6">
-          {status === "sent" ? (
+          {status === "sent" || status === "queued" ? (
             <div className="flex flex-col items-center justify-center py-12 text-center">
               <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white/10 text-2xl">
-                ✓
+                {status === "sent" ? "✓" : "…"}
               </div>
-              <h2 className="mt-4 text-lg font-semibold text-neutral-100">Message sent</h2>
+              <h2 className="mt-4 text-lg font-semibold text-neutral-100">{status === "sent" ? "Message sent" : "Message received"}</h2>
               <p className="mt-1 text-sm text-neutral-400">
-                Thanks for getting in touch. We&apos;ll get back to you shortly.
+                {successMsg}
               </p>
               <button
                 onClick={() => setStatus("idle")}
-                className="mt-6 rounded-lg bg-white/5 px-4 py-2 text-sm font-medium text-neutral-200 transition-colors hover:bg-white/10"
+                className="mt-6 rounded-full border border-white/10 bg-white/[0.05] px-4 py-2.5 text-sm font-medium text-neutral-200 transition-colors hover:bg-white/[0.1]"
               >
                 Send another message
               </button>
@@ -159,6 +172,19 @@ export default function ContactPage() {
 
         {/* Sidebar */}
         <div className="lg:col-span-2 space-y-5">
+          <PagePanel className="p-6">
+            <h3 className="text-sm font-semibold text-neutral-100">Direct email</h3>
+            <a
+              href={`mailto:${CONTACT_EMAIL}`}
+              className="mt-3 inline-flex items-center rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-sm font-medium text-neutral-200 transition-colors hover:bg-white/[0.08]"
+            >
+              {CONTACT_EMAIL}
+            </a>
+            <p className="mt-3 text-xs leading-relaxed text-neutral-400">
+              Use direct email if you need to send attachments or if the form is temporarily unavailable.
+            </p>
+          </PagePanel>
+
           <PagePanel className="p-6">
             <h3 className="text-sm font-semibold text-neutral-100">Partnership &amp; Sponsorship</h3>
             <p className="mt-2 text-xs leading-relaxed text-neutral-400">

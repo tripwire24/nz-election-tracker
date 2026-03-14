@@ -63,7 +63,7 @@ export function PageHero({
     >
       <div
         className={cn(
-          "grid gap-6",
+          "grid items-start gap-6",
           aside && "lg:grid-cols-[minmax(0,1.4fr)_minmax(280px,0.9fr)]",
         )}
       >
@@ -84,7 +84,7 @@ export function PageHero({
         </div>
 
         {aside ? (
-          <div className="rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-5 ring-1 ring-white/5">
+          <div className="h-fit self-start rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-5 ring-1 ring-white/5">
             {aside}
           </div>
         ) : null}

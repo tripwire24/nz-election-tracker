@@ -125,14 +125,12 @@ export default async function ForecastPage() {
         ]}
         aside={
           <div className="space-y-3 text-sm text-neutral-300">
-            <p>Use this page for the combined view.</p>
-            <p>Use the polls page for individual poll releases and the sentiment page for tone and media volume.</p>
+            <p className="font-medium text-neutral-100">Read this as the best current combined estimate, not a promise of the final result.</p>
+            <p>Use the polls page for individual releases and the sentiment page for tone and media volume.</p>
           </div>
         }
       />
 
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1.45fr)_320px]">
-        <div className="space-y-6">
       <PagePanel className="p-6">
         <h2 className="text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-4">
           {hasMC ? "Simulated coalition probabilities" : "Coalition seat projection"}
@@ -203,84 +201,155 @@ export default async function ForecastPage() {
         )}
       </PagePanel>
 
-      {/* Party seat breakdown */}
-      {seatProjection.length > 0 && (
-        <PagePanel className="p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
-              Party seat allocation (proportional MMP)
-            </h2>
-            <span className="text-[10px] text-neutral-500">vs 2023 election result</span>
-          </div>
-          <div className="space-y-3">
-            {seatProjection.sort((a, b) => b.seats - a.seats).map((p) => {
-              const prev = PARLIAMENT_2023[p.short] ?? 0;
-              const diff = p.seats - prev;
-              return (
-              <div key={p.short} className="flex items-center gap-3">
-                <span className="w-10 text-xs font-bold text-neutral-500">{p.short}</span>
-                <div className="flex-1">
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-sm text-neutral-300">{p.name}</span>
-                    <span className="text-sm font-semibold text-neutral-200">
-                      {p.seats} seats
-                      {prev > 0 && (
-                        <span className={`ml-2 text-xs font-medium ${diff > 0 ? "text-emerald-400" : diff < 0 ? "text-red-400" : "text-neutral-500"}`}>
-                          {diff > 0 ? `+${diff}` : diff === 0 ? "±0" : diff}
+      <div className="grid gap-6 xl:grid-cols-12">
+        {seatProjection.length > 0 ? (
+          <PagePanel className="p-6 xl:col-span-8">
+            <div className="mb-4 flex items-center justify-between gap-3">
+              <h2 className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
+                Party seat allocation (proportional MMP)
+              </h2>
+              <span className="text-[10px] text-neutral-500">vs 2023 election result</span>
+            </div>
+            <div className="space-y-3">
+              {seatProjection.sort((a, b) => b.seats - a.seats).map((p) => {
+                const prev = PARLIAMENT_2023[p.short] ?? 0;
+                const diff = p.seats - prev;
+
+                return (
+                  <div key={p.short} className="flex items-center gap-3">
+                    <span className="w-10 text-xs font-bold text-neutral-500">{p.short}</span>
+                    <div className="flex-1">
+                      <div className="mb-1 flex items-center justify-between gap-3">
+                        <span className="text-sm text-neutral-300">{p.name}</span>
+                        <span className="text-sm font-semibold text-neutral-200">
+                          {p.seats} seats
+                          {prev > 0 && (
+                            <span className={`ml-2 text-xs font-medium ${diff > 0 ? "text-emerald-400" : diff < 0 ? "text-red-400" : "text-neutral-500"}`}>
+                              {diff > 0 ? `+${diff}` : diff === 0 ? "±0" : diff}
+                            </span>
+                          )}
                         </span>
-                      )}
-                    </span>
+                      </div>
+                      <div className="relative h-3 w-full rounded bg-white/5">
+                        {prev > 0 && (
+                          <div
+                            className="absolute top-0 h-3 border-r-2 border-dashed border-white/20"
+                            style={{ left: 0, width: `${(prev / 120) * 100}%` }}
+                            title={`2023: ${prev} seats`}
+                          />
+                        )}
+                        <div
+                          className="h-3 rounded transition-all"
+                          style={{ width: `${(p.seats / 120) * 100}%`, backgroundColor: p.colour }}
+                        />
+                      </div>
+                      <div className="mt-0.5 flex items-center justify-between gap-3">
+                        <span className="text-[10px] text-neutral-500">{p.votePct}% party vote</span>
+                        {prev > 0 && <span className="text-[10px] text-neutral-500">2023: {prev} seats</span>}
+                      </div>
+                    </div>
                   </div>
-                  <div className="relative h-3 w-full rounded bg-white/5">
-                    {prev > 0 && (
-                      <div
-                        className="absolute top-0 h-3 border-r-2 border-dashed border-white/20"
-                        style={{ left: 0, width: `${(prev / 120) * 100}%` }}
-                        title={`2023: ${prev} seats`}
-                      />
-                    )}
-                    <div
-                      className="h-3 rounded transition-all"
-                      style={{ width: `${(p.seats / 120) * 100}%`, backgroundColor: p.colour }}
-                    />
-                  </div>
-                  <div className="mt-0.5 flex items-center justify-between">
-                    <span className="text-[10px] text-neutral-500">{p.votePct}% party vote</span>
-                    {prev > 0 && <span className="text-[10px] text-neutral-500">2023: {prev} seats</span>}
-                  </div>
+                );
+              })}
+            </div>
+          </PagePanel>
+        ) : null}
+
+        <div className={`space-y-6 ${seatProjection.length > 0 ? "xl:col-span-4" : "xl:col-span-12"}`}>
+          <PagePanel className="p-6">
+            <h2 className="mb-4 text-xs font-semibold uppercase tracking-wider text-neutral-400">
+              How this forecast works
+            </h2>
+            <div className="space-y-3">
+              <div className="rounded-[1rem] border border-white/10 bg-white/[0.03] p-4">
+                <div className="mb-2 flex items-center gap-2">
+                  <div className={`flex h-8 w-8 items-center justify-center rounded-lg text-sm font-bold ${hasPollData ? "bg-white/10 text-neutral-200" : "bg-blue-600/20 text-blue-400"}`}>{hasPollData ? "✓" : "1"}</div>
+                  <h3 className="text-sm font-medium text-neutral-200">Polling average</h3>
+                </div>
+                <p className="text-sm leading-6 text-neutral-400">
+                  {hasPollData
+                    ? `Weighted average of ${pollCount} poll${pollCount > 1 ? "s" : ""} with 14-day half-life decay, then converted into MMP seats with the 5% threshold.`
+                    : "Weighted average of recent polls with recency decay and per-pollster adjustment."}
+                </p>
+              </div>
+              <div className="rounded-[1rem] border border-white/10 bg-white/[0.03] p-4">
+                <div className="mb-2 flex items-center gap-2">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/5 text-sm font-bold text-neutral-500">2</div>
+                  <h3 className="text-sm font-medium text-neutral-200">Sentiment index</h3>
+                </div>
+                <p className="text-sm leading-6 text-neutral-400">
+                  AI-scored media and social sentiment provides extra context around party coverage. It is visible here, but not yet feeding directly into the seat model.
+                </p>
+              </div>
+              <div className="rounded-[1rem] border border-white/10 bg-white/[0.03] p-4">
+                <div className="mb-2 flex items-center gap-2">
+                  <div className={`flex h-8 w-8 items-center justify-center rounded-lg text-sm font-bold ${hasMC ? "bg-white/10 text-neutral-200" : "bg-white/5 text-neutral-500"}`}>{hasMC ? "✓" : "3"}</div>
+                  <h3 className="text-sm font-medium text-neutral-200">Simulation layer</h3>
+                </div>
+                <p className="text-sm leading-6 text-neutral-400">
+                  {hasMC
+                    ? `${mcSimCount.toLocaleString()} simulations add random variation to the polling baseline and re-allocate seats each run.`
+                    : "The simulation layer is not populated yet. Once live, it will show seat ranges and coalition probabilities instead of a single fixed snapshot."}
+                </p>
+              </div>
+            </div>
+          </PagePanel>
+
+          <PagePanel className="p-6">
+            <h2 className="mb-3 text-sm font-semibold text-neutral-200">Model roadmap</h2>
+            <div className="space-y-3">
+              <div className="flex items-center gap-3 rounded-lg bg-white/10 px-3 py-2.5 ring-1 ring-white/10">
+                <span className="font-bold text-neutral-200">✓</span>
+                <div>
+                  <div className="text-xs font-semibold text-neutral-200">Polling data</div>
+                  <div className="text-[10px] text-neutral-500">Wikipedia scraper live</div>
                 </div>
               </div>
-              );
-            })}
-          </div>
-        </PagePanel>
-      )}
+              <div className="flex items-center gap-3 rounded-lg bg-white/10 px-3 py-2.5 ring-1 ring-white/10">
+                <span className="font-bold text-neutral-200">✓</span>
+                <div>
+                  <div className="text-xs font-semibold text-neutral-200">Historical results</div>
+                  <div className="text-[10px] text-neutral-500">2017–2023 seeded</div>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 rounded-lg bg-white/10 px-3 py-2.5 ring-1 ring-white/10">
+                <span className="font-bold text-neutral-200">✓</span>
+                <div>
+                  <div className="text-xs font-semibold text-neutral-200">Weighted average</div>
+                  <div className="text-[10px] text-neutral-500">14-day half-life decay</div>
+                </div>
+              </div>
+              <div className={`flex items-center gap-3 rounded-lg px-3 py-2.5 ring-1 ${hasMC ? "bg-white/10 ring-white/10" : "bg-[#2a2a2a] ring-white/10"}`}>
+                <span className={`font-bold ${hasMC ? "text-neutral-200" : "text-neutral-500"}`}>{hasMC ? "✓" : "○"}</span>
+                <div>
+                  <div className="text-xs font-semibold text-neutral-200">Monte Carlo</div>
+                  <div className="text-[10px] text-neutral-500">{hasMC ? `${mcSimCount.toLocaleString()} sims live` : "10K sims + economic data"}</div>
+                </div>
+              </div>
+            </div>
+          </PagePanel>
+        </div>
+        </div>
 
-      {/* Monte Carlo seat ranges */}
       {hasMC && mcSeats && (
         <PagePanel className="p-6">
-          <h2 className="text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-4">
+          <h2 className="mb-4 text-xs font-semibold uppercase tracking-wider text-neutral-400">
             Seat range by party (90% confidence interval)
           </h2>
-          <div className="space-y-3">
+          <div className="space-y-4">
             {Object.entries(mcSeats)
               .sort(([, a], [, b]) => b.median - a.median)
               .map(([party, q]) => {
                 const colour = seatProjection.find((p) => p.short === party)?.colour ?? "#888";
+
                 return (
-                  <div key={party} className="flex items-center gap-3">
-                    <span className="w-10 text-xs font-bold text-neutral-500">{party}</span>
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="text-sm text-neutral-300">
-                          {seatProjection.find((p) => p.short === party)?.name ?? party}
-                        </span>
-                        <span className="text-xs font-medium text-neutral-400">
-                          {q.p5}–{q.p95} seats (median {q.median})
-                        </span>
+                  <div key={party} className="grid gap-2 md:grid-cols-[56px_minmax(0,1fr)_220px] md:items-center md:gap-4">
+                    <span className="text-xs font-bold text-neutral-500">{party}</span>
+                    <div>
+                      <div className="mb-1 text-sm text-neutral-300">
+                        {seatProjection.find((p) => p.short === party)?.name ?? party}
                       </div>
                       <div className="relative h-3 w-full rounded bg-white/5">
-                        {/* p5–p95 range bar */}
                         <div
                           className="absolute top-0 h-3 rounded opacity-30"
                           style={{
@@ -289,17 +358,19 @@ export default async function ForecastPage() {
                             backgroundColor: colour,
                           }}
                         />
-                        {/* median marker */}
                         <div
                           className="absolute top-0 h-3 rounded"
                           style={{
                             left: `${(Math.max(0, q.median - 0.5) / 120) * 100}%`,
-                            width: `${(Math.max(1, 1) / 120) * 100}%`,
+                            width: `${(1 / 120) * 100}%`,
                             backgroundColor: colour,
                           }}
                         />
                       </div>
                     </div>
+                    <span className="text-xs font-medium text-neutral-400 md:text-right">
+                      {q.p5}–{q.p95} seats (median {q.median})
+                    </span>
                   </div>
                 );
               })}
@@ -309,82 +380,6 @@ export default async function ForecastPage() {
           </p>
         </PagePanel>
       )}
-        </div>
-
-        <div className="space-y-6">
-      <PagePanel className="p-6">
-        <h2 className="text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-4">
-          Model methodology
-        </h2>
-        <div className="grid gap-4 md:grid-cols-3">
-          <div className="rounded-lg border border-white/10 p-4">
-            <div className="flex items-center gap-2 mb-2">
-              <div className={`h-8 w-8 rounded-lg flex items-center justify-center text-sm font-bold ${hasPollData ? "bg-white/10 text-neutral-200" : "bg-blue-600/20 text-blue-400"}`}>{hasPollData ? "✓" : "1"}</div>
-              <h3 className="text-sm font-medium text-neutral-200">Polling average</h3>
-            </div>
-            <p className="text-xs text-neutral-400">
-              {hasPollData
-                ? `Weighted average of ${pollCount} poll${pollCount > 1 ? "s" : ""} with 14-day exponential decay half-life. Proportional seat allocation with 5% threshold.`
-                : "Weighted average of recent polls with recency decay and per-pollster adjustment."}
-            </p>
-          </div>
-          <div className="rounded-lg border border-white/10 p-4">
-            <div className="flex items-center gap-2 mb-2">
-              <div className="h-8 w-8 rounded-lg bg-white/5 flex items-center justify-center text-neutral-500 text-sm font-bold">2</div>
-              <h3 className="text-sm font-medium text-neutral-200">Sentiment index</h3>
-            </div>
-            <p className="text-xs text-neutral-400">
-              AI-scored media + social sentiment per party, contributing a ±2pp adjustment to polling estimates. Not yet integrated into forecast.
-            </p>
-          </div>
-          <div className="rounded-lg border border-white/10 p-4">
-            <div className="flex items-center gap-2 mb-2">
-              <div className={`h-8 w-8 rounded-lg flex items-center justify-center text-sm font-bold ${hasMC ? "bg-white/10 text-neutral-200" : "bg-white/5 text-neutral-500"}`}>{hasMC ? "✓" : "3"}</div>
-              <h3 className="text-sm font-medium text-neutral-200">Simulation</h3>
-            </div>
-            <p className="text-xs text-neutral-400">
-              {hasMC
-                ? `${mcSimCount.toLocaleString()} iterations — adds random variation to polling averages and re-allocates seats proportionally each time.`
-                : "10K+ statistical simulations with economic fundamentals. Run the simulation script to populate."}
-            </p>
-          </div>
-        </div>
-      </PagePanel>
-
-      <PagePanel className="p-6">
-        <h2 className="text-sm font-semibold text-neutral-200 mb-3">Model roadmap</h2>
-        <div className="space-y-3">
-          <div className="flex items-center gap-3 rounded-lg bg-white/10 px-3 py-2.5 ring-1 ring-white/10">
-            <span className="text-neutral-200 font-bold">✓</span>
-            <div>
-              <div className="text-xs font-semibold text-neutral-200">Polling data</div>
-              <div className="text-[10px] text-neutral-500">Wikipedia scraper live</div>
-            </div>
-          </div>
-          <div className="flex items-center gap-3 rounded-lg bg-white/10 px-3 py-2.5 ring-1 ring-white/10">
-            <span className="text-neutral-200 font-bold">✓</span>
-            <div>
-              <div className="text-xs font-semibold text-neutral-200">Historical results</div>
-              <div className="text-[10px] text-neutral-500">2017–2023 seeded</div>
-            </div>
-          </div>
-          <div className="flex items-center gap-3 rounded-lg bg-white/10 px-3 py-2.5 ring-1 ring-white/10">
-            <span className="text-neutral-200 font-bold">✓</span>
-            <div>
-              <div className="text-xs font-semibold text-neutral-200">Weighted average</div>
-              <div className="text-[10px] text-neutral-500">14-day half-life decay</div>
-            </div>
-          </div>
-          <div className={`flex items-center gap-3 rounded-lg px-3 py-2.5 ring-1 ${hasMC ? "bg-white/10 ring-white/10" : "bg-[#2a2a2a] ring-white/10"}`}>
-            <span className={`font-bold ${hasMC ? "text-neutral-200" : "text-neutral-500"}`}>{hasMC ? "✓" : "○"}</span>
-            <div>
-              <div className="text-xs font-semibold text-neutral-200">Monte Carlo</div>
-              <div className="text-[10px] text-neutral-500">{hasMC ? `${mcSimCount.toLocaleString()} sims live` : "10K sims + economic data"}</div>
-            </div>
-          </div>
-        </div>
-      </PagePanel>
-        </div>
       </div>
     </div>
   );
