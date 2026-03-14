@@ -20,7 +20,7 @@ const bgTrend = (score: number) =>
 export function SentimentPulseWidget({ data }: { data: SentimentData[] }) {
   if (data.length === 0) {
     return (
-      <DashboardCard title="Sentiment Pulse" badge="Awaiting data" tooltip="AI-scored media sentiment per party, averaging scores from −1 (negative) to +1 (positive) over a 7-day rolling window." accent="linear-gradient(90deg, #10b981, #06b6d4)">
+      <DashboardCard title="Sentiment Pulse" badge="Awaiting data" tooltip="Average tone in political coverage and social discussion over the last 7 days, scored from negative to positive." accent="linear-gradient(90deg, #597169, #a8bcb5)">
         <div className="grid grid-cols-3 gap-3">
           {[1, 2, 3].map((i) => (
             <div key={i} className="h-14 rounded-lg bg-white/5 animate-shimmer" />
@@ -31,7 +31,7 @@ export function SentimentPulseWidget({ data }: { data: SentimentData[] }) {
   }
 
   return (
-    <DashboardCard title="Sentiment Pulse" badge={`${data.reduce((s, d) => s + d.volume, 0)} scores`} tooltip="AI-scored media sentiment per party, averaging scores from −1 (negative) to +1 (positive) over a 7-day rolling window." accent="linear-gradient(90deg, #10b981, #06b6d4)">
+    <DashboardCard title="Sentiment Pulse" badge={`${data.reduce((s, d) => s + d.volume, 0)} items scored`} tooltip="Average tone in political coverage and social discussion over the last 7 days, scored from negative to positive." accent="linear-gradient(90deg, #597169, #a8bcb5)">
       <div className="grid grid-cols-2 md:grid-cols-3 gap-2.5">
         {data.map((p) => (
           <div
@@ -59,7 +59,7 @@ export function SentimentPulseWidget({ data }: { data: SentimentData[] }) {
         <span className="flex items-center gap-1"><span className="text-red-400">↓</span> Negative (&lt;−0.05)</span>
       </div>
       <p className="mt-1.5 text-[11px] text-neutral-500">
-        Scale: −1 (very negative) to +1 (very positive). Scored via AFINN-165 + Claude Haiku.
+        Scale: −1 is very negative and +1 is very positive. Scored with AFINN-165 and Claude Haiku.
       </p>
     </DashboardCard>
   );

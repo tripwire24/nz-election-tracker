@@ -6,10 +6,10 @@ export const metadata: Metadata = {
 };
 
 const STATUS = {
-  live: { label: "Live", colour: "bg-sky-500/10 text-sky-400 ring-sky-500/20" },
-  building: { label: "In Progress", colour: "bg-blue-500/10 text-blue-400 ring-blue-500/20" },
-  planned: { label: "Planned", colour: "bg-amber-500/10 text-amber-400 ring-amber-500/20" },
-  exploring: { label: "Exploring", colour: "bg-purple-500/10 text-purple-400 ring-purple-500/20" },
+  live: { label: "Live", colour: "bg-[#31464f]/40 text-[#bdd3db] ring-[#506d78]/35" },
+  building: { label: "In Progress", colour: "bg-[#4d4b43]/40 text-[#d5ccb4] ring-[#786f59]/35" },
+  planned: { label: "Planned", colour: "bg-[#5b4a3d]/40 text-[#e2c5a3] ring-[#8c6c52]/35" },
+  exploring: { label: "Exploring", colour: "bg-white/[0.05] text-neutral-300 ring-white/10" },
 } as const;
 
 type Status = keyof typeof STATUS;
@@ -154,11 +154,36 @@ const CATEGORIES = ["Data Sources", "Analytics & Models", "Features & UX"];
 export default function RoadmapPage() {
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-2xl font-bold text-neutral-100">Roadmap</h1>
-        <p className="mt-1 text-sm text-neutral-400">
-          What&apos;s live, what&apos;s coming, and what we&apos;re exploring for the 2026 NZ election cycle.
-        </p>
+      <div className="rounded-[1.75rem] border border-white/10 bg-[linear-gradient(135deg,rgba(28,28,28,0.98),rgba(18,18,18,0.98))] p-6 shadow-[0_20px_50px_rgba(0,0,0,0.32)] md:p-8">
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(280px,0.9fr)]">
+          <div className="space-y-4">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-neutral-400">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#c0c0c0]" />
+              Product roadmap
+            </div>
+            <div className="space-y-3">
+              <h1 className="text-3xl font-semibold tracking-tight text-neutral-100 md:text-4xl">What is already live, what is next, and what is still being tested</h1>
+              <p className="max-w-2xl text-sm leading-7 text-neutral-400 md:text-[15px]">
+                This page tracks the main data feeds, models, and product features planned for the 2026 NZ election cycle. It is meant to show direction, not promise exact delivery dates.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2.5 text-sm">
+              <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-neutral-300">3 workstreams</span>
+              <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-neutral-300">Data, models, and product UX</span>
+              <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-neutral-300">Updated as features move from idea to delivery</span>
+            </div>
+          </div>
+
+          <div className="rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-5 ring-1 ring-white/5">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-neutral-500">How to read this page</p>
+            <div className="mt-4 space-y-3 text-sm text-neutral-300">
+              <p>Live means available now.</p>
+              <p>In progress means work is underway.</p>
+              <p>Planned means we expect to build it.</p>
+              <p>Exploring means we are still testing value, feasibility, or both.</p>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Status legend */}
@@ -179,7 +204,7 @@ export default function RoadmapPage() {
           const items = ROADMAP.filter((i) => i.category === cat);
           return (
             <section key={cat}>
-              <h2 className="text-sm font-semibold uppercase tracking-wider text-neutral-500 mb-4">
+              <h2 className="mb-4 text-xs font-semibold uppercase tracking-[0.24em] text-neutral-500">
                 {cat}
               </h2>
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -188,19 +213,19 @@ export default function RoadmapPage() {
                   return (
                     <div
                       key={item.title}
-                        className="rounded-xl border border-white/10 bg-[#242424] p-5 shadow-sm"
+                      className="rounded-[1.35rem] border border-white/10 bg-[linear-gradient(180deg,rgba(38,38,38,0.96),rgba(26,26,26,0.98))] p-5 shadow-[0_20px_45px_rgba(0,0,0,0.3)]"
                     >
                       <div className="flex items-start justify-between gap-3">
-                          <h3 className="text-sm font-semibold text-neutral-200 leading-snug">
+                        <h3 className="text-sm font-semibold leading-snug text-neutral-200">
                           {item.title}
                         </h3>
                         <span
-                          className={`shrink-0 rounded-full px-2.5 py-0.5 text-[10px] font-semibold ring-1 ${s.colour}`}
+                          className={`shrink-0 rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] ring-1 ${s.colour}`}
                         >
                           {s.label}
                         </span>
                       </div>
-                      <p className="mt-2 text-xs leading-relaxed text-neutral-400">
+                      <p className="mt-3 text-sm leading-6 text-neutral-400">
                         {item.description}
                       </p>
                     </div>
@@ -213,14 +238,14 @@ export default function RoadmapPage() {
       </div>
 
       {/* CTA */}
-        <div className="rounded-xl border border-white/10 bg-gradient-to-br from-[#242424] via-[#2a2a2a] to-[#1e1e1e] p-6 shadow-sm text-center">
-          <h3 className="text-base font-semibold text-neutral-100">Got a feature idea?</h3>
+      <div className="rounded-[1.6rem] border border-white/10 bg-[linear-gradient(135deg,rgba(30,30,30,0.98),rgba(20,20,20,0.98))] p-6 text-center shadow-[0_20px_45px_rgba(0,0,0,0.28)]">
+        <h3 className="text-base font-semibold text-neutral-100">Got a feature idea?</h3>
         <p className="mt-1 text-sm text-neutral-400">
           We&apos;re building this in the open and value community input.
         </p>
         <a
           href="/contact"
-          className="mt-4 inline-block rounded-lg bg-gradient-to-r from-[#242424]0 to-neutral-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-black/20 transition-all hover:shadow-lg hover:shadow-black/30"
+          className="mt-4 inline-flex items-center rounded-full border border-white/10 bg-white/[0.05] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-white/[0.08]"
         >
           Suggest a Feature
         </a>

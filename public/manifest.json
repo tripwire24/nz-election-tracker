@@ -2,12 +2,12 @@
   "name": "NZ Election Tracker",
   "short_name": "NZ Elections",
   "description": "Real-time NZ election forecast dashboard with polling, sentiment analysis, and interactive maps",
-  "start_url": "https://nz-election-tracker.com/",
-  "scope": "https://nz-election-tracker.com/",
+  "start_url": "https://nz-election-tracker.co.nz/",
+  "scope": "https://nz-election-tracker.co.nz/",
   "id": "/",
   "display": "standalone",
-  "background_color": "#fafaf9",
-  "theme_color": "#2563eb",
+  "background_color": "#121212",
+  "theme_color": "#1a1a1a",
   "orientation": "portrait-primary",
   "icons": [
     {

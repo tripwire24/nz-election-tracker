@@ -24,7 +24,7 @@ export function PollSnapshotWidget({
 }) {
   if (!poll || results.length === 0) {
     return (
-      <DashboardCard title="Latest Poll" badge="Awaiting data" tooltip="The most recent published opinion poll, showing party vote share and sample size." accent="#a855f7">
+      <DashboardCard title="Latest Poll" badge="Awaiting data" tooltip="The most recent published party vote poll, including sample size and margin of error when available." accent="linear-gradient(90deg, #697177, #bec5ca)">
         <div className="space-y-3">
            <div className="h-4 w-1/3 rounded bg-white/5 animate-shimmer" />
           {[1, 2, 3, 4].map((i) => (
@@ -51,7 +51,7 @@ export function PollSnapshotWidget({
   const dateStr = date.toLocaleDateString("en-NZ", { month: "short", year: "numeric" });
 
   return (
-    <DashboardCard title="Latest Poll" badge={poll.pollster} tooltip="The most recent published opinion poll, showing party vote share and sample size." accent="#a855f7">
+    <DashboardCard title="Latest Poll" badge={poll.pollster} tooltip="The most recent published party vote poll, including sample size and margin of error when available." accent="linear-gradient(90deg, #697177, #bec5ca)">
       <div className="mb-3 flex items-baseline justify-between">
         <span className="text-xs font-medium text-neutral-500">{poll.pollster}</span>
         <span className="text-xs text-neutral-500">

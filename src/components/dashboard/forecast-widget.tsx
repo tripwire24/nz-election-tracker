@@ -14,7 +14,7 @@ export function ForecastWidget({ rightPct, leftPct, hungPct, rightSeats, leftSea
 
   if (!hasData) {
     return (
-      <DashboardCard title="Forecast" badge="Awaiting data" tooltip="Weighted average of recent polls with exponential decay, allocated to seats using NZ's proportional MMP method." accent="linear-gradient(90deg, #3b82f6, #6366f1)">
+      <DashboardCard title="Current Outlook" badge="Awaiting data" tooltip="Turns the current polling picture into an estimated seat split in Parliament." accent="linear-gradient(90deg, #5e6468, #c2c7cb)">
         <div className="space-y-3">
           <div className="h-16 rounded-lg bg-white/5 animate-shimmer" />
           <div className="h-4 w-2/3 rounded bg-white/5 animate-shimmer" />
@@ -24,13 +24,13 @@ export function ForecastWidget({ rightPct, leftPct, hungPct, rightSeats, leftSea
   }
 
   return (
-    <DashboardCard title="Forecast" badge="Poll-derived" tooltip="Weighted average of recent polls with exponential decay, allocated to seats using NZ's proportional MMP method." accent="linear-gradient(90deg, #3b82f6, #6366f1)">
-      <p className="mb-4 text-xs text-neutral-500 leading-relaxed">
-        Combined seat totals for each coalition bloc (see Seat Projection below for individual parties). 61 of 120 seats needed for a majority.
+    <DashboardCard title="Current Outlook" badge="Polling only" tooltip="Turns the current polling picture into an estimated seat split in Parliament. This is an early model, not a fixed election-day prediction." accent="linear-gradient(90deg, #5e6468, #c2c7cb)">
+      <p className="mb-4 text-xs leading-relaxed text-neutral-500">
+        If voting happened today, this is the bloc split implied by current polling. A bloc needs 61 of 120 seats for a majority.
       </p>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:gap-6">
         <div className="min-w-0 flex-1 space-y-1">
-          <div className="text-xs font-medium text-neutral-500">Centre-right</div>
+          <div className="text-xs font-medium text-neutral-500">Right bloc</div>
           <div className="flex items-baseline gap-2">
             <span className="text-3xl sm:text-4xl font-black tabular-nums text-blue-400">{rightPct}%</span>
             <span className="text-sm text-neutral-500">{rightSeats} seats</span>
@@ -40,7 +40,7 @@ export function ForecastWidget({ rightPct, leftPct, hungPct, rightSeats, leftSea
           </div>
         </div>
         <div className="min-w-0 flex-1 space-y-1">
-          <div className="text-xs font-medium text-neutral-500">Centre-left</div>
+          <div className="text-xs font-medium text-neutral-500">Left bloc</div>
           <div className="flex items-baseline gap-2">
             <span className="text-3xl sm:text-4xl font-black tabular-nums text-red-400">{leftPct}%</span>
             <span className="text-sm text-neutral-500">{leftSeats} seats</span>
@@ -50,15 +50,15 @@ export function ForecastWidget({ rightPct, leftPct, hungPct, rightSeats, leftSea
           </div>
         </div>
         <div className="w-full sm:w-24 flex-none text-left sm:text-center space-y-1">
-          <div className="text-xs font-medium text-neutral-500">Hung</div>
+          <div className="text-xs font-medium text-neutral-500">No majority</div>
           <div className="text-2xl sm:text-3xl font-black tabular-nums text-amber-400">{hungPct}%</div>
           <div className="h-2.5 w-full rounded-full bg-white/10 overflow-hidden">
             <div className="h-full rounded-full bg-gradient-to-r from-amber-500 to-amber-400 animate-bar-fill" style={{ width: `${hungPct}%` }} />
           </div>
         </div>
       </div>
-      <p className="mt-4 text-xs text-neutral-500">
-        Based on latest polling via proportional seat allocation. Improves as sentiment + economic data feeds in.
+      <p className="mt-4 text-xs leading-relaxed text-neutral-500">
+        This uses polling only for now. Sentiment and economic signals will be layered in later.
       </p>
     </DashboardCard>
   );

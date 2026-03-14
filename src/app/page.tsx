@@ -129,30 +129,80 @@ export default async function Home() {
   const rightSeats = coalitionSeats(seatProjection, RIGHT_BLOC);
   const leftSeats = coalitionSeats(seatProjection, LEFT_BLOC);
   const totalSeats = seatProjection.reduce((s, p) => s + p.seats, 0) || 120;
+  const latestPollDateLabel = latestPoll?.published_date
+    ? new Date(latestPoll.published_date).toLocaleDateString("en-NZ", {
+        day: "numeric",
+        month: "short",
+      })
+    : null;
 
   // Simple probability proxy from seat share (will be replaced by Monte Carlo)
   const rightPct = totalSeats > 0 ? Math.round((rightSeats / totalSeats) * 100) : 50;
   const leftPct = totalSeats > 0 ? Math.round((leftSeats / totalSeats) * 100) : 43;
   const hungPct = Math.max(0, 100 - rightPct - leftPct);
+  const headline = rightSeats >= 61
+    ? `Centre-right is ahead with an estimated ${rightSeats} seats`
+    : leftSeats >= 61
+      ? `Centre-left is ahead with an estimated ${leftSeats} seats`
+      : "The current numbers point to a close election";
 
   return (
     <div className="space-y-6">
       {/* Hero banner */}
-      <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-[#1e1e1e] via-[#242424] to-[#1e1e1e] p-6 md:p-8 shadow-[0_12px_32px_rgba(0,0,0,0.3)]">
-        <div className="absolute -top-24 -right-24 h-64 w-64 rounded-full bg-white/[0.03] blur-3xl" />
-        <div className="absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-white/[0.02] blur-3xl" />
-        <div className="relative">
-          <p className="text-xs font-semibold uppercase tracking-widest text-neutral-400">NZ Election Tracker</p>
-          <h1 className="mt-2 text-2xl font-bold text-neutral-100 md:text-3xl">
-            {rightSeats >= 61
-              ? `Centre-right leads with ${rightSeats} seats`
-              : leftSeats >= 61
-                ? `Centre-left leads with ${leftSeats} seats`
-                : "No clear majority — too close to call"}
-          </h1>
-          <p className="mt-2 max-w-xl text-sm text-neutral-400">
-            Live forecast based on {pollInputs.length > 1 ? `weighted average of ${pollInputs.length} polls` : "latest polling data"}, proportional MMP seat allocation, and sentiment analysis.
-          </p>
+      <div className="overflow-hidden rounded-[2rem] border border-white/10 bg-[linear-gradient(135deg,rgba(28,28,28,0.98),rgba(18,18,18,0.98))] p-6 shadow-[0_20px_50px_rgba(0,0,0,0.32)] md:p-8">
+        <div className="grid gap-6 xl:grid-cols-[minmax(0,1.7fr)_minmax(300px,0.9fr)]">
+          <div className="space-y-5">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-neutral-400">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#c0c0c0]" />
+              NZ Election Tracker
+            </div>
+            <div className="space-y-3">
+              <p className="text-xs font-medium uppercase tracking-[0.24em] text-neutral-500">2026 general election</p>
+              <h1 className="max-w-3xl text-3xl font-semibold tracking-tight text-neutral-100 md:text-4xl">
+                {headline}
+              </h1>
+              <p className="max-w-2xl text-sm leading-7 text-neutral-400 md:text-[15px]">
+                This dashboard shows where things stand now and what the current polling picture would mean for seats in Parliament if an election were held today.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2.5 text-sm">
+              <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-neutral-300">
+                {latestPoll && latestPollDateLabel
+                  ? `Latest poll: ${latestPoll.pollster} · ${latestPollDateLabel}`
+                  : "Latest poll: Waiting for published data"}
+              </span>
+              <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-neutral-300">
+                Polls in model: {pollInputs.length || 0}
+              </span>
+              <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-neutral-300">
+                Majority line: 61 seats
+              </span>
+              <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-neutral-300">
+                Stories tracked: {(totalArticles ?? 0).toLocaleString()}
+              </span>
+            </div>
+          </div>
+
+          <div className="rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-5 ring-1 ring-white/5">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-neutral-500">What this page does</p>
+            <div className="mt-4 space-y-3 text-sm text-neutral-300">
+              <div className="flex items-start gap-3">
+                <span className="mt-1 h-2 w-2 rounded-full bg-neutral-300" />
+                <p>Shows the latest published polling picture.</p>
+              </div>
+              <div className="flex items-start gap-3">
+                <span className="mt-1 h-2 w-2 rounded-full bg-neutral-300" />
+                <p>Turns party vote into estimated seats in Parliament.</p>
+              </div>
+              <div className="flex items-start gap-3">
+                <span className="mt-1 h-2 w-2 rounded-full bg-neutral-300" />
+                <p>Tracks political coverage and party sentiment alongside the numbers.</p>
+              </div>
+            </div>
+            <p className="mt-4 text-xs leading-6 text-neutral-500">
+              Forecast numbers are estimates, not promises. They can move as more polling arrives.
+            </p>
+          </div>
         </div>
       </div>
 

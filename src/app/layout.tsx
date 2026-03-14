@@ -25,7 +25,7 @@ export const metadata: Metadata = {
   },
   description:
     "Real-time NZ election forecast dashboard — polling, sentiment analysis, and interactive maps for the 2026 general election.",
-  metadataBase: new URL("https://nz-election-tracker.com"),
+  metadataBase: new URL("https://nz-election-tracker.co.nz"),
   alternates: { canonical: "/" },
   manifest: "/manifest.json",
   openGraph: {
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     title: "NZ Election Tracker — 2026 Polling, Forecasts & Sentiment",
     description:
       "Real-time NZ election forecast dashboard — polling, sentiment analysis, and interactive maps for the 2026 general election.",
-    url: "https://nz-election-tracker.com",
+    url: "https://nz-election-tracker.co.nz",
     locale: "en_NZ",
   },
   twitter: {
@@ -75,15 +75,23 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
               <div className="flex flex-col items-center gap-2 sm:items-end">
                 <div className="flex items-center gap-3">
                   <span className="text-neutral-400">Developed by</span>
-                  {/* TripWire logo placeholder */}
-                  <span className="inline-flex items-center gap-1.5 rounded bg-white/5 px-2 py-1 ring-1 ring-white/10">
-                    <span className="text-[11px] font-semibold tracking-wide text-neutral-300">TRIPWIRE</span>
-                  </span>
+                  <a
+                    href="https://tripwiredigital.co.nz/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 rounded bg-white/5 px-2 py-1 text-[11px] font-semibold tracking-wide text-neutral-300 ring-1 ring-white/10 transition-colors hover:bg-white/10 hover:text-white"
+                  >
+                    TRIPWIRE
+                  </a>
                   <span className="text-neutral-600">&amp;</span>
-                  {/* AFQY logo placeholder */}
-                  <span className="inline-flex items-center gap-1.5 rounded bg-white/5 px-2 py-1 ring-1 ring-white/10">
-                    <span className="text-[11px] font-semibold tracking-wide text-neutral-300">AFQY</span>
-                  </span>
+                  <a
+                    href="https://www.afewquietyarns.co.nz/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 rounded bg-white/5 px-2 py-1 text-[11px] font-semibold tracking-wide text-neutral-300 ring-1 ring-white/10 transition-colors hover:bg-white/10 hover:text-white"
+                  >
+                    AFQY
+                  </a>
                 </div>
                 <div className="flex items-center gap-3">
                   <span>Data: Wikipedia polls, Bluesky, NZ media RSS</span>

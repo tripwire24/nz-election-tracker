@@ -21,10 +21,10 @@ function relativeTime(dateStr: string): string {
 }
 
 const sourceColour: Record<string, string> = {
-  official: "bg-blue-500/10 text-blue-400 ring-1 ring-blue-500/20",
+  official: "bg-white/[0.06] text-neutral-300 ring-1 ring-white/10",
   media: "bg-white/5 text-neutral-400 ring-1 ring-white/10",
-  blog: "bg-purple-500/10 text-purple-400 ring-1 ring-purple-500/20",
-  social: "bg-sky-500/10 text-sky-400 ring-1 ring-sky-500/20",
+  blog: "bg-[#5d5144]/35 text-[#d0c0aa] ring-1 ring-[#8e775a]/30",
+  social: "bg-[#3c5860]/40 text-[#a9cad3] ring-1 ring-[#5c7980]/30",
 };
 
 /** Top breaking content items — wired to Supabase */
@@ -37,7 +37,7 @@ export function ContentFeedWidget({
 }) {
   if (items.length === 0) {
     return (
-      <DashboardCard title="Breaking Content" badge="Feed" tooltip="Latest political articles aggregated from NZ media RSS feeds, updated every 30 minutes." accent="#f97316">
+      <DashboardCard title="Latest Coverage" badge="Feed" tooltip="Latest NZ political coverage collected from media, official sources, blogs, and social feeds." accent="linear-gradient(90deg, #705b48, #ba8c63)">
         <div className="space-y-3">
           {[1, 2, 3].map((i) => (
             <div key={i} className="rounded-lg border border-white/10 px-3 py-2.5">
@@ -54,7 +54,7 @@ export function ContentFeedWidget({
   }
 
   return (
-    <DashboardCard title="Breaking Content" badge={`${totalArticles} articles`} tooltip="Latest political articles aggregated from NZ media RSS feeds, updated every 30 minutes." accent="#f97316">
+    <DashboardCard title="Latest Coverage" badge={`${totalArticles} tracked`} tooltip="Latest NZ political coverage collected from media, official sources, blogs, and social feeds." accent="linear-gradient(90deg, #705b48, #ba8c63)">
       <div className="max-h-[360px] overflow-y-auto space-y-3 pr-1 scrollbar-thin">
         {items.map((item) => (
           <a
