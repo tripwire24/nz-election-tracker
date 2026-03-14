@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
+import { PageHero, PagePanel, PagePill } from "@/components/page-primitives";
 
 interface BlogPost {
   id: string;
@@ -13,6 +14,16 @@ interface BlogPost {
   published: boolean;
   published_at: string | null;
   created_at: string;
+}
+
+function formatDate(value: string | null) {
+  if (!value) return "Draft";
+
+  return new Date(value).toLocaleDateString("en-NZ", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
 }
 
 export default function AdminBlogPage() {
@@ -129,36 +140,45 @@ export default function AdminBlogPage() {
       .slice(0, 80);
   }
 
-  return (
-    <div className="min-h-screen bg-[#1a1a1a] px-4 py-10">
-      <div className="mx-auto max-w-3xl space-y-8">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-neutral-100">Blog Posts</h1>
-            <p className="mt-1 text-sm text-neutral-500">Create and manage blog content</p>
-          </div>
-          <div className="flex items-center gap-3">
-            <Link
-              href="/admin"
-              className="rounded-lg border border-white/10 px-3 py-1.5 text-sm text-neutral-400 transition-colors hover:bg-white/5 hover:text-neutral-200"
-            >
-              ← Admin
-            </Link>
-            {!editing && (
-              <button
-                onClick={openNew}
-                className="rounded-lg bg-neutral-600 px-3 py-1.5 text-sm font-medium text-white transition-opacity hover:opacity-90"
-              >
-                New post
-              </button>
-            )}
-          </div>
-        </div>
+  const publishedCount = posts.filter((post) => post.published).length;
+  const draftCount = Math.max(0, posts.length - publishedCount);
 
-        {/* Editor */}
+  return (
+    <div className="space-y-8 py-6">
+      <PageHero
+        eyebrow="Admin content"
+        title="Manage editorial posts and drafts"
+        description="Create new articles, update existing posts, and decide what is live on the public blog without leaving the admin workflow."
+        pills={[
+          <PagePill key="count">{loading ? "Loading posts" : `${posts.length} total posts`}</PagePill>,
+          <PagePill key="published">{loading ? "Checking live posts" : `${publishedCount} published`}</PagePill>,
+          <PagePill key="drafts">{loading ? "Checking drafts" : `${draftCount} drafts`}</PagePill>,
+        ]}
+        aside={
+          <div className="space-y-3 text-sm text-neutral-300">
+            <div className="flex flex-wrap gap-3">
+              <Link
+                href="/admin"
+                className="inline-flex items-center justify-center rounded-full border border-white/10 px-4 py-2.5 text-sm font-semibold text-neutral-300 transition-colors hover:bg-white/[0.04] hover:text-white"
+              >
+                Back to admin
+              </Link>
+              {!editing && (
+                <button
+                  onClick={openNew}
+                  className="inline-flex items-center justify-center rounded-full border border-white/10 bg-white/[0.06] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-white/[0.1]"
+                >
+                  New post
+                </button>
+              )}
+            </div>
+            <p>Keep titles plain, slugs clean, and excerpts short enough to scan quickly on the public site.</p>
+          </div>
+        }
+      />
+
         {editing && (
-          <div className="rounded-xl border border-white/10 bg-[#242424] p-6 space-y-4">
+          <PagePanel className="space-y-4 p-6">
             <h2 className="text-sm font-semibold uppercase tracking-wider text-neutral-400">
               {editId ? "Edit Post" : "New Post"}
             </h2>
@@ -171,14 +191,14 @@ export default function AdminBlogPage() {
                   setTitle(e.target.value);
                   if (!editId) setSlug(autoSlug(e.target.value));
                 }}
-                className="rounded-lg border border-white/10 bg-[#2a2a2a] px-3 py-2 text-sm text-neutral-200 outline-none focus:border-neutral-400"
+                className="rounded-[1rem] border border-white/10 bg-[#2a2a2a] px-3 py-2.5 text-sm text-neutral-200 outline-none focus:border-neutral-300"
               />
               <input
                 type="text"
                 placeholder="slug-url"
                 value={slug}
                 onChange={(e) => setSlug(e.target.value)}
-                className="rounded-lg border border-white/10 bg-[#2a2a2a] px-3 py-2 text-sm text-neutral-200 outline-none focus:border-neutral-400"
+                className="rounded-[1rem] border border-white/10 bg-[#2a2a2a] px-3 py-2.5 text-sm text-neutral-200 outline-none focus:border-neutral-300"
               />
             </div>
             <input
@@ -186,91 +206,107 @@ export default function AdminBlogPage() {
               placeholder="Author (optional)"
               value={author}
               onChange={(e) => setAuthor(e.target.value)}
-              className="w-full rounded-lg border border-white/10 bg-[#2a2a2a] px-3 py-2 text-sm text-neutral-200 outline-none focus:border-neutral-400"
+              className="w-full rounded-[1rem] border border-white/10 bg-[#2a2a2a] px-3 py-2.5 text-sm text-neutral-200 outline-none focus:border-neutral-300"
             />
             <input
               type="text"
               placeholder="Excerpt (optional, shown on listing)"
               value={excerpt}
               onChange={(e) => setExcerpt(e.target.value)}
-              className="w-full rounded-lg border border-white/10 bg-[#2a2a2a] px-3 py-2 text-sm text-neutral-200 outline-none focus:border-neutral-400"
+              className="w-full rounded-[1rem] border border-white/10 bg-[#2a2a2a] px-3 py-2.5 text-sm text-neutral-200 outline-none focus:border-neutral-300"
             />
             <textarea
               placeholder="Post body (plain text for now)"
               value={body}
               onChange={(e) => setBody(e.target.value)}
               rows={10}
-              className="w-full rounded-lg border border-white/10 bg-[#2a2a2a] px-3 py-2 text-sm text-neutral-200 outline-none focus:border-neutral-400 resize-y"
+              className="w-full resize-y rounded-[1rem] border border-white/10 bg-[#2a2a2a] px-3 py-2.5 text-sm text-neutral-200 outline-none focus:border-neutral-300"
             />
             <div className="flex items-center gap-3">
               <button
                 onClick={handleSave}
                 disabled={!title.trim() || !slug.trim() || saving}
-                className="rounded-lg bg-neutral-600 px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-40"
+                className="rounded-full border border-white/10 bg-white/[0.06] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-white/[0.1] disabled:opacity-40"
               >
                 {saving ? "Saving…" : editId ? "Update" : "Create"}
               </button>
               <button
                 onClick={resetForm}
-                className="rounded-lg border border-white/10 px-4 py-2 text-sm text-neutral-400 transition-colors hover:bg-white/5"
+                className="rounded-full border border-white/10 px-4 py-2.5 text-sm text-neutral-300 transition-colors hover:bg-white/[0.04] hover:text-white"
               >
                 Cancel
               </button>
             </div>
-          </div>
+          </PagePanel>
         )}
 
-        {/* Post list */}
+      <PagePanel className="space-y-4 p-6">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-neutral-400">Posts</h2>
+            <p className="mt-2 text-sm text-neutral-500">Review what is live, what remains in draft, and what needs editing.</p>
+          </div>
+          {!loading && (
+            <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-neutral-400">
+              {posts.length} items
+            </span>
+          )}
+        </div>
+
         {loading ? (
           <div className="space-y-3">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="h-16 rounded-lg bg-white/5 animate-pulse" />
+              <div key={i} className="h-24 rounded-[1rem] border border-white/10 bg-white/[0.03] animate-pulse" />
             ))}
           </div>
         ) : posts.length === 0 ? (
-          <div className="rounded-xl border border-white/10 bg-[#242424] px-6 py-12 text-center">
-            <p className="text-neutral-500">No blog posts yet.</p>
+          <div className="rounded-[1.15rem] border border-white/10 bg-white/[0.03] px-6 py-12 text-center">
+            <p className="text-sm text-neutral-400">No blog posts yet.</p>
+            <p className="mt-2 text-xs text-neutral-500">Create your first post to start building the public editorial section.</p>
           </div>
         ) : (
-          <div className="space-y-2">
+          <div className="space-y-3">
             {posts.map((post) => (
               <div
                 key={post.id}
-                className="flex items-center justify-between rounded-xl border border-white/10 bg-[#242424] px-5 py-4"
+                className="flex flex-col gap-4 rounded-[1.15rem] border border-white/10 bg-white/[0.03] px-5 py-4 lg:flex-row lg:items-center lg:justify-between"
               >
                 <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2">
-                    <span className="truncate font-medium text-neutral-100">
-                      {post.title}
-                    </span>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="truncate font-medium text-neutral-100">{post.title}</span>
                     <span
                       className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-medium ${
                         post.published
-                          ? "bg-sky-500/10 text-sky-400"
-                          : "bg-yellow-500/10 text-yellow-400"
+                          ? "bg-white/[0.08] text-neutral-200 ring-1 ring-white/10"
+                          : "bg-[#5d5144]/35 text-[#d0c0aa] ring-1 ring-[#8e775a]/30"
                       }`}
                     >
                       {post.published ? "Published" : "Draft"}
                     </span>
                   </div>
-                  <span className="text-xs text-neutral-500">/{post.slug}</span>
+                  <div className="mt-2 flex flex-wrap items-center gap-3 text-xs text-neutral-500">
+                    <span>/{post.slug}</span>
+                    <span>{post.author || "No author set"}</span>
+                    <span>{post.published ? `Live ${formatDate(post.published_at)}` : `Created ${formatDate(post.created_at)}`}</span>
+                  </div>
+                  {post.excerpt ? <p className="mt-3 text-sm leading-6 text-neutral-400">{post.excerpt}</p> : null}
                 </div>
-                <div className="flex items-center gap-2 ml-3">
+                <div className="flex flex-wrap items-center gap-2 lg:ml-3 lg:justify-end">
                   <button
                     onClick={() => togglePublished(post)}
-                    className="rounded-lg border border-white/10 px-2.5 py-1 text-xs text-neutral-400 hover:bg-white/5 hover:text-neutral-200"
+                    className="rounded-full border border-white/10 px-3 py-1.5 text-xs font-semibold text-neutral-300 transition-colors hover:bg-white/[0.04] hover:text-white"
                   >
                     {post.published ? "Unpublish" : "Publish"}
                   </button>
                   <button
                     onClick={() => openEdit(post)}
-                    className="rounded-lg border border-white/10 px-2.5 py-1 text-xs text-neutral-400 hover:bg-white/5 hover:text-neutral-200"
+                    className="rounded-full border border-white/10 px-3 py-1.5 text-xs font-semibold text-neutral-300 transition-colors hover:bg-white/[0.04] hover:text-white"
                   >
                     Edit
                   </button>
                   <button
                     onClick={() => deletePost(post)}
-                    className="rounded-lg border border-red-500/20 px-2.5 py-1 text-xs text-red-400 hover:bg-red-500/10"
+                    className="rounded-full border border-red-500/20 px-3 py-1.5 text-xs font-semibold text-red-300 transition-colors hover:bg-red-500/10"
                   >
                     Delete
                   </button>
@@ -279,7 +315,7 @@ export default function AdminBlogPage() {
             ))}
           </div>
         )}
-      </div>
+      </PagePanel>
     </div>
   );
 }
