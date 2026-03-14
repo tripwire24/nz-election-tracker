@@ -79,18 +79,18 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                     href="https://tripwiredigital.co.nz/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 rounded bg-white/5 px-2 py-1 text-[11px] font-semibold tracking-wide text-neutral-300 ring-1 ring-white/10 transition-colors hover:bg-white/10 hover:text-white"
+                    className="inline-flex items-center transition-opacity hover:opacity-80"
                   >
-                    TRIPWIRE
+                    <img src="/tripwire-logo.png" alt="Tripwire" className="h-5 w-auto opacity-70 hover:opacity-100 transition-opacity" />
                   </a>
                   <span className="text-neutral-600">&amp;</span>
                   <a
                     href="https://www.afewquietyarns.co.nz/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 rounded bg-white/5 px-2 py-1 text-[11px] font-semibold tracking-wide text-neutral-300 ring-1 ring-white/10 transition-colors hover:bg-white/10 hover:text-white"
+                    className="inline-flex items-center transition-opacity hover:opacity-80"
                   >
-                    AFQY
+                    <img src="/afqy-logo.png" alt="A Few Quiet Yarns" className="h-5 w-auto opacity-70 hover:opacity-100 transition-opacity" />
                   </a>
                 </div>
                 <div className="flex items-center gap-3">
