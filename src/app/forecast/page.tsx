@@ -329,7 +329,6 @@ export default async function ForecastPage() {
             </div>
           </PagePanel>
         </div>
-        </div>
 
       {hasMC && mcSeats && (
         <PagePanel className="p-6">
