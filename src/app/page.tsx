@@ -147,43 +147,43 @@ export default async function Home() {
       : "The current numbers point to a close election";
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-5 md:space-y-8">
       {/* Hero banner */}
-      <div className="overflow-hidden rounded-[2rem] border border-white/10 bg-[linear-gradient(135deg,rgba(28,28,28,0.98),rgba(18,18,18,0.98))] p-6 shadow-[0_20px_50px_rgba(0,0,0,0.32)] md:p-8">
-        <div className="grid gap-6 xl:grid-cols-[minmax(0,1.7fr)_minmax(300px,0.9fr)]">
-          <div className="space-y-5">
+      <div className="overflow-hidden rounded-[1.25rem] md:rounded-[2rem] border border-white/10 bg-[linear-gradient(135deg,rgba(28,28,28,0.98),rgba(18,18,18,0.98))] p-4 shadow-[0_20px_50px_rgba(0,0,0,0.32)] md:p-6 lg:p-8">
+        <div className="grid gap-4 md:gap-6 xl:grid-cols-[minmax(0,1.7fr)_minmax(300px,0.9fr)]">
+          <div className="space-y-3 md:space-y-5">
             <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-neutral-400">
               <span className="h-1.5 w-1.5 rounded-full bg-[#c0c0c0]" />
               NZ Election Tracker
             </div>
             <div className="space-y-3">
               <p className="text-xs font-medium uppercase tracking-[0.24em] text-neutral-500">2026 general election</p>
-              <h1 className="max-w-3xl text-3xl font-semibold tracking-tight text-neutral-100 md:text-4xl">
+              <h1 className="max-w-3xl text-2xl font-semibold tracking-tight text-neutral-100 md:text-3xl lg:text-4xl">
                 {headline}
               </h1>
-              <p className="max-w-2xl text-sm leading-7 text-neutral-400 md:text-[15px]">
+              <p className="max-w-2xl text-sm leading-6 text-neutral-400 md:leading-7 md:text-[15px]">
                 This dashboard shows where things stand now and what the current polling picture would mean for seats in Parliament if an election were held today.
               </p>
             </div>
-            <div className="flex flex-wrap gap-2.5 text-sm">
-              <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-neutral-300">
+            <div className="flex flex-wrap gap-2 text-xs md:text-sm">
+              <span className="rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 md:px-3 md:py-1.5 text-neutral-300">
                 {latestPoll && latestPollDateLabel
                   ? `Latest poll: ${latestPoll.pollster} · ${latestPollDateLabel}`
                   : "Latest poll: Waiting for published data"}
               </span>
-              <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-neutral-300">
+              <span className="rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 md:px-3 md:py-1.5 text-neutral-300">
                 Polls in model: {pollInputs.length || 0}
               </span>
-              <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-neutral-300">
+              <span className="rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 md:px-3 md:py-1.5 text-neutral-300">
                 Majority line: 61 seats
               </span>
-              <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-neutral-300">
+              <span className="rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 md:px-3 md:py-1.5 text-neutral-300">
                 Stories tracked: {(totalArticles ?? 0).toLocaleString()}
               </span>
             </div>
           </div>
 
-          <div className="rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-5 ring-1 ring-white/5">
+          <div className="hidden xl:block rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-5 ring-1 ring-white/5">
             <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-neutral-500">What this page does</p>
             <div className="mt-4 space-y-3 text-sm text-neutral-300">
               <div className="flex items-start gap-3">
@@ -206,7 +206,7 @@ export default async function Home() {
         </div>
       </div>
 
-      <div className="grid gap-6 xl:grid-cols-12">
+      <div className="grid gap-4 md:gap-6 md:grid-cols-2 xl:grid-cols-12">
         <div className="min-w-0 xl:col-span-8">
           <ForecastWidget
             rightPct={rightPct}
@@ -220,10 +220,10 @@ export default async function Home() {
           <ElectionCountdownWidget />
         </div>
 
-        <div className="min-w-0 xl:col-span-8">
+        <div className="min-w-0 md:col-span-2 xl:col-span-8">
           <SeatProjectionWidget seats={seatProjection} />
         </div>
-        <div className="min-w-0 xl:col-span-4">
+        <div className="min-w-0 md:col-span-2 xl:col-span-4">
           <PollSnapshotWidget poll={latestPoll} results={latestPollResults} />
         </div>
 
