@@ -1,5 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import NZMapLoader from "@/components/nz-map-loader";
+import { PageHero, PagePanel, PagePill } from "@/components/page-primitives";
 
 export const revalidate = 300;
 
@@ -29,21 +30,31 @@ export default async function MapPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-neutral-100">Electorate Map</h1>
-        <p className="mt-1 text-sm text-neutral-500">
-          NZ&apos;s {electorateList.length || 72} electorates — {generalCount || 65} general + {maoriCount || 7} Māori — with party lean and demographic overlays.
-        </p>
-      </div>
+      <PageHero
+        eyebrow="Map"
+        title="Browse electorates without losing the national picture"
+        description={`Explore NZ's ${electorateList.length || 72} electorates, including ${generalCount || 65} general electorates and ${maoriCount || 7} Māori electorates. This page is designed to keep the map readable while the supporting context stays close by.`}
+        pills={[
+          <PagePill key="count">{electorateList.length || 72} electorates</PagePill>,
+          <PagePill key="general">{generalCount || 65} general</PagePill>,
+          <PagePill key="maori">{maoriCount || 7} Māori</PagePill>,
+        ]}
+        aside={
+          <div className="space-y-3 text-sm text-neutral-300">
+            <p>The current map shows electorate locations and types.</p>
+            <p>Boundary shapes, party lean, and demographic overlays are the next layer.</p>
+          </div>
+        }
+      />
 
       {/* Map + legend */}
       <div className="grid gap-6 lg:grid-cols-3">
-        <div className="lg:col-span-2 rounded-xl border border-white/10 bg-white/5 overflow-hidden">
+        <PagePanel className="overflow-hidden p-0 lg:col-span-2">
           <NZMapLoader electorates={electorateList} />
-        </div>
+        </PagePanel>
         <div className="space-y-4">
           {/* Legend */}
-          <div className="rounded-xl border border-white/10 bg-[#242424] p-4">
+          <PagePanel className="p-4">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-3">Legend</h3>
             <div className="space-y-2">
               <div className="flex items-center gap-2">
@@ -55,10 +66,10 @@ export default async function MapPage() {
                 <span className="text-sm text-neutral-300">Māori electorate</span>
               </div>
             </div>
-          </div>
+          </PagePanel>
 
           {/* Stats */}
-          <div className="rounded-xl border border-white/10 bg-[#242424] p-4">
+          <PagePanel className="p-4">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-3">Seats</h3>
             <div className="space-y-3">
               <div>
@@ -74,11 +85,11 @@ export default async function MapPage() {
                 <div className="text-xs text-neutral-400">Total seats (72 electorate + ~48 list)</div>
               </div>
             </div>
-          </div>
+          </PagePanel>
 
           {/* Electorate list */}
           {electorateList.length > 0 && (
-            <div className="rounded-xl border border-white/10 bg-[#242424] p-4 max-h-64 overflow-y-auto">
+            <PagePanel className="max-h-64 overflow-y-auto p-4">
               <h3 className="text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-3">Electorates ({electorateList.length})</h3>
               <div className="space-y-1">
                 {electorateList.map((e) => (
@@ -89,13 +100,13 @@ export default async function MapPage() {
                   </div>
                 ))}
               </div>
-            </div>
+            </PagePanel>
           )}
         </div>
       </div>
 
       {/* Roadmap */}
-      <div className="rounded-xl border border-dashed border-white/10 bg-[#2a2a2a] p-6">
+      <PagePanel className="border-dashed bg-[#2a2a2a] p-6">
         <h2 className="text-sm font-semibold text-neutral-300 mb-3">Map progress</h2>
         <ul className="space-y-2 text-sm">
           <li className="flex items-start gap-2">
@@ -123,7 +134,7 @@ export default async function MapPage() {
             <span className="text-neutral-500">Candidate data per electorate</span>
           </li>
         </ul>
-      </div>
+      </PagePanel>
     </div>
   );
 }

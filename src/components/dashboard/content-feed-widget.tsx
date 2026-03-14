@@ -38,14 +38,12 @@ export function ContentFeedWidget({
   if (items.length === 0) {
     return (
       <DashboardCard title="Latest Coverage" badge="Feed" tooltip="Latest NZ political coverage collected from media, official sources, blogs, and social feeds." accent="linear-gradient(90deg, #705b48, #ba8c63)">
-        <div className="space-y-3">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="rounded-lg border border-white/10 px-3 py-2.5">
-              <div className="h-4 w-3/4 rounded bg-white/5 animate-shimmer" />
-              <div className="mt-2 flex gap-2">
-                <div className="h-3 w-16 rounded bg-white/5 animate-shimmer" />
-                <div className="h-3 w-10 rounded bg-white/5 animate-shimmer" />
-              </div>
+        <div className="grid gap-3 md:grid-cols-2">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="rounded-[1.1rem] border border-white/10 px-4 py-3">
+              <div className="h-3.5 w-24 rounded bg-white/5 animate-shimmer" />
+              <div className="mt-3 h-4 w-11/12 rounded bg-white/5 animate-shimmer" />
+              <div className="mt-2 h-4 w-3/4 rounded bg-white/5 animate-shimmer" />
             </div>
           ))}
         </div>
@@ -55,29 +53,41 @@ export function ContentFeedWidget({
 
   return (
     <DashboardCard title="Latest Coverage" badge={`${totalArticles} tracked`} tooltip="Latest NZ political coverage collected from media, official sources, blogs, and social feeds." accent="linear-gradient(90deg, #705b48, #ba8c63)">
-      <div className="max-h-[360px] overflow-y-auto space-y-3 pr-1 scrollbar-thin">
+      <div className="grid gap-3 md:grid-cols-2">
         {items.map((item) => (
           <a
             key={item.id}
             href={item.source_url}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-start gap-3 rounded-lg border border-white/10 px-3 py-2.5 transition-colors hover:border-white/20 hover:bg-white/5"
+            className="group flex h-full flex-col justify-between rounded-[1.1rem] border border-white/10 bg-white/[0.02] px-4 py-3 transition-colors hover:border-white/20 hover:bg-white/[0.04]"
           >
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-neutral-200 leading-snug line-clamp-2">
-                {item.title}
-              </p>
-              <div className="mt-1 flex items-center gap-2 text-xs text-neutral-500">
-                <span className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${sourceColour[item.source_type] ?? "bg-white/5 text-neutral-400 ring-1 ring-white/10"}`}>
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center justify-between gap-3 text-[11px] text-neutral-500">
+                <span className={`rounded-full px-2 py-0.5 font-medium ${sourceColour[item.source_type] ?? "bg-white/5 text-neutral-400 ring-1 ring-white/10"}`}>
                   {item.source_name}
                 </span>
                 <span>{relativeTime(item.published_at)}</span>
               </div>
+              <p className="mt-3 text-sm font-medium leading-6 text-neutral-200 line-clamp-3 group-hover:text-white">
+                {item.title}
+              </p>
+              {item.topics && item.topics.length > 0 && (
+                <div className="mt-3 flex flex-wrap gap-1.5">
+                  {item.topics.slice(0, 2).map((topic) => (
+                    <span key={topic} className="rounded-full bg-white/[0.04] px-2 py-0.5 text-[10px] text-neutral-400 ring-1 ring-white/10">
+                      {topic.replace(/_/g, " ")}
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
           </a>
         ))}
       </div>
+      <p className="mt-4 text-[11px] text-neutral-500">
+        Open a story for the source link and summary.
+      </p>
     </DashboardCard>
   );
 }

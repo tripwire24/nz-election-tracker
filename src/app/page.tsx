@@ -32,7 +32,7 @@ export default async function Home() {
     .from("content_items")
     .select("id, title, source_name, source_type, source_url, published_at, topics")
     .order("published_at", { ascending: false })
-    .limit(8);
+    .limit(6);
 
   // Fetch recent polls (up to 90 days) for weighted average
   const { data: recentPolls } = await supabase
@@ -147,7 +147,7 @@ export default async function Home() {
       : "The current numbers point to a close election";
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Hero banner */}
       <div className="overflow-hidden rounded-[2rem] border border-white/10 bg-[linear-gradient(135deg,rgba(28,28,28,0.98),rgba(18,18,18,0.98))] p-6 shadow-[0_20px_50px_rgba(0,0,0,0.32)] md:p-8">
         <div className="grid gap-6 xl:grid-cols-[minmax(0,1.7fr)_minmax(300px,0.9fr)]">
@@ -206,9 +206,8 @@ export default async function Home() {
         </div>
       </div>
 
-      {/* Top row: Forecast + Countdown */}
-      <div className="grid items-stretch gap-6 lg:grid-cols-4">
-        <div className="lg:col-span-3 h-full min-w-0">
+      <div className="grid gap-6 xl:grid-cols-12">
+        <div className="min-w-0 xl:col-span-8">
           <ForecastWidget
             rightPct={rightPct}
             leftPct={leftPct}
@@ -217,25 +216,26 @@ export default async function Home() {
             leftSeats={leftSeats}
           />
         </div>
-        <div className="h-full min-w-0">
+        <div className="min-w-0 xl:col-span-4">
           <ElectionCountdownWidget />
         </div>
-      </div>
 
-      {/* Middle row: Seat projection (full width) */}
-      <SeatProjectionWidget seats={seatProjection} />
+        <div className="min-w-0 xl:col-span-8">
+          <SeatProjectionWidget seats={seatProjection} />
+        </div>
+        <div className="min-w-0 xl:col-span-4">
+          <PollSnapshotWidget poll={latestPoll} results={latestPollResults} />
+        </div>
 
-      {/* Bottom row: Poll snapshot + Sentiment + Content feed */}
-      <div className="grid gap-6 lg:grid-cols-3">
-        <PollSnapshotWidget
-          poll={latestPoll}
-          results={latestPollResults}
-        />
-        <SentimentPulseWidget data={sentimentData} />
+        <div className="min-w-0 xl:col-span-5">
+          <SentimentPulseWidget data={sentimentData} />
+        </div>
+        <div className="min-w-0 xl:col-span-7">
         <ContentFeedWidget
           items={contentItems ?? []}
           totalArticles={totalArticles ?? 0}
         />
+        </div>
       </div>
     </div>
   );

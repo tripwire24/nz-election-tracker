@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { PageHero, PagePanel, PagePill } from "@/components/page-primitives";
 
 export default function ContactPage() {
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
@@ -41,16 +42,25 @@ export default function ContactPage() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-2xl font-bold text-neutral-100">Contact Us</h1>
-        <p className="mt-1 text-sm text-neutral-400">
-          Questions, feedback, or partnership enquiries — we&apos;d love to hear from you.
-        </p>
-      </div>
+      <PageHero
+        eyebrow="Contact"
+        title="Questions, partnerships, or feedback"
+        description="Use this page to get in touch about sponsorships, data licensing, media partnerships, or general feedback on the product."
+        pills={[
+          <PagePill key="reply">Direct contact form</PagePill>,
+          <PagePill key="topics">Partnerships, feedback, and support</PagePill>,
+        ]}
+        aside={
+          <div className="space-y-3 text-sm text-neutral-300">
+            <p>Use the form for anything that needs a direct reply.</p>
+            <p>If you are enquiring about data licensing or sponsorship, include your organisation and timeline.</p>
+          </div>
+        }
+      />
 
       <div className="grid gap-8 lg:grid-cols-5">
         {/* Form */}
-        <div className="lg:col-span-3 rounded-xl border border-white/10 bg-[#242424] p-6 shadow-sm">
+        <PagePanel className="lg:col-span-3 p-6">
           {status === "sent" ? (
             <div className="flex flex-col items-center justify-center py-12 text-center">
               <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white/10 text-2xl">
@@ -139,23 +149,23 @@ export default function ContactPage() {
               <button
                 type="submit"
                 disabled={status === "sending"}
-                className="rounded-lg bg-gradient-to-r from-[#242424]0 to-neutral-600 px-6 py-2.5 text-sm font-semibold text-white shadow-md shadow-black/20 transition-all hover:shadow-lg hover:shadow-black/30 disabled:opacity-60 disabled:cursor-not-allowed"
+                className="rounded-full border border-white/10 bg-white/[0.06] px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/[0.1] disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {status === "sending" ? "Sending…" : "Send Message"}
               </button>
             </form>
           )}
-        </div>
+        </PagePanel>
 
         {/* Sidebar */}
         <div className="lg:col-span-2 space-y-5">
-          <div className="rounded-xl border border-white/10 bg-gradient-to-br from-[#242424] via-[#2a2a2a] to-[#1e1e1e] p-6 shadow-sm">
+          <PagePanel className="p-6">
             <h3 className="text-sm font-semibold text-neutral-100">Partnership &amp; Sponsorship</h3>
             <p className="mt-2 text-xs leading-relaxed text-neutral-400">
               Interested in sponsoring the NZ Election Tracker or integrating our data into your platform?
               We&apos;re open to media partnerships, data licensing, and custom dashboards for the 2026 election cycle.
             </p>
-          </div>
+          </PagePanel>
         </div>
       </div>
     </div>

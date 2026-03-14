@@ -8,6 +8,7 @@ import {
   type PollResult,
   type WeightedPollInput,
 } from "@/lib/election";
+import { PageHero, PagePanel, PagePill } from "@/components/page-primitives";
 
 export const revalidate = 300;
 
@@ -113,16 +114,26 @@ export default async function ForecastPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-neutral-100">Forecast</h1>
-        <p className="mt-1 text-sm text-neutral-500">
-          Seat projection via proportional MMP allocation{pollCount > 1 ? ` from weighted average of ${pollCount} polls` : " from latest poll"}.
-          {!hasPollData && " Awaiting poll data — run the polling ingestion pipeline."}
-        </p>
-      </div>
+      <PageHero
+        eyebrow="Forecast"
+        title="What the current polling picture would mean for Parliament"
+        description={`This page converts ${pollCount > 1 ? `a weighted average of ${pollCount} polls` : "the latest poll"} into estimated seats and coalition outcomes. It is designed to explain the current picture, not oversell certainty.`}
+        pills={[
+          <PagePill key="polls">{pollCount || 0} poll{pollCount === 1 ? "" : "s"} in model</PagePill>,
+          <PagePill key="majority">61 seats for a majority</PagePill>,
+          <PagePill key="mc">{hasMC ? `${mcSimCount.toLocaleString()} simulations live` : "Polling-only view active"}</PagePill>,
+        ]}
+        aside={
+          <div className="space-y-3 text-sm text-neutral-300">
+            <p>Use this page for the combined view.</p>
+            <p>Use the polls page for individual poll releases and the sentiment page for tone and media volume.</p>
+          </div>
+        }
+      />
 
-      {/* Coalition probabilities */}
-      <div className="rounded-xl border border-white/10 bg-[#242424] p-6">
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,1.45fr)_320px]">
+        <div className="space-y-6">
+      <PagePanel className="p-6">
         <h2 className="text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-4">
           {hasMC ? "Simulated coalition probabilities" : "Coalition seat projection"}
         </h2>
@@ -190,11 +201,11 @@ export default async function ForecastPage() {
             No polling data available yet. Run the polling ingestion pipeline (/api/ingest/polls) to populate.
           </p>
         )}
-      </div>
+      </PagePanel>
 
       {/* Party seat breakdown */}
       {seatProjection.length > 0 && (
-        <div className="rounded-xl border border-white/10 bg-[#242424] p-6">
+        <PagePanel className="p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
               Party seat allocation (proportional MMP)
@@ -242,12 +253,12 @@ export default async function ForecastPage() {
               );
             })}
           </div>
-        </div>
+        </PagePanel>
       )}
 
       {/* Monte Carlo seat ranges */}
       {hasMC && mcSeats && (
-        <div className="rounded-xl border border-white/10 bg-[#242424] p-6">
+        <PagePanel className="p-6">
           <h2 className="text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-4">
             Seat range by party (90% confidence interval)
           </h2>
@@ -296,11 +307,12 @@ export default async function ForecastPage() {
           <p className="mt-4 text-[10px] text-neutral-500">
             Shaded range shows 5th–95th percentile from {mcSimCount.toLocaleString()} simulations. Solid bar marks the median.
           </p>
-        </div>
+        </PagePanel>
       )}
+        </div>
 
-      {/* Model methodology */}
-      <div className="rounded-xl border border-white/10 bg-[#242424] p-6">
+        <div className="space-y-6">
+      <PagePanel className="p-6">
         <h2 className="text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-4">
           Model methodology
         </h2>
@@ -337,12 +349,11 @@ export default async function ForecastPage() {
             </p>
           </div>
         </div>
-      </div>
+      </PagePanel>
 
-      {/* Roadmap */}
-      <div className="rounded-xl border border-white/10 bg-[#242424] p-6">
+      <PagePanel className="p-6">
         <h2 className="text-sm font-semibold text-neutral-200 mb-3">Model roadmap</h2>
-        <div className="grid gap-3 md:grid-cols-4">
+        <div className="space-y-3">
           <div className="flex items-center gap-3 rounded-lg bg-white/10 px-3 py-2.5 ring-1 ring-white/10">
             <span className="text-neutral-200 font-bold">✓</span>
             <div>
@@ -371,6 +382,8 @@ export default async function ForecastPage() {
               <div className="text-[10px] text-neutral-500">{hasMC ? `${mcSimCount.toLocaleString()} sims live` : "10K sims + economic data"}</div>
             </div>
           </div>
+        </div>
+      </PagePanel>
         </div>
       </div>
     </div>

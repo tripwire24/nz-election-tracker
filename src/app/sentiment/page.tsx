@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import { PageHero, PagePanel, PagePill } from "@/components/page-primitives";
 
 export const dynamic = "force-dynamic";
 function getSupabase() {
@@ -74,26 +75,36 @@ export default async function SentimentPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-neutral-100">Sentiment Analysis</h1>
-        <p className="mt-1 text-sm text-neutral-500">
-          AI-powered media sentiment tracking per party and topic, scored using Claude API.
-        </p>
-      </div>
+      <PageHero
+        eyebrow="Sentiment"
+        title="How political coverage is leaning across parties"
+        description="Track the tone of recent media and social discussion by party, with a simpler explanation of what the scores mean and where the current volume sits."
+        pills={[
+          <PagePill key="articles">{articles} items ingested</PagePill>,
+          <PagePill key="scores">{scored} items scored</PagePill>,
+          <PagePill key="window">7-day rolling window</PagePill>,
+        ]}
+        aside={
+          <div className="space-y-3 text-sm text-neutral-300">
+            <p><span className="text-red-400">-1</span> is strongly negative and <span className="text-emerald-400">+1</span> is strongly positive.</p>
+            <p>Scores close to zero mean the overall tone is neutral or mixed.</p>
+          </div>
+        }
+      />
 
       {/* Status overview */}
       <div className="grid gap-4 md:grid-cols-3">
-        <div className="rounded-xl border border-white/10 bg-[#242424] p-5">
+        <PagePanel className="p-5">
           <div className="text-xs font-semibold uppercase tracking-wider text-neutral-400">Articles ingested</div>
           <div className="mt-2 text-3xl font-bold text-neutral-100">{articles}</div>
           <div className="mt-1 text-xs text-neutral-400">from RSS + Bluesky</div>
-        </div>
-        <div className="rounded-xl border border-white/10 bg-[#242424] p-5">
+        </PagePanel>
+        <PagePanel className="p-5">
           <div className="text-xs font-semibold uppercase tracking-wider text-neutral-400">Items scored</div>
           <div className="mt-2 text-3xl font-bold text-neutral-100">{scored}</div>
           <div className="mt-1 text-xs text-neutral-400">{articles ? `${Math.round((scored / articles) * 100)}% coverage` : "awaiting scoring"}</div>
-        </div>
-        <div className="rounded-xl border border-white/10 bg-[#242424] p-5">
+        </PagePanel>
+        <PagePanel className="p-5">
           <div className="text-xs font-semibold uppercase tracking-wider text-neutral-400">Scoring</div>
           <div className="mt-2 text-lg font-bold text-neutral-100">Scored automatically</div>
           <div className="mt-1 text-xs text-neutral-400">
@@ -101,33 +112,11 @@ export default async function SentimentPage() {
               ? `${scored} items scored · updated daily`
               : "Awaiting first scoring run"}
           </div>
-        </div>
+        </PagePanel>
       </div>
 
-      {/* How to read sentiment scores */}
-      <div className="rounded-xl border border-white/10 bg-[#2a2a2a] p-5">
-        <h2 className="text-sm font-semibold text-neutral-200 mb-3">How to read sentiment scores</h2>
-        <p className="text-xs text-neutral-500 leading-relaxed mb-4">
-          Each article or social post mentioning a party is scored on a scale from <strong className="text-red-500">−1</strong> (very negative) to <strong className="text-emerald-400">+1</strong> (very positive). Zero means neutral. We average all scores per party over a rolling 7-day window.
-        </p>
-        <div className="flex flex-wrap gap-3">
-          <div className="flex items-center gap-2 rounded-lg bg-red-500/10 px-3 py-1.5 ring-1 ring-red-500/20">
-            <span className="text-red-500 font-bold text-sm">−1.0 → −0.05</span>
-            <span className="text-xs text-neutral-400">Negative coverage</span>
-          </div>
-          <div className="flex items-center gap-2 rounded-lg bg-white/5 px-3 py-1.5 ring-1 ring-white/10">
-            <span className="text-neutral-500 font-bold text-sm">−0.05 → +0.05</span>
-            <span className="text-xs text-neutral-500">Neutral</span>
-          </div>
-          <div className="flex items-center gap-2 rounded-lg bg-emerald-500/10 px-3 py-1.5 ring-1 ring-emerald-500/20">
-            <span className="text-emerald-400 font-bold text-sm">+0.05 → +1.0</span>
-            <span className="text-xs text-neutral-400">Positive coverage</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Party sentiment grid */}
-      <div className="rounded-xl border border-white/10 bg-[#242424] p-6">
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,1.35fr)_320px]">
+        <PagePanel className="p-6">
         <h2 className="text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-4">
           Sentiment by party (7-day rolling average)
         </h2>
@@ -159,11 +148,12 @@ export default async function SentimentPage() {
             );
           })}
         </div>
-      </div>
+        </PagePanel>
 
       {/* Composite Sentiment Index */}
+        <div className="space-y-6">
       {Object.keys(compositeIndex).length > 0 && (
-        <div className="rounded-xl border border-white/10 bg-[#242424] p-6">
+        <PagePanel className="p-6">
           <h2 className="text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-1">
             Composite Sentiment Index
           </h2>
@@ -219,11 +209,11 @@ export default async function SentimentPage() {
           <div className="mt-4 text-[10px] text-neutral-500 leading-relaxed">
             Formula: weighted_avg × volume_factor × 100. Volume factor scales with log₂(mentions) up to 50 mentions for full weight. Recency uses 7-day exponential decay.
           </div>
-        </div>
+        </PagePanel>
       )}
 
       {/* Scoring pipeline */}
-      <div className="rounded-xl border border-dashed border-white/10 bg-[#2a2a2a] p-6">
+      <PagePanel className="border-dashed bg-[#2a2a2a] p-6">
         <h2 className="text-sm font-semibold text-neutral-300 mb-3">Sentiment scoring pipeline</h2>
         <div className="grid gap-4 md:grid-cols-4">
           <div className="text-center">
@@ -246,6 +236,8 @@ export default async function SentimentPage() {
             <div className="mt-2 text-xs font-medium text-neutral-300">Rolling averages</div>
             <div className="mt-0.5 text-[10px] text-neutral-400">7-day window</div>
           </div>
+        </div>
+      </PagePanel>
         </div>
       </div>
     </div>

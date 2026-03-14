@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import { PageHero, PagePanel, PagePill } from "@/components/page-primitives";
 
 export const dynamic = "force-dynamic";
 function getSupabase() {
@@ -52,18 +53,29 @@ export default async function PollsPage() {
 
   const partyList = (parties ?? []) as { short_name: string; name: string; colour: string }[];
   const pollList = (polls as unknown as PollRow[]) ?? [];
+  const latestPoll = pollList[0] ?? null;
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-neutral-100">Polls</h1>
-        <p className="mt-1 text-sm text-neutral-500">
-          Party vote polling data from NZ pollsters. Auto-scraped from Wikipedia and direct sources.
-        </p>
-      </div>
+      <PageHero
+        eyebrow="Polling"
+        title="Current party vote polls without the clutter"
+        description="Compare the latest published NZ party vote polls in a denser grid, with sample size, margin of error, and source links kept close to the data."
+        pills={[
+          <PagePill key="count">{pollList.length} recent polls</PagePill>,
+          <PagePill key="pollster">{latestPoll ? `Latest: ${latestPoll.pollster}` : "Waiting for data"}</PagePill>,
+          <PagePill key="tracked">{partyList.filter((p) => p.short_name !== "OTH").length} main parties tracked</PagePill>,
+        ]}
+        aside={
+          <div className="space-y-3 text-sm text-neutral-300">
+            <p>These are current poll results, not election-day predictions.</p>
+            <p>Use this page to compare individual polls. Use the forecast page to see what the combined polling picture means for seats.</p>
+          </div>
+        }
+      />
 
       {pollList.length === 0 ? (
-        <div className="rounded-xl border border-white/10 bg-white/5 p-8">
+        <PagePanel className="p-8">
           <h2 className="text-lg font-semibold text-neutral-100">Awaiting polling data</h2>
           <p className="mt-2 text-sm text-neutral-500">
             No polls have been ingested yet. The Wikipedia polling scraper will populate this page
@@ -100,18 +112,18 @@ export default async function PollsPage() {
               ))}
             </div>
           </div>
-        </div>
+        </PagePanel>
       ) : (
-        <div className="space-y-4">
+        <div className="grid gap-4 xl:grid-cols-2">
           {pollList.map((poll) => {
             const results = poll.poll_results
               .filter((r) => r.parties)
               .sort((a, b) => b.value - a.value);
 
             return (
-              <div
+              <PagePanel
                 key={poll.id}
-                className="rounded-xl border border-white/10 bg-[#242424] p-5"
+                className="p-5"
               >
                 <div className="mb-4 flex items-baseline justify-between">
                   <div>
@@ -131,7 +143,7 @@ export default async function PollsPage() {
                       href={poll.source_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-xs text-blue-400 hover:text-blue-300"
+                      className="text-xs text-neutral-300 transition-colors hover:text-white"
                     >
                       Source →
                     </a>
@@ -160,7 +172,7 @@ export default async function PollsPage() {
                     </div>
                   ))}
                 </div>
-              </div>
+              </PagePanel>
             );
           })}
         </div>

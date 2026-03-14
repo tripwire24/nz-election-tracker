@@ -1,5 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import FeedFilter from "@/components/feed-filter";
+import { PageHero, PagePill } from "@/components/page-primitives";
 
 export const dynamic = "force-dynamic";
 function getSupabase() {
@@ -35,12 +36,22 @@ export default async function FeedPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-          <h1 className="text-2xl font-bold text-neutral-100">Content Feed</h1>
-        <p className="mt-1 text-sm text-neutral-500">
-          {totalCount} articles from NZ political sources — aggregated from RSS feeds across media, government, and blogs. Click a source to filter.
-        </p>
-      </div>
+      <PageHero
+        eyebrow="Content feed"
+        title="Latest NZ political coverage in one place"
+        description="Browse the most recent stories, official releases, blog posts, and social items collected by the tracker. Use filters to narrow the feed without losing the bigger picture."
+        pills={[
+          <PagePill key="total">{totalCount} items tracked</PagePill>,
+          <PagePill key="sources">Media, official, blogs, and social</PagePill>,
+          <PagePill key="summary">Open any item for a summary</PagePill>,
+        ]}
+        aside={
+          <div className="space-y-3 text-sm text-neutral-300">
+            <p>Use this page to spot narrative shifts quickly.</p>
+            <p>Source filters help you compare coverage patterns without reading every article in sequence.</p>
+          </div>
+        }
+      />
 
       <FeedFilter items={feedItems} totalCount={totalCount} />
     </div>

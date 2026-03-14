@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
+import { PageHero, PagePanel, PagePill } from "@/components/page-primitives";
 
 export const dynamic = "force-dynamic";
 
@@ -22,24 +23,27 @@ export default async function BlogPage() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-2xl font-bold text-neutral-100">Blog</h1>
-        <p className="mt-1 text-sm text-neutral-500">
-          Analysis, commentary, and updates from the team.
-        </p>
-      </div>
+      <PageHero
+        eyebrow="Blog"
+        title="Analysis, commentary, and project updates"
+        description="Read explainers, commentary, and product notes from the team in a cleaner editorial layout that sits closer to the rest of the public site."
+        pills={[
+          <PagePill key="posts">{posts?.length ?? 0} published posts</PagePill>,
+          <PagePill key="topics">Commentary, analysis, and updates</PagePill>,
+        ]}
+      />
 
       {!posts || posts.length === 0 ? (
-        <div className="rounded-xl border border-white/10 bg-[#242424] px-6 py-16 text-center">
+        <PagePanel className="px-6 py-16 text-center">
           <p className="text-neutral-500">No posts yet — check back soon.</p>
-        </div>
+        </PagePanel>
       ) : (
-        <div className="space-y-4">
+        <div className="grid gap-4 md:grid-cols-2">
           {(posts as BlogPost[]).map((post) => (
             <Link
               key={post.id}
               href={`/blog/${post.slug}`}
-              className="block rounded-xl border border-white/10 bg-[#242424] p-6 transition-colors hover:border-white/20 hover:bg-[#2a2a2a]"
+              className="block rounded-[1.35rem] border border-white/10 bg-[linear-gradient(180deg,rgba(38,38,38,0.96),rgba(26,26,26,0.98))] p-6 shadow-[0_20px_45px_rgba(0,0,0,0.3)] transition-colors hover:border-white/20 hover:bg-white/[0.04]"
             >
               <h2 className="text-lg font-semibold text-neutral-100">
                 {post.title}

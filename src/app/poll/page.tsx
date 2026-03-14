@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { PageHero, PagePanel, PagePill } from "@/components/page-primitives";
 
 const PARTIES = [
   { name: "National", colour: "#1C3F94" },
@@ -100,18 +101,26 @@ export default function PollPage() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-2xl font-bold text-neutral-100">
-          Who would you vote for?
-        </h1>
-        <p className="mt-1 text-sm text-neutral-500">
-          Anonymous voting intention poll — your response is not linked to any account.
-        </p>
-      </div>
+      <PageHero
+        eyebrow="Community poll"
+        title="A simple community vote, not a scientific poll"
+        description="Share your current voting intention anonymously and see the live community breakdown. This is a lightweight pulse check, not a replacement for accredited polling."
+        pills={[
+          <PagePill key="anon">Anonymous response</PagePill>,
+          <PagePill key="votes">{totalVotes} vote{totalVotes === 1 ? "" : "s"} so far</PagePill>,
+          <PagePill key="limit">One vote per device</PagePill>,
+        ]}
+        aside={
+          <div className="space-y-3 text-sm text-neutral-300">
+            <p>Use this page as a community signal only.</p>
+            <p>Official polling should still come from accredited research firms.</p>
+          </div>
+        }
+      />
 
       <div className="grid gap-8 lg:grid-cols-2">
         {/* Vote form */}
-        <div className="rounded-xl border border-white/10 bg-[#242424] p-6">
+        <PagePanel className="p-6">
           {submitted ? (
             <div className="flex flex-col items-center gap-3 py-10 text-center">
               <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white/10 text-neutral-300">
@@ -191,16 +200,16 @@ export default function PollPage() {
               <button
                 type="submit"
                 disabled={!selectedParty || submitting}
-                className="w-full rounded-xl bg-gradient-to-r from-neutral-600 to-neutral-700 px-4 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-40"
+                className="w-full rounded-full border border-white/10 bg-white/[0.06] px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/[0.1] disabled:opacity-40"
               >
                 {submitting ? "Submitting…" : "Cast your vote"}
               </button>
             </form>
           )}
-        </div>
+        </PagePanel>
 
         {/* Results */}
-        <div className="rounded-xl border border-white/10 bg-[#242424] p-6">
+        <PagePanel className="p-6">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-sm font-semibold uppercase tracking-wider text-neutral-400">
               Results
@@ -243,18 +252,18 @@ export default function PollPage() {
               ))}
             </div>
           )}
-        </div>
+        </PagePanel>
       </div>
 
       {/* Disclaimer */}
-      <div className="rounded-lg border border-white/5 bg-white/[0.02] px-4 py-3 text-xs leading-relaxed text-neutral-500">
+      <PagePanel className="border-white/5 bg-white/[0.02] px-4 py-3 text-xs leading-relaxed text-neutral-500 shadow-none">
         <strong className="text-neutral-400">Disclaimer:</strong> This is a
         completely anonymous and open community poll for interest purposes only.
         It is not a scientific survey and does not represent accurate polling
         data. Results may not reflect the views of the wider New Zealand
         electorate. For official polling, refer to accredited research companies
         such as Curia, Reid Research, or Talbot Mills.
-      </div>
+      </PagePanel>
     </div>
   );
 }

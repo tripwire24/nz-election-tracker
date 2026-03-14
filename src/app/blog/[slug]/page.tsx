@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { PagePanel, PagePill } from "@/components/page-primitives";
 
 export const dynamic = "force-dynamic";
 
@@ -21,7 +22,7 @@ export default async function BlogPostPage({ params }: Props) {
   if (!post) notFound();
 
   return (
-    <div className="mx-auto max-w-2xl space-y-8">
+    <div className="mx-auto max-w-3xl space-y-8">
       <Link
         href="/blog"
         className="inline-flex items-center gap-1 text-sm text-neutral-500 transition-colors hover:text-neutral-300"
@@ -32,26 +33,34 @@ export default async function BlogPostPage({ params }: Props) {
         Back to blog
       </Link>
 
-      <article>
-        <header className="space-y-3">
+      <article className="space-y-6">
+        <header className="space-y-4">
+          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-neutral-400">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#c0c0c0]" />
+            Blog post
+          </div>
           <h1 className="text-3xl font-bold text-neutral-100">{post.title}</h1>
-          <div className="flex items-center gap-3 text-sm text-neutral-500">
-            {post.author && <span>{post.author}</span>}
+          <div className="flex flex-wrap items-center gap-2 text-sm text-neutral-500">
+            {post.author && <PagePill className="text-xs" >{post.author}</PagePill>}
             {post.published_at && (
-              <time dateTime={post.published_at}>
+              <PagePill className="text-xs" >
+                <time dateTime={post.published_at}>
                 {new Date(post.published_at).toLocaleDateString("en-NZ", {
                   day: "numeric",
                   month: "long",
                   year: "numeric",
                 })}
-              </time>
+                </time>
+              </PagePill>
             )}
           </div>
         </header>
 
-        <div className="mt-8 whitespace-pre-wrap text-neutral-300 leading-relaxed">
+        <PagePanel className="p-8">
+        <div className="whitespace-pre-wrap text-neutral-300 leading-8">
           {post.body}
         </div>
+        </PagePanel>
       </article>
     </div>
   );

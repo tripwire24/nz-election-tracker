@@ -64,9 +64,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       >
         <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-K2VQJPG6" height="0" width="0" style={{display:'none',visibility:'hidden'}} /></noscript>
         <NavBar />
-        <main className="mx-auto max-w-7xl px-4 py-6">{children}</main>
+        <main className="mx-auto max-w-[1180px] px-4 py-8">{children}</main>
         <footer className="mt-12 border-t border-white/10 bg-[#141414]">
-          <div className="mx-auto max-w-7xl px-4 py-8">
+          <div className="mx-auto max-w-[1180px] px-4 py-8">
             <div className="flex flex-col items-center gap-4 text-xs text-neutral-500 sm:flex-row sm:justify-between">
               <div className="flex flex-col items-center gap-1 sm:items-start">
                 <span className="font-medium text-neutral-300">NZ Election Tracker</span>
