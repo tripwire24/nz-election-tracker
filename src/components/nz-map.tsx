@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import type { MapElectorate } from "@/types/map";
@@ -21,7 +21,7 @@ function formatNumber(n: number): string {
   return n.toLocaleString("en-NZ");
 }
 
-/** Build rich HTML popup content for an electorate */
+/** Build rich HTML popup content for an electorate (click detail) */
 function buildPopup(e: MapElectorate): string {
   const isMaori = e.type === "maori";
   const typeLabel = isMaori ? "Māori electorate" : "General electorate";
@@ -30,7 +30,7 @@ function buildPopup(e: MapElectorate): string {
   let barsHtml = "";
   if (e.partyVotes.length > 0) {
     const rows = e.partyVotes.map((pv) => {
-      const w = Math.max(pv.pct * 2, 2); // scale: 50% → 100px width
+      const w = Math.max(pv.pct * 2, 2);
       return `<div style="display:flex;align-items:center;gap:6px;margin:2px 0;">
         <span style="width:32px;text-align:right;font-size:11px;color:#a8a29e;flex-shrink:0;">${pv.pct.toFixed(1)}%</span>
         <div style="height:14px;border-radius:3px;background:${pv.partyColour};width:${w}px;min-width:2px;"></div>
@@ -57,10 +57,9 @@ const DEFAULT_FILL = "#555555";
 
 export default function NZMap({ electorates }: NZMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const mapRef = useRef<any>(null);
+  const mapRef = useRef<L.Map | null>(null);
 
-  const buildMap = useCallback(() => {
+  useEffect(() => {
     if (!containerRef.current || mapRef.current) return;
 
     const map = L.map(containerRef.current, {
@@ -85,66 +84,106 @@ export default function NZMap({ electorates }: NZMapProps) {
         '&copy; <a href="https://carto.com/">CARTO</a> &copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>',
       );
 
-    // Separate electorates into general and Māori layers
+    // Build a lookup from electorate id → data
+    const electorateById = new Map(electorates.map((e) => [e.id, e]));
+
+    // Separate into general / Māori and build FeatureCollections
     const general = electorates.filter((e) => e.type === "general" && e.geojson);
     const maori = electorates.filter((e) => e.type === "maori" && e.geojson);
 
-    // Render general electorates as filled polygons
-    for (const e of general) {
-      const fillColour = e.winnerColour || DEFAULT_FILL;
-      const normalStyle = {
-        fillColor: fillColour,
-        fillOpacity: 0.55,
-        color: "#ffffff",
-        weight: 1,
-        opacity: 0.6,
-      };
+    const toFeatureCollection = (list: MapElectorate[]) => ({
+      type: "FeatureCollection" as const,
+      features: list.map((e) => ({
+        type: "Feature" as const,
+        geometry: e.geojson!,
+        properties: { _eid: e.id },
+      })),
+    });
 
-      L.geoJSON(e.geojson, {
-        style: normalStyle,
-        onEachFeature: (_feature: unknown, featureLayer: any) => {
-          featureLayer.bindPopup(buildPopup(e), { className: "stone-popup", maxWidth: 280 });
-          featureLayer.on("mouseover", () => {
-            featureLayer.setStyle({ fillOpacity: 0.85, weight: 2, opacity: 1 });
-            featureLayer.bringToFront();
-            featureLayer.openPopup();
-          });
-          featureLayer.on("mouseout", () => {
-            featureLayer.setStyle(normalStyle);
-            featureLayer.closePopup();
-          });
-        },
-      }).addTo(map);
-    }
+    // Track which layer is currently highlighted so we can clean it up
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let highlightedLayer: any = null;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let highlightedParent: any = null;
 
-    // Render Māori electorates as overlays with dashed borders + lower fill
-    for (const e of maori) {
-      const fillColour = e.winnerColour || "#B2001A";
-      const normalStyle = {
-        fillColor: fillColour,
-        fillOpacity: 0.18,
-        color: "#ef4444",
-        weight: 2,
-        opacity: 0.7,
-        dashArray: "6 4",
-      };
+    // --- General electorates layer ---
+    const generalLayer = L.geoJSON(toFeatureCollection(general) as GeoJSON.GeoJsonObject, {
+      style: (feature) => {
+        const e = feature?.properties?._eid ? electorateById.get(feature.properties._eid) : null;
+        return {
+          fillColor: e?.winnerColour || DEFAULT_FILL,
+          fillOpacity: 0.55,
+          color: "#ffffff",
+          weight: 1,
+          opacity: 0.6,
+        };
+      },
+      onEachFeature: (feature, layer) => {
+        const e = feature?.properties?._eid ? electorateById.get(feature.properties._eid) : null;
+        if (!e) return;
+        // Lightweight tooltip on hover (follows cursor)
+        layer.bindTooltip(
+          `<strong>${escapeHtml(e.name)}</strong>${e.winnerParty ? `<br/><span style="color:${e.winnerColour || "#666"}">⬤ ${escapeHtml(e.winnerParty)}</span>` : ""}`,
+          { sticky: true, direction: "top", className: "map-tooltip" },
+        );
+        // Detailed popup on click
+        layer.bindPopup(buildPopup(e), { className: "stone-popup", maxWidth: 280 });
+        layer.on("mouseover", () => {
+          if (highlightedLayer && highlightedParent) {
+            highlightedParent.resetStyle(highlightedLayer);
+          }
+          layer.setStyle({ fillOpacity: 0.85, weight: 2, opacity: 1 });
+          highlightedLayer = layer;
+          highlightedParent = generalLayer;
+        });
+        layer.on("mouseout", () => {
+          generalLayer.resetStyle(layer);
+          if (highlightedLayer === layer) {
+            highlightedLayer = null;
+            highlightedParent = null;
+          }
+        });
+      },
+    }).addTo(map);
 
-      L.geoJSON(e.geojson, {
-        style: normalStyle,
-        onEachFeature: (_feature: unknown, featureLayer: any) => {
-          featureLayer.bindPopup(buildPopup(e), { className: "stone-popup", maxWidth: 280 });
-          featureLayer.on("mouseover", () => {
-            featureLayer.setStyle({ fillOpacity: 0.35, weight: 3, opacity: 1 });
-            featureLayer.bringToFront();
-            featureLayer.openPopup();
-          });
-          featureLayer.on("mouseout", () => {
-            featureLayer.setStyle(normalStyle);
-            featureLayer.closePopup();
-          });
-        },
-      }).addTo(map);
-    }
+    // --- Māori electorates overlay layer ---
+    const maoriLayer = L.geoJSON(toFeatureCollection(maori) as GeoJSON.GeoJsonObject, {
+      style: (feature) => {
+        const e = feature?.properties?._eid ? electorateById.get(feature.properties._eid) : null;
+        return {
+          fillColor: e?.winnerColour || "#B2001A",
+          fillOpacity: 0.18,
+          color: "#ef4444",
+          weight: 2,
+          opacity: 0.7,
+          dashArray: "6 4",
+        };
+      },
+      onEachFeature: (feature, layer) => {
+        const e = feature?.properties?._eid ? electorateById.get(feature.properties._eid) : null;
+        if (!e) return;
+        layer.bindTooltip(
+          `<strong>${escapeHtml(e.name)}</strong> <span style="opacity:0.6">(Māori)</span>${e.winnerParty ? `<br/><span style="color:${e.winnerColour || "#666"}">⬤ ${escapeHtml(e.winnerParty)}</span>` : ""}`,
+          { sticky: true, direction: "top", className: "map-tooltip" },
+        );
+        layer.bindPopup(buildPopup(e), { className: "stone-popup", maxWidth: 280 });
+        layer.on("mouseover", () => {
+          if (highlightedLayer && highlightedParent) {
+            highlightedParent.resetStyle(highlightedLayer);
+          }
+          layer.setStyle({ fillOpacity: 0.35, weight: 3, opacity: 1 });
+          highlightedLayer = layer;
+          highlightedParent = maoriLayer;
+        });
+        layer.on("mouseout", () => {
+          maoriLayer.resetStyle(layer);
+          if (highlightedLayer === layer) {
+            highlightedLayer = null;
+            highlightedParent = null;
+          }
+        });
+      },
+    }).addTo(map);
 
     // Fit NZ bounds
     map.fitBounds([[-34.3, 166.5], [-47.3, 178.6]]);
@@ -153,12 +192,9 @@ export default function NZMap({ electorates }: NZMapProps) {
       map.remove();
       mapRef.current = null;
     };
-  }, [electorates]);
-
-  useEffect(() => {
-    const cleanup = buildMap();
-    return cleanup;
-  }, [buildMap]);
+    // electorates is set once from SSR props — stable reference
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>
@@ -173,6 +209,18 @@ export default function NZMap({ electorates }: NZMapProps) {
         .stone-popup .leaflet-popup-tip {
           background: #fafaf9;
           border: 1px solid #d6d3d1;
+        }
+        .map-tooltip {
+          background: #292524 !important;
+          color: #e7e5e4 !important;
+          border: 1px solid #44403c !important;
+          border-radius: 6px !important;
+          padding: 4px 10px !important;
+          font-size: 12px !important;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.3) !important;
+        }
+        .map-tooltip::before {
+          border-top-color: #44403c !important;
         }
         .leaflet-control-zoom a {
           background: #292524 !important;
