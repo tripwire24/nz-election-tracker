@@ -155,19 +155,16 @@ export default async function MapPage() {
                 { colour: "#00529F", label: "National" },
                 { colour: "#D82A20", label: "Labour" },
                 { colour: "#098137", label: "Green" },
-                { colour: "#FDE401", label: "ACT", textDark: true },
+                { colour: "#FDE401", label: "ACT" },
                 { colour: "#B2001A", label: "Te Pāti Māori" },
               ].map((p) => (
                 <div key={p.label} className="flex items-center gap-2">
-                  <span className="h-3 w-3 rounded-sm" style={{ backgroundColor: p.colour }} />
+                  <span className="h-3 w-3 rounded-full" style={{ backgroundColor: p.colour }} />
                   <span className="text-sm text-neutral-300">{p.label}</span>
                 </div>
               ))}
-              <div className="flex items-center gap-2 mt-2 pt-2 border-t border-white/10">
-                <span className="h-3 w-3 rounded-sm border border-dashed border-red-400 bg-red-500/20" />
-                <span className="text-sm text-neutral-300">Māori electorate (overlay)</span>
-              </div>
             </div>
+            <p className="mt-3 text-xs text-neutral-500">Use the view switcher on the map to toggle between dot markers, boundary polygons, and Māori electorate areas.</p>
           </PagePanel>
 
           {/* Stats */}

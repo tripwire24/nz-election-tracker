@@ -9,6 +9,8 @@ interface NZMapProps {
   electorates: MapElectorate[];
 }
 
+type MapView = "dots" | "boundaries" | "maori";
+
 function escapeHtml(str: string): string {
   return str
     .replace(/&/g, "&amp;")
@@ -52,19 +54,47 @@ function buildPopup(e: MapElectorate): string {
   </div>`;
 }
 
-/** Default polygon fill colour when no winner data */
 const DEFAULT_FILL = "#6b7280";
+
+/** Compute centroid [lat, lng] from a GeoJSON Polygon or MultiPolygon geometry */
+function getCentroid(geojson: Record<string, unknown>): [number, number] | null {
+  const type = geojson.type as string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const coords = geojson.coordinates as any;
+  if (!coords) return null;
+
+  let ring: number[][];
+  if (type === "Polygon") {
+    ring = coords[0];
+  } else if (type === "MultiPolygon") {
+    // Use the largest polygon (most points = likely main island)
+    let best = coords[0][0];
+    for (const poly of coords) {
+      if (poly[0].length > best.length) best = poly[0];
+    }
+    ring = best;
+  } else {
+    return null;
+  }
+
+  let sumLng = 0, sumLat = 0;
+  for (const pt of ring) {
+    sumLng += pt[0];
+    sumLat += pt[1];
+  }
+  return [sumLat / ring.length, sumLng / ring.length]; // [lat, lng] for Leaflet
+}
 
 export default function NZMap({ electorates }: NZMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
-  const generalLayerRef = useRef<L.GeoJSON | null>(null);
+  const dotsLayerRef = useRef<L.LayerGroup | null>(null);
+  const boundaryLayerRef = useRef<L.GeoJSON | null>(null);
   const maoriLayerRef = useRef<L.GeoJSON | null>(null);
 
-  const [showGeneral, setShowGeneral] = useState(true);
-  const [showMaori, setShowMaori] = useState(false);
+  const [activeView, setActiveView] = useState<MapView>("dots");
 
-  // --- Initialise map and create layers (stored in refs, not added yet) ---
+  // --- Initialise map and create all layers (stored in refs) ---
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return;
 
@@ -78,9 +108,9 @@ export default function NZMap({ electorates }: NZMapProps) {
     });
     mapRef.current = map;
 
-    // Dark tile layer WITHOUT labels — clean background for coloured polygons
+    // Light tile layer — CartoDB Positron (white ocean, light land)
     L.tileLayer(
-      "https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png",
+      "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
       { subdomains: "abcd", maxZoom: 19 },
     ).addTo(map);
 
@@ -90,12 +120,36 @@ export default function NZMap({ electorates }: NZMapProps) {
         '&copy; <a href="https://carto.com/">CARTO</a> &copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>',
       );
 
-    // Build a lookup from electorate id → data
     const electorateById = new Map(electorates.map((e) => [e.id, e]));
-
     const general = electorates.filter((e) => e.type === "general" && e.geojson);
     const maori = electorates.filter((e) => e.type === "maori" && e.geojson);
+    const allWithGeo = electorates.filter((e) => e.geojson);
 
+    // --- 1. Dots layer (circle markers at centroids) ---
+    const dotsGroup = L.layerGroup();
+    for (const e of allWithGeo) {
+      const center = getCentroid(e.geojson!);
+      if (!center) continue;
+      const colour = e.winnerColour || DEFAULT_FILL;
+      const isMaori = e.type === "maori";
+      const marker = L.circleMarker(center, {
+        radius: isMaori ? 7 : 6,
+        fillColor: colour,
+        fillOpacity: 0.9,
+        color: isMaori ? "#991b1b" : "#ffffff",
+        weight: isMaori ? 2 : 1.5,
+        opacity: 0.9,
+      });
+      marker.bindTooltip(
+        `<strong>${escapeHtml(e.name)}</strong>${isMaori ? " <span style='opacity:0.5'>(Māori)</span>" : ""}${e.winnerParty ? `<br/><span style="color:${e.winnerColour || "#666"}">⬤ ${escapeHtml(e.winnerParty)}</span>` : ""}`,
+        { sticky: true, direction: "top", className: "map-tooltip" },
+      );
+      marker.bindPopup(buildPopup(e), { className: "stone-popup", maxWidth: 280 });
+      dotsGroup.addLayer(marker);
+    }
+    dotsLayerRef.current = dotsGroup;
+
+    // --- 2. Boundary layer (general electorate polygons) ---
     const toFeatureCollection = (list: MapElectorate[]) => ({
       type: "FeatureCollection" as const,
       features: list.map((e) => ({
@@ -110,16 +164,15 @@ export default function NZMap({ electorates }: NZMapProps) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let highlightedParent: any = null;
 
-    // --- General electorates layer ---
-    const generalLayer = L.geoJSON(toFeatureCollection(general) as GeoJSON.GeoJsonObject, {
+    const boundaryLayer = L.geoJSON(toFeatureCollection(general) as GeoJSON.GeoJsonObject, {
       style: (feature) => {
         const e = feature?.properties?._eid ? electorateById.get(feature.properties._eid) : null;
         return {
           fillColor: e?.winnerColour || DEFAULT_FILL,
-          fillOpacity: 0.75,
-          color: "#1c1917",
-          weight: 1.5,
-          opacity: 0.8,
+          fillOpacity: 0.65,
+          color: "#374151",
+          weight: 1,
+          opacity: 0.7,
         };
       },
       onEachFeature: (feature, layer) => {
@@ -131,32 +184,27 @@ export default function NZMap({ electorates }: NZMapProps) {
         );
         layer.bindPopup(buildPopup(e), { className: "stone-popup", maxWidth: 280 });
         layer.on("mouseover", () => {
-          if (highlightedLayer && highlightedParent) {
-            highlightedParent.resetStyle(highlightedLayer);
-          }
-          layer.setStyle({ fillOpacity: 0.92, weight: 2.5, opacity: 1 });
+          if (highlightedLayer && highlightedParent) highlightedParent.resetStyle(highlightedLayer);
+          layer.setStyle({ fillOpacity: 0.85, weight: 2, opacity: 1 });
           highlightedLayer = layer;
-          highlightedParent = generalLayer;
+          highlightedParent = boundaryLayer;
         });
         layer.on("mouseout", () => {
-          generalLayer.resetStyle(layer);
-          if (highlightedLayer === layer) {
-            highlightedLayer = null;
-            highlightedParent = null;
-          }
+          boundaryLayer.resetStyle(layer);
+          if (highlightedLayer === layer) { highlightedLayer = null; highlightedParent = null; }
         });
       },
     });
-    generalLayerRef.current = generalLayer;
+    boundaryLayerRef.current = boundaryLayer;
 
-    // --- Māori electorates overlay layer ---
+    // --- 3. Māori electorates overlay ---
     const maoriLayer = L.geoJSON(toFeatureCollection(maori) as GeoJSON.GeoJsonObject, {
       style: (feature) => {
         const e = feature?.properties?._eid ? electorateById.get(feature.properties._eid) : null;
         return {
           fillColor: e?.winnerColour || "#B2001A",
-          fillOpacity: 0.22,
-          color: "#f87171",
+          fillOpacity: 0.25,
+          color: "#dc2626",
           weight: 2,
           opacity: 0.8,
           dashArray: "6 4",
@@ -166,61 +214,67 @@ export default function NZMap({ electorates }: NZMapProps) {
         const e = feature?.properties?._eid ? electorateById.get(feature.properties._eid) : null;
         if (!e) return;
         layer.bindTooltip(
-          `<strong>${escapeHtml(e.name)}</strong> <span style="opacity:0.6">(Māori)</span>${e.winnerParty ? `<br/><span style="color:${e.winnerColour || "#666"}">⬤ ${escapeHtml(e.winnerParty)}</span>` : ""}`,
+          `<strong>${escapeHtml(e.name)}</strong> <span style="opacity:0.5">(Māori)</span>${e.winnerParty ? `<br/><span style="color:${e.winnerColour || "#666"}">⬤ ${escapeHtml(e.winnerParty)}</span>` : ""}`,
           { sticky: true, direction: "top", className: "map-tooltip" },
         );
         layer.bindPopup(buildPopup(e), { className: "stone-popup", maxWidth: 280 });
         layer.on("mouseover", () => {
-          if (highlightedLayer && highlightedParent) {
-            highlightedParent.resetStyle(highlightedLayer);
-          }
+          if (highlightedLayer && highlightedParent) highlightedParent.resetStyle(highlightedLayer);
           layer.setStyle({ fillOpacity: 0.4, weight: 3, opacity: 1 });
           highlightedLayer = layer;
           highlightedParent = maoriLayer;
         });
         layer.on("mouseout", () => {
           maoriLayer.resetStyle(layer);
-          if (highlightedLayer === layer) {
-            highlightedLayer = null;
-            highlightedParent = null;
-          }
+          if (highlightedLayer === layer) { highlightedLayer = null; highlightedParent = null; }
         });
       },
     });
     maoriLayerRef.current = maoriLayer;
 
-    // Add the default-on layer
-    generalLayer.addTo(map);
+    // Default: show dots
+    dotsGroup.addTo(map);
 
-    // Fit NZ bounds
     map.fitBounds([[-34.3, 166.5], [-47.3, 178.6]]);
 
     return () => {
       map.remove();
       mapRef.current = null;
-      generalLayerRef.current = null;
+      dotsLayerRef.current = null;
+      boundaryLayerRef.current = null;
       maoriLayerRef.current = null;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // --- Toggle general layer ---
+  // --- Sync layer visibility with activeView ---
   useEffect(() => {
     const map = mapRef.current;
-    const layer = generalLayerRef.current;
-    if (!map || !layer) return;
-    if (showGeneral && !map.hasLayer(layer)) map.addLayer(layer);
-    if (!showGeneral && map.hasLayer(layer)) map.removeLayer(layer);
-  }, [showGeneral]);
+    const dots = dotsLayerRef.current;
+    const boundaries = boundaryLayerRef.current;
+    const maoriL = maoriLayerRef.current;
+    if (!map || !dots || !boundaries || !maoriL) return;
 
-  // --- Toggle Māori layer ---
-  useEffect(() => {
-    const map = mapRef.current;
-    const layer = maoriLayerRef.current;
-    if (!map || !layer) return;
-    if (showMaori && !map.hasLayer(layer)) map.addLayer(layer);
-    if (!showMaori && map.hasLayer(layer)) map.removeLayer(layer);
-  }, [showMaori]);
+    // Remove all first
+    if (map.hasLayer(dots)) map.removeLayer(dots);
+    if (map.hasLayer(boundaries)) map.removeLayer(boundaries);
+    if (map.hasLayer(maoriL)) map.removeLayer(maoriL);
+
+    // Add the selected view
+    if (activeView === "dots") {
+      dots.addTo(map);
+    } else if (activeView === "boundaries") {
+      boundaries.addTo(map);
+    } else if (activeView === "maori") {
+      maoriL.addTo(map);
+    }
+  }, [activeView]);
+
+  const views: { key: MapView; label: string; desc: string }[] = [
+    { key: "dots", label: "Electorates", desc: "Dot per electorate" },
+    { key: "boundaries", label: "Boundaries", desc: "General electorate areas" },
+    { key: "maori", label: "Māori seats", desc: "Māori electorate areas" },
+  ];
 
   return (
     <>
@@ -237,7 +291,7 @@ export default function NZMap({ electorates }: NZMapProps) {
           border: 1px solid #d6d3d1;
         }
         .map-tooltip {
-          background: #292524 !important;
+          background: #1c1917 !important;
           color: #e7e5e4 !important;
           border: 1px solid #44403c !important;
           border-radius: 6px !important;
@@ -249,47 +303,39 @@ export default function NZMap({ electorates }: NZMapProps) {
           border-top-color: #44403c !important;
         }
         .leaflet-control-zoom a {
-          background: #292524 !important;
-          color: #d6d3d1 !important;
-          border-color: #44403c !important;
+          background: #ffffff !important;
+          color: #374151 !important;
+          border-color: #d1d5db !important;
         }
         .leaflet-control-zoom a:hover {
-          background: #44403c !important;
+          background: #f3f4f6 !important;
         }
         .leaflet-control-attribution {
-          background: rgba(28,25,23,0.85) !important;
-          color: #78716c !important;
+          background: rgba(255,255,255,0.85) !important;
+          color: #6b7280 !important;
           font-size: 10px !important;
         }
         .leaflet-control-attribution a {
-          color: #78716c !important;
+          color: #6b7280 !important;
         }
       `}</style>
       <div className="relative">
-        {/* Layer toggles */}
-        <div className="absolute top-3 left-14 z-[1000] flex flex-col gap-1.5">
-          <button
-            onClick={() => setShowGeneral((v) => !v)}
-            className={`flex items-center gap-2 rounded-md px-3 py-1.5 text-xs font-medium shadow-md backdrop-blur transition-colors ${
-              showGeneral
-                ? "bg-white/90 text-neutral-900"
-                : "bg-neutral-800/80 text-neutral-400 hover:bg-neutral-700/80"
-            }`}
-          >
-            <span className={`inline-block h-2.5 w-2.5 rounded-sm ${showGeneral ? "bg-blue-500" : "bg-neutral-600"}`} />
-            Electorates
-          </button>
-          <button
-            onClick={() => setShowMaori((v) => !v)}
-            className={`flex items-center gap-2 rounded-md px-3 py-1.5 text-xs font-medium shadow-md backdrop-blur transition-colors ${
-              showMaori
-                ? "bg-white/90 text-neutral-900"
-                : "bg-neutral-800/80 text-neutral-400 hover:bg-neutral-700/80"
-            }`}
-          >
-            <span className={`inline-block h-2.5 w-2.5 rounded-sm border border-dashed ${showMaori ? "border-red-400 bg-red-500/40" : "border-neutral-500 bg-neutral-700"}`} />
-            Māori overlay
-          </button>
+        {/* View switcher */}
+        <div className="absolute top-3 left-14 z-[1000] flex rounded-lg overflow-hidden shadow-md border border-neutral-200">
+          {views.map((v) => (
+            <button
+              key={v.key}
+              onClick={() => setActiveView(v.key)}
+              title={v.desc}
+              className={`px-3 py-1.5 text-xs font-medium transition-colors ${
+                activeView === v.key
+                  ? "bg-neutral-900 text-white"
+                  : "bg-white text-neutral-600 hover:bg-neutral-100"
+              }`}
+            >
+              {v.label}
+            </button>
+          ))}
         </div>
         <div
           ref={containerRef}
