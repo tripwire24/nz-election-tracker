@@ -1,154 +1,65 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-
-interface Electorate {
-  id: string;
-  name: string;
-  type: string;
-  region: string | null;
-}
+import type { MapElectorate } from "@/types/map";
 
 interface NZMapProps {
-  electorates: Electorate[];
+  electorates: MapElectorate[];
 }
 
-/**
- * Approximate geographic centroids for each NZ electorate (2024 boundaries).
- * Coordinates sourced from electorate geographic centres.
- */
-const ELECTORATE_COORDS: Record<string, [number, number]> = {
-  // ── Auckland (23 general) ──────────────────────────────────
-  "Auckland Central":      [-36.855, 174.770],
-  "Botany":                [-36.935, 174.920],
-  "Epsom":                 [-36.880, 174.783],
-  "Flat Bush":             [-36.965, 174.935],
-  "Kaipara ki Mahurangi":  [-36.450, 174.680],
-  "Kelston":               [-36.905, 174.635],
-  "Māngere":               [-36.970, 174.800],
-  "Manurewa":              [-37.023, 174.892],
-  "Maungakiekie":          [-36.900, 174.825],
-  "Mt Albert":             [-36.877, 174.725],
-  "Mt Roskill":            [-36.900, 174.740],
-  "New Lynn":              [-36.908, 174.680],
-  "North Shore":           [-36.783, 174.770],
-  "Northcote":             [-36.800, 174.740],
-  "Pakuranga":             [-36.905, 174.885],
-  "Panmure-Ōtāhuhu":      [-36.930, 174.845],
-  "Papakura":              [-37.065, 174.950],
-  "Takanini":              [-37.045, 174.920],
-  "Tamaki":                [-36.860, 174.830],
-  "Te Atatū":              [-36.845, 174.650],
-  "Upper Harbour":         [-36.750, 174.660],
-  "Waitākere":             [-36.920, 174.580],
-  "Whangaparāoa":          [-36.630, 174.750],
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
 
-  // ── Canterbury (9) ─────────────────────────────────────────
-  "Banks Peninsula":        [-43.750, 172.720],
-  "Christchurch Central":   [-43.530, 172.630],
-  "Christchurch East":      [-43.530, 172.700],
-  "Ilam":                   [-43.520, 172.560],
-  "Kaikōura":               [-42.400, 173.680],
-  "Rangitata":              [-44.100, 171.500],
-  "Selwyn":                 [-43.600, 172.200],
-  "Waimakariri":            [-43.380, 172.400],
-  "Wigram":                 [-43.560, 172.520],
+function formatNumber(n: number): string {
+  return n.toLocaleString("en-NZ");
+}
 
-  // ── Wellington (7) ─────────────────────────────────────────
-  "Hutt South":             [-41.220, 174.920],
-  "Mana":                   [-41.100, 174.870],
-  "Ōhāriu":                [-41.180, 174.820],
-  "Remutaka":               [-41.150, 174.960],
-  "Rongotai":               [-41.320, 174.800],
-  "Wairarapa":              [-41.100, 175.500],
-  "Wellington Central":     [-41.290, 174.775],
+/** Build rich HTML popup content for an electorate */
+function buildPopup(e: MapElectorate): string {
+  const isMaori = e.type === "maori";
+  const typeLabel = isMaori ? "Māori electorate" : "General electorate";
+  const popStr = e.population ? formatNumber(e.population) : "—";
 
-  // ── Waikato (6) ────────────────────────────────────────────
-  "Coromandel":             [-36.760, 175.500],
-  "Hamilton East":          [-37.800, 175.300],
-  "Hamilton West":          [-37.780, 175.250],
-  "Port Waikato":           [-37.400, 175.200],
-  "Taupō":                  [-38.680, 176.080],
-  "Waikato":                [-37.600, 175.400],
+  let barsHtml = "";
+  if (e.partyVotes.length > 0) {
+    const rows = e.partyVotes.map((pv) => {
+      const w = Math.max(pv.pct * 2, 2); // scale: 50% → 100px width
+      return `<div style="display:flex;align-items:center;gap:6px;margin:2px 0;">
+        <span style="width:32px;text-align:right;font-size:11px;color:#a8a29e;flex-shrink:0;">${pv.pct.toFixed(1)}%</span>
+        <div style="height:14px;border-radius:3px;background:${pv.partyColour};width:${w}px;min-width:2px;"></div>
+        <span style="font-size:11px;color:#57534e;flex-shrink:0;">${escapeHtml(pv.partyShort)}</span>
+      </div>`;
+    });
+    barsHtml = `<div style="margin-top:6px;border-top:1px solid #e7e5e4;padding-top:6px;">
+      <div style="font-size:10px;color:#a8a29e;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;">2023 Party Vote</div>
+      ${rows.join("")}
+    </div>`;
+  }
 
-  // ── Manawatū (4) ──────────────────────────────────────────
-  "Ōtaki":                  [-40.750, 175.150],
-  "Palmerston North":       [-40.350, 175.620],
-  "Rangitīkei":             [-39.930, 175.600],
-  "Whanganui":              [-39.930, 175.050],
+  return `<div style="font-family:system-ui;font-size:13px;line-height:1.5;min-width:180px;">
+    <strong style="font-size:14px;">${escapeHtml(e.name)}</strong><br/>
+    <span style="color:#78716c;">${typeLabel}${e.region ? ` · ${escapeHtml(e.region)}` : ""}</span><br/>
+    <span style="color:#78716c;">Pop: ${popStr}</span>
+    ${e.winnerParty ? `<br/><span style="color:${e.winnerColour || "#666"};font-weight:600;">⬤ ${escapeHtml(e.winnerParty)} won seat</span>` : ""}
+    ${barsHtml}
+  </div>`;
+}
 
-  // ── Bay of Plenty (3) ─────────────────────────────────────
-  "Bay of Plenty":          [-37.750, 176.950],
-  "Rotorua":                [-38.140, 176.250],
-  "Tauranga":               [-37.690, 176.170],
-
-  // ── Hawke's Bay (2) ───────────────────────────────────────
-  "Napier":                 [-39.490, 176.910],
-  "Tukituki":               [-39.650, 176.850],
-
-  // ── Taranaki (2) ──────────────────────────────────────────
-  "New Plymouth":           [-39.060, 174.080],
-  "Taranaki-King Country":  [-38.700, 175.000],
-
-  // ── Northland (2) ─────────────────────────────────────────
-  "Northland":              [-35.400, 174.300],
-  "Whangārei":              [-35.720, 174.330],
-
-  // ── Otago (2) ─────────────────────────────────────────────
-  "Dunedin":                [-45.870, 170.500],
-  "Taieri":                 [-45.950, 170.350],
-
-  // ── Southland (2) ─────────────────────────────────────────
-  "Invercargill":           [-46.410, 168.350],
-  "Southland":              [-46.050, 168.100],
-
-  // ── Single-electorate regions ─────────────────────────────
-  "East Coast":             [-38.500, 177.500],
-  "Nelson":                 [-41.270, 173.300],
-  "West Coast-Tasman":      [-42.450, 171.210],
-
-  // ── Māori electorates (7) ─────────────────────────────────
-  "Hauraki-Waikato":        [-37.700, 175.800],
-  "Ikaroa-Rāwhiti":         [-39.500, 176.500],
-  "Tāmaki Makaurau":        [-36.950, 174.870],
-  "Te Tai Hauāuru":         [-39.500, 175.000],
-  "Te Tai Tokerau":         [-35.600, 174.300],
-  "Te Tai Tonga":           [-43.500, 172.000],
-  "Waiariki":               [-38.200, 176.500],
-};
-
-/** Fallback: region centroids for any electorate not in the lookup */
-const REGION_COORDS: Record<string, [number, number]> = {
-  "Northland":       [-35.4, 174.3],
-  "Auckland":        [-36.85, 174.76],
-  "Waikato":         [-37.8, 175.5],
-  "Bay of Plenty":   [-37.7, 176.5],
-  "Gisborne":        [-38.5, 178.0],
-  "East Coast":      [-38.5, 177.5],
-  "Hawkes Bay":      [-39.5, 176.8],
-  "Taranaki":        [-39.1, 174.1],
-  "Manawatū":        [-39.9, 175.6],
-  "Wellington":      [-41.28, 174.78],
-  "Nelson":          [-41.27, 173.3],
-  "West Coast":      [-42.5, 171.2],
-  "Canterbury":      [-43.5, 172.5],
-  "Otago":           [-45.0, 170.5],
-  "Southland":       [-46.1, 168.3],
-  "South Island":    [-44.0, 171.0],
-};
-
-const TYPE_COLOURS: Record<string, string> = {
-  general: "#3b82f6",
-  maori:   "#ef4444",
-};
+/** Default polygon fill colour when no winner data */
+const DEFAULT_FILL = "#555555";
 
 export default function NZMap({ electorates }: NZMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
 
-  useEffect(() => {
+  const buildMap = useCallback(() => {
     if (!containerRef.current || mapRef.current) return;
 
     const map = L.map(containerRef.current, {
@@ -161,9 +72,9 @@ export default function NZMap({ electorates }: NZMapProps) {
     });
     mapRef.current = map;
 
-    // Light tile layer — CartoDB Positron
+    // Dark tile layer — CartoDB Dark Matter (matches site theme)
     L.tileLayer(
-      "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+      "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
       { subdomains: "abcd", maxZoom: 19 },
     ).addTo(map);
 
@@ -173,35 +84,65 @@ export default function NZMap({ electorates }: NZMapProps) {
         '&copy; <a href="https://carto.com/">CARTO</a> &copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>',
       );
 
-    // Plot electorate markers at real geographic coordinates
-    for (const e of electorates) {
-      const coords =
-        ELECTORATE_COORDS[e.name] ??
-        REGION_COORDS[e.region || ""] ??
-        REGION_COORDS["Auckland"];
+    // Separate electorates into general and Māori layers
+    const general = electorates.filter((e) => e.type === "general" && e.geojson);
+    const maori = electorates.filter((e) => e.type === "maori" && e.geojson);
 
-      const color = TYPE_COLOURS[e.type] || "#3b82f6";
-      const isMaori = e.type === "maori";
-
-      const marker = L.circleMarker(coords, {
-        radius: isMaori ? 8 : 6,
-        fillColor: color,
+    // Render general electorates as filled polygons
+    for (const e of general) {
+      const fillColour = e.winnerColour || DEFAULT_FILL;
+      const normalStyle: L.PathOptions = {
+        fillColor: fillColour,
+        fillOpacity: 0.55,
         color: "#ffffff",
-        weight: 1.5,
-        fillOpacity: 0.85,
+        weight: 1,
+        opacity: 0.6,
+      };
+
+      L.geoJSON(e.geojson!, {
+        style: normalStyle,
+        onEachFeature: (_feature, featureLayer) => {
+          featureLayer.bindPopup(buildPopup(e), { className: "stone-popup", maxWidth: 280 });
+          featureLayer.on("mouseover", () => {
+            (featureLayer as L.Path).setStyle({ fillOpacity: 0.85, weight: 2, opacity: 1 });
+            (featureLayer as L.Path).bringToFront();
+            featureLayer.openPopup();
+          });
+          featureLayer.on("mouseout", () => {
+            (featureLayer as L.Path).setStyle(normalStyle);
+            featureLayer.closePopup();
+          });
+        },
       }).addTo(map);
+    }
 
-      marker.bindPopup(
-        `<div style="font-family:system-ui;font-size:13px;line-height:1.5;">
-          <strong>${escapeHtml(e.name)}</strong><br/>
-          <span style="color:${color};">&#9679;</span> ${isMaori ? "Māori" : "General"} electorate<br/>
-          <span style="color:#78716c;">${escapeHtml(e.region || "Unknown")} region</span>
-        </div>`,
-        { className: "stone-popup" },
-      );
+    // Render Māori electorates as overlays with dashed borders + lower fill
+    for (const e of maori) {
+      const fillColour = e.winnerColour || "#B2001A";
+      const normalStyle: L.PathOptions = {
+        fillColor: fillColour,
+        fillOpacity: 0.18,
+        color: "#ef4444",
+        weight: 2,
+        opacity: 0.7,
+        dashArray: "6 4",
+      };
 
-      marker.on("mouseover", () => marker.openPopup());
-      marker.on("mouseout",  () => marker.closePopup());
+      L.geoJSON(e.geojson!, {
+        style: normalStyle,
+        onEachFeature: (_feature, featureLayer) => {
+          featureLayer.bindPopup(buildPopup(e), { className: "stone-popup", maxWidth: 280 });
+          featureLayer.on("mouseover", () => {
+            (featureLayer as L.Path).setStyle({ fillOpacity: 0.35, weight: 3, opacity: 1 });
+            (featureLayer as L.Path).bringToFront();
+            featureLayer.openPopup();
+          });
+          featureLayer.on("mouseout", () => {
+            (featureLayer as L.Path).setStyle(normalStyle);
+            featureLayer.closePopup();
+          });
+        },
+      }).addTo(map);
     }
 
     // Fit NZ bounds
@@ -213,6 +154,11 @@ export default function NZMap({ electorates }: NZMapProps) {
     };
   }, [electorates]);
 
+  useEffect(() => {
+    const cleanup = buildMap();
+    return cleanup;
+  }, [buildMap]);
+
   return (
     <>
       <style>{`
@@ -221,22 +167,22 @@ export default function NZMap({ electorates }: NZMapProps) {
           color: #1c1917;
           border-radius: 8px;
           border: 1px solid #d6d3d1;
-          box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+          box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
         .stone-popup .leaflet-popup-tip {
           background: #fafaf9;
           border: 1px solid #d6d3d1;
         }
         .leaflet-control-zoom a {
-          background: #fafaf9 !important;
-          color: #44403c !important;
-          border-color: #d6d3d1 !important;
+          background: #292524 !important;
+          color: #d6d3d1 !important;
+          border-color: #44403c !important;
         }
         .leaflet-control-zoom a:hover {
-          background: #e7e5e4 !important;
+          background: #44403c !important;
         }
         .leaflet-control-attribution {
-          background: rgba(250,250,249,0.85) !important;
+          background: rgba(28,25,23,0.85) !important;
           color: #78716c !important;
           font-size: 10px !important;
         }
@@ -251,11 +197,4 @@ export default function NZMap({ electorates }: NZMapProps) {
     </>
   );
 }
-
-function escapeHtml(str: string): string {
-  return str
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
 }
