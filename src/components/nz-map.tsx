@@ -197,14 +197,14 @@ export default function NZMap({ electorates }: NZMapProps) {
     });
     boundaryLayerRef.current = boundaryLayer;
 
-    // --- 3. Māori electorates overlay ---
+    // --- 3. Māori electorates layer ---
     const maoriLayer = L.geoJSON(toFeatureCollection(maori) as GeoJSON.GeoJsonObject, {
       style: (feature) => {
         const e = feature?.properties?._eid ? electorateById.get(feature.properties._eid) : null;
         return {
           fillColor: e?.winnerColour || "#B2001A",
-          fillOpacity: 0.25,
-          color: "#dc2626",
+          fillOpacity: 0.55,
+          color: "#374151",
           weight: 2,
           opacity: 0.8,
           dashArray: "6 4",
@@ -220,7 +220,7 @@ export default function NZMap({ electorates }: NZMapProps) {
         layer.bindPopup(buildPopup(e), { className: "stone-popup", maxWidth: 280 });
         layer.on("mouseover", () => {
           if (highlightedLayer && highlightedParent) highlightedParent.resetStyle(highlightedLayer);
-          layer.setStyle({ fillOpacity: 0.4, weight: 3, opacity: 1 });
+          layer.setStyle({ fillOpacity: 0.8, weight: 3, opacity: 1 });
           highlightedLayer = layer;
           highlightedParent = maoriLayer;
         });
