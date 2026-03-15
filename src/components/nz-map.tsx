@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import type { MapElectorate } from "@/types/map";
@@ -53,12 +53,18 @@ function buildPopup(e: MapElectorate): string {
 }
 
 /** Default polygon fill colour when no winner data */
-const DEFAULT_FILL = "#555555";
+const DEFAULT_FILL = "#6b7280";
 
 export default function NZMap({ electorates }: NZMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
+  const generalLayerRef = useRef<L.GeoJSON | null>(null);
+  const maoriLayerRef = useRef<L.GeoJSON | null>(null);
 
+  const [showGeneral, setShowGeneral] = useState(true);
+  const [showMaori, setShowMaori] = useState(false);
+
+  // --- Initialise map and create layers (stored in refs, not added yet) ---
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return;
 
@@ -72,9 +78,9 @@ export default function NZMap({ electorates }: NZMapProps) {
     });
     mapRef.current = map;
 
-    // Dark tile layer — CartoDB Dark Matter (matches site theme)
+    // Dark tile layer WITHOUT labels — clean background for coloured polygons
     L.tileLayer(
-      "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+      "https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png",
       { subdomains: "abcd", maxZoom: 19 },
     ).addTo(map);
 
@@ -87,7 +93,6 @@ export default function NZMap({ electorates }: NZMapProps) {
     // Build a lookup from electorate id → data
     const electorateById = new Map(electorates.map((e) => [e.id, e]));
 
-    // Separate into general / Māori and build FeatureCollections
     const general = electorates.filter((e) => e.type === "general" && e.geojson);
     const maori = electorates.filter((e) => e.type === "maori" && e.geojson);
 
@@ -100,7 +105,6 @@ export default function NZMap({ electorates }: NZMapProps) {
       })),
     });
 
-    // Track which layer is currently highlighted so we can clean it up
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let highlightedLayer: any = null;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -112,27 +116,25 @@ export default function NZMap({ electorates }: NZMapProps) {
         const e = feature?.properties?._eid ? electorateById.get(feature.properties._eid) : null;
         return {
           fillColor: e?.winnerColour || DEFAULT_FILL,
-          fillOpacity: 0.55,
-          color: "#ffffff",
-          weight: 1,
-          opacity: 0.6,
+          fillOpacity: 0.75,
+          color: "#1c1917",
+          weight: 1.5,
+          opacity: 0.8,
         };
       },
       onEachFeature: (feature, layer) => {
         const e = feature?.properties?._eid ? electorateById.get(feature.properties._eid) : null;
         if (!e) return;
-        // Lightweight tooltip on hover (follows cursor)
         layer.bindTooltip(
           `<strong>${escapeHtml(e.name)}</strong>${e.winnerParty ? `<br/><span style="color:${e.winnerColour || "#666"}">⬤ ${escapeHtml(e.winnerParty)}</span>` : ""}`,
           { sticky: true, direction: "top", className: "map-tooltip" },
         );
-        // Detailed popup on click
         layer.bindPopup(buildPopup(e), { className: "stone-popup", maxWidth: 280 });
         layer.on("mouseover", () => {
           if (highlightedLayer && highlightedParent) {
             highlightedParent.resetStyle(highlightedLayer);
           }
-          layer.setStyle({ fillOpacity: 0.85, weight: 2, opacity: 1 });
+          layer.setStyle({ fillOpacity: 0.92, weight: 2.5, opacity: 1 });
           highlightedLayer = layer;
           highlightedParent = generalLayer;
         });
@@ -144,7 +146,8 @@ export default function NZMap({ electorates }: NZMapProps) {
           }
         });
       },
-    }).addTo(map);
+    });
+    generalLayerRef.current = generalLayer;
 
     // --- Māori electorates overlay layer ---
     const maoriLayer = L.geoJSON(toFeatureCollection(maori) as GeoJSON.GeoJsonObject, {
@@ -152,10 +155,10 @@ export default function NZMap({ electorates }: NZMapProps) {
         const e = feature?.properties?._eid ? electorateById.get(feature.properties._eid) : null;
         return {
           fillColor: e?.winnerColour || "#B2001A",
-          fillOpacity: 0.18,
-          color: "#ef4444",
+          fillOpacity: 0.22,
+          color: "#f87171",
           weight: 2,
-          opacity: 0.7,
+          opacity: 0.8,
           dashArray: "6 4",
         };
       },
@@ -171,7 +174,7 @@ export default function NZMap({ electorates }: NZMapProps) {
           if (highlightedLayer && highlightedParent) {
             highlightedParent.resetStyle(highlightedLayer);
           }
-          layer.setStyle({ fillOpacity: 0.35, weight: 3, opacity: 1 });
+          layer.setStyle({ fillOpacity: 0.4, weight: 3, opacity: 1 });
           highlightedLayer = layer;
           highlightedParent = maoriLayer;
         });
@@ -183,7 +186,11 @@ export default function NZMap({ electorates }: NZMapProps) {
           }
         });
       },
-    }).addTo(map);
+    });
+    maoriLayerRef.current = maoriLayer;
+
+    // Add the default-on layer
+    generalLayer.addTo(map);
 
     // Fit NZ bounds
     map.fitBounds([[-34.3, 166.5], [-47.3, 178.6]]);
@@ -191,10 +198,29 @@ export default function NZMap({ electorates }: NZMapProps) {
     return () => {
       map.remove();
       mapRef.current = null;
+      generalLayerRef.current = null;
+      maoriLayerRef.current = null;
     };
-    // electorates is set once from SSR props — stable reference
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // --- Toggle general layer ---
+  useEffect(() => {
+    const map = mapRef.current;
+    const layer = generalLayerRef.current;
+    if (!map || !layer) return;
+    if (showGeneral && !map.hasLayer(layer)) map.addLayer(layer);
+    if (!showGeneral && map.hasLayer(layer)) map.removeLayer(layer);
+  }, [showGeneral]);
+
+  // --- Toggle Māori layer ---
+  useEffect(() => {
+    const map = mapRef.current;
+    const layer = maoriLayerRef.current;
+    if (!map || !layer) return;
+    if (showMaori && !map.hasLayer(layer)) map.addLayer(layer);
+    if (!showMaori && map.hasLayer(layer)) map.removeLayer(layer);
+  }, [showMaori]);
 
   return (
     <>
@@ -239,10 +265,37 @@ export default function NZMap({ electorates }: NZMapProps) {
           color: #78716c !important;
         }
       `}</style>
-      <div
-        ref={containerRef}
-        className="h-[320px] sm:h-[440px] lg:h-[600px] w-full rounded-lg"
-      />
+      <div className="relative">
+        {/* Layer toggles */}
+        <div className="absolute top-3 left-14 z-[1000] flex flex-col gap-1.5">
+          <button
+            onClick={() => setShowGeneral((v) => !v)}
+            className={`flex items-center gap-2 rounded-md px-3 py-1.5 text-xs font-medium shadow-md backdrop-blur transition-colors ${
+              showGeneral
+                ? "bg-white/90 text-neutral-900"
+                : "bg-neutral-800/80 text-neutral-400 hover:bg-neutral-700/80"
+            }`}
+          >
+            <span className={`inline-block h-2.5 w-2.5 rounded-sm ${showGeneral ? "bg-blue-500" : "bg-neutral-600"}`} />
+            Electorates
+          </button>
+          <button
+            onClick={() => setShowMaori((v) => !v)}
+            className={`flex items-center gap-2 rounded-md px-3 py-1.5 text-xs font-medium shadow-md backdrop-blur transition-colors ${
+              showMaori
+                ? "bg-white/90 text-neutral-900"
+                : "bg-neutral-800/80 text-neutral-400 hover:bg-neutral-700/80"
+            }`}
+          >
+            <span className={`inline-block h-2.5 w-2.5 rounded-sm border border-dashed ${showMaori ? "border-red-400 bg-red-500/40" : "border-neutral-500 bg-neutral-700"}`} />
+            Māori overlay
+          </button>
+        </div>
+        <div
+          ref={containerRef}
+          className="h-[320px] sm:h-[440px] lg:h-[600px] w-full rounded-lg"
+        />
+      </div>
     </>
   );
 }
