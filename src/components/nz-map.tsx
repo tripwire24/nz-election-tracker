@@ -57,7 +57,8 @@ const DEFAULT_FILL = "#555555";
 
 export default function NZMap({ electorates }: NZMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const mapRef = useRef<L.Map | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const mapRef = useRef<any>(null);
 
   const buildMap = useCallback(() => {
     if (!containerRef.current || mapRef.current) return;
@@ -91,7 +92,7 @@ export default function NZMap({ electorates }: NZMapProps) {
     // Render general electorates as filled polygons
     for (const e of general) {
       const fillColour = e.winnerColour || DEFAULT_FILL;
-      const normalStyle: L.PathOptions = {
+      const normalStyle = {
         fillColor: fillColour,
         fillOpacity: 0.55,
         color: "#ffffff",
@@ -99,17 +100,17 @@ export default function NZMap({ electorates }: NZMapProps) {
         opacity: 0.6,
       };
 
-      L.geoJSON(e.geojson!, {
+      L.geoJSON(e.geojson, {
         style: normalStyle,
-        onEachFeature: (_feature, featureLayer) => {
+        onEachFeature: (_feature: unknown, featureLayer: any) => {
           featureLayer.bindPopup(buildPopup(e), { className: "stone-popup", maxWidth: 280 });
           featureLayer.on("mouseover", () => {
-            (featureLayer as L.Path).setStyle({ fillOpacity: 0.85, weight: 2, opacity: 1 });
-            (featureLayer as L.Path).bringToFront();
+            featureLayer.setStyle({ fillOpacity: 0.85, weight: 2, opacity: 1 });
+            featureLayer.bringToFront();
             featureLayer.openPopup();
           });
           featureLayer.on("mouseout", () => {
-            (featureLayer as L.Path).setStyle(normalStyle);
+            featureLayer.setStyle(normalStyle);
             featureLayer.closePopup();
           });
         },
@@ -119,7 +120,7 @@ export default function NZMap({ electorates }: NZMapProps) {
     // Render Māori electorates as overlays with dashed borders + lower fill
     for (const e of maori) {
       const fillColour = e.winnerColour || "#B2001A";
-      const normalStyle: L.PathOptions = {
+      const normalStyle = {
         fillColor: fillColour,
         fillOpacity: 0.18,
         color: "#ef4444",
@@ -128,17 +129,17 @@ export default function NZMap({ electorates }: NZMapProps) {
         dashArray: "6 4",
       };
 
-      L.geoJSON(e.geojson!, {
+      L.geoJSON(e.geojson, {
         style: normalStyle,
-        onEachFeature: (_feature, featureLayer) => {
+        onEachFeature: (_feature: unknown, featureLayer: any) => {
           featureLayer.bindPopup(buildPopup(e), { className: "stone-popup", maxWidth: 280 });
           featureLayer.on("mouseover", () => {
-            (featureLayer as L.Path).setStyle({ fillOpacity: 0.35, weight: 3, opacity: 1 });
-            (featureLayer as L.Path).bringToFront();
+            featureLayer.setStyle({ fillOpacity: 0.35, weight: 3, opacity: 1 });
+            featureLayer.bringToFront();
             featureLayer.openPopup();
           });
           featureLayer.on("mouseout", () => {
-            (featureLayer as L.Path).setStyle(normalStyle);
+            featureLayer.setStyle(normalStyle);
             featureLayer.closePopup();
           });
         },
